@@ -10,16 +10,21 @@ function apiRequest(endPoint, method, body, cb) {
   fetch(addr + endPoint, opts)
     .then(response => {
       if (response.ok) {
-        response.json().then(json => {
-          cb(null, json)
-        })
+        var contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          return response.json().then(function (json) {
+            cb(null, json)
+          });
+        } else {
+          cb(null, null)
+        }
       } else {
         response.json().then(json => {
           cb(json.error || response.statusText || `Respuesta Inesperada ${response.status}`, null)
         })
       }
     }).catch(error => {
-      cb(error, null)
+      cb(error.message, null)
     })
 }
 

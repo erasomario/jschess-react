@@ -1,10 +1,10 @@
 import { useState, useRef } from 'react'
 
-export const useInput = (initialValue = '') => {
+export const useCheckbox = (initialValue = '') => {
     const ref = useRef(null)
-    const [value, setValue] = useState(initialValue);
+    const [checked, setValue] = useState(initialValue);
     return [
-        { value, onChange: e => setValue(e.target.value), ref },
+        { checked, onChange: e => setValue(e.target.checked), ref },
         (val = initialValue) => setValue(val),
         () => ref.current && ref.current.focus()
     ];

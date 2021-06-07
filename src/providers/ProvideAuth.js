@@ -1,5 +1,5 @@
 import React, { useContext, createContext, useState } from "react"
-import {apiRequest} from '../utils/ApiClient'
+import { apiRequest } from '../utils/ApiClient'
 
 const authContext = createContext();
 
@@ -18,19 +18,42 @@ export function useAuth() {
 
 function useProvideAuth() {
 
-  const [user, setUser] = useState(null);
+  const loadStoredUser = () => {
+    let local = localStorage.getItem('user');
+    if (local) {
+      return JSON.parse(local);
+    }
+    let session = sessionStorage.getItem('user');
+    if (session) {
+      console.log('from session');
+      return JSON.parse(session);
+    }
+    console.log('no user');
+    return null;
+  }
 
-  const signin = (login, password, cb) => {
+
+  const [user, setUser] = useState(loadStoredUser());
+  const signin = (login, password, remember, cb) => {
     apiRequest('/v1/api_keys', 'POST', { login, password }, (error, data) => {
+      if (remember) {
+        localStorage.setItem('user', JSON.stringify(data));
+      } else {
+        sessionStorage.setItem('user', JSON.stringify(data));
+      }
       setUser(data);
       cb(error, data);
     })
   }
 
   const signout = cb => {
-    setUser(null);
-    cb();
+    /*setUser(null);
+    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
+    cb();*/
   };
+
+
 
   return [user, signin, signout]
 }
