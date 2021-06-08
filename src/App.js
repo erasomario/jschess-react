@@ -2,6 +2,8 @@ import { Route, Switch } from 'react-router';
 import { PrivateRoute } from './components/PrivateRoute';
 import LoginPage from './components/LoginPage'
 import RecoverPage from './components/RecoverPage'
+import HomePage from './components/HomePage'
+import RegisterPage from './components/RegisterPage'
 
 function App() {
   
@@ -13,18 +15,14 @@ function App() {
       <Route path="/login">
         <LoginPage />
       </Route>
+      <Route path="/register">
+        <RegisterPage />
+      </Route>
       <PrivateRoute path="/">
         <HomePage />
       </PrivateRoute>
     </Switch>
   );
-
-
-  function HomePage() {
-    return <h3>Home</h3>;
-  }
-
 }
-
 
 export default App;

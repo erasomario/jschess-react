@@ -10,25 +10,22 @@ import Alert from 'react-bootstrap/Alert';
 
 export default function LoginPage() {
   const [error, setError] = useState();
-  let history = useHistory();
-  let [, signIn] = useAuth();
-  let location = useLocation();
+  const history = useHistory();
+  const [user, signIn] = useAuth();
+  const location = useLocation();
 
-  let [loginProps, , loginFocus] = useInput("alderick84");
-  let [passProps, , passFocus] = useInput("123456");
-  let [remembersProps] = useCheckbox(true);
+  const [loginProps, , loginFocus] = useInput("alderick84");
 
-  let { from } = location.state || { from: { pathname: "/" } };
+  const [passProps, , passFocus] = useInput("123456");
+  const [remembersProps] = useCheckbox(true);
 
-  
-  let login = () => {
-    auth.signin(() => {
-      history.replace(from);
-    });
-  };
+  const { from } = location.state || { from: { pathname: "/" } };
 
+  if (user) {
+    history.replace(from);
+  }
 
-  let login = (e) => {
+  const login = (e) => {
     e.preventDefault();
 
     if (!loginProps.value) {
@@ -53,7 +50,7 @@ export default function LoginPage() {
       <Card style={{ width: '36rem' }} className="mx-auto">
         <Card.Body>
           <Card.Title>Iniciar Sesión</Card.Title>
-          <Card.Text>Debe indicar su nombre de usuario y contraseña, ni aún no tiene una cuenta <Link to="/recover">puede crearla aquí</Link>
+          <Card.Text>Debe indicar su nombre de usuario y contraseña, ni aún no tiene una cuenta <Link to="/register">puede crearla aquí</Link>
           </Card.Text>
           <Form>
             <Form.Group controlId="login">

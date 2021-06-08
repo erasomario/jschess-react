@@ -25,10 +25,8 @@ function useProvideAuth() {
     }
     let session = sessionStorage.getItem('user');
     if (session) {
-      console.log('from session');
       return JSON.parse(session);
     }
-    console.log('no user');
     return null;
   }
 
@@ -47,13 +45,11 @@ function useProvideAuth() {
   }
 
   const signout = cb => {
-    /*setUser(null);
+    setUser(null);
     localStorage.removeItem('user');
     sessionStorage.removeItem('user');
-    cb();*/
+    cb();
   };
-
-
 
   return [user, signin, signout]
 }
