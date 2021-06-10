@@ -30,17 +30,18 @@ function useProvideAuth() {
     return null;
   }
 
-
+  console.log('useState: user');
   const [user, setUser] = useState(loadStoredUser());
+
   const signin = (login, password, remember, cb) => {
-    apiRequest('/v1/api_keys', 'POST', { login, password }, (error, data) => {
+    apiRequest('/v1/api_keys', 'POST', null, { login, password }, (error, data) => {
       if (remember) {
-        localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('user', JSON.stringify(data))
       } else {
-        sessionStorage.setItem('user', JSON.stringify(data));
+        sessionStorage.setItem('user', JSON.stringify(data))
       }
-      setUser(data);
-      cb(error, data);
+      setUser(data)
+      cb(error, data)
     })
   }
 
@@ -50,6 +51,5 @@ function useProvideAuth() {
     sessionStorage.removeItem('user');
     cb();
   };
-
   return [user, signin, signout]
 }

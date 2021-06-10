@@ -1,9 +1,11 @@
-function apiRequest(endPoint, method, body, cb) {
-  let opts;
+function apiRequest(endPoint, method, key, body, cb) {
+  let opts = { method };
   if (body) {
-    opts = { method, headers: { 'Content-Type': "application/json" }, body: JSON.stringify(body) }
-  } else {
-    opts = { method }
+    opts = { headers: { 'Content-Type': "application/json" }, body: JSON.stringify(body), ...opts }
+  }
+
+  if (key) {
+    opts.headers = { 'Authorization': `Bearer ${key}`, ...opts.headers }
   }
 
   const addr = process.env.NODE_ENV === 'development' ? 'http://localhost:4000/api' : 'http://localhost:4000/api';

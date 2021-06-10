@@ -1,24 +1,17 @@
+/**
+  This CodeSandbox has been automatically generated using
+  `codesandboxer`. If you're curious how that happened, you can
+  check out our docs here: https://github.com/codesandbox/codesandboxer
+
+  If you experience any struggles with this sandbox, please raise an issue
+  on github. :)
+*/
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+//import App from './example';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { ProvideAuth } from './providers/ProvideAuth'
 
 ReactDOM.render(
-  <ProvideAuth>
-    <Router>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    </Router>
-  </ProvideAuth>
-  ,
-  document.getElementById('root')
+<App />,
+document.getElementById('root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

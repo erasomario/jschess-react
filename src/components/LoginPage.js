@@ -2,7 +2,7 @@ import { useAuth } from '../providers/ProvideAuth'
 import { useHistory, useLocation, Link } from 'react-router-dom'
 import { useInput } from '../hooks/useInput'
 import { useCheckbox } from '../hooks/useCheckbox'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
@@ -21,9 +21,11 @@ export default function LoginPage() {
 
   const { from } = location.state || { from: { pathname: "/" } };
 
-  if (user) {
-    history.replace(from);
-  }
+  useEffect(() => {
+    if (user) {
+      history.replace(from);
+    }
+  }, [user, from, history])
 
   const login = (e) => {
     e.preventDefault();

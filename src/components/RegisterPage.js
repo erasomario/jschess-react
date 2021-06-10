@@ -35,7 +35,7 @@ export default function RecoverPage() {
       passConfFocus()
       setError('La contraseña y su confirmación no coinciden')
     } else {
-      apiRequest(`/v1/users/`, 'POST', { username: usernameProps.value, email: emailProps.value, password: passProps.value }, (error, data) => {
+      apiRequest(`/v1/users/`, 'POST', null, { username: usernameProps.value, email: emailProps.value, password: passProps.value }, (error, data) => {
         if (error) {
           setError(error);
         } else {

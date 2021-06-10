@@ -20,7 +20,7 @@ export default function RecoverPage() {
 
   let startRecover = (e) => {
     e.preventDefault();
-    apiRequest('/v1/recovery_keys/', 'POST', { login: loginProps.value }, (error, data) => {
+    apiRequest('/v1/recovery_keys/', 'POST', null, { login: loginProps.value }, (error, data) => {
       if (error) {
         setError(error);
       } else {
@@ -45,7 +45,7 @@ export default function RecoverPage() {
       passConfFocus()
       setError('La contraseña y su confirmación no coinciden')
     } else {
-      apiRequest(`/v1/users/${recoveryData.id}/recovered_password`, 'PUT', { recoveryKey: keyProps.value, password: passProps.value }, (error, data) => {
+      apiRequest(`/v1/users/${recoveryData.id}/recovered_password`, 'PUT', null, { recoveryKey: keyProps.value, password: passProps.value }, (error, data) => {
         if (error) {
           setError(error);
         } else {
