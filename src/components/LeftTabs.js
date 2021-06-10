@@ -9,7 +9,7 @@ import { apiRequest } from "../utils/ApiClient";
 export default function LeftTabs({ onGameSelected = (a) => a }) {
 
     const [openGamesList, setOpenGamesList] = useState([])
-    const [selectedGame, setSelectedGame] = useState()
+    const [selectedGame, setSelectedGame] = useState(null)
     const [user] = useAuth()
 
     const [key, setKey] = useState('open');

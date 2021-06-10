@@ -3,16 +3,21 @@ import ListGroup from 'react-bootstrap/ListGroup'
 
 export default function GamesList({ onSelect = (a) => a, games, selected: extSelected }) {
 
-    const [selected, setSelected] = useState()
+    const [selected, setSelected] = useState(extSelected)
     useEffect(() => { setSelected(extSelected) }, [extSelected])
 
-    if (!games || games.length === 0) {
+    if (!games) {
         return <p>Cargando...</p>
+    }
+
+    if (games.length === 0) {
+        return <p>No hay partidas en curso</p>
     }
 
     return <ListGroup>
         {games && games.map((g) =>
-            <ListGroup.Item className='m-0 p-2'
+            <ListGroup.Item
+                className='m-0 p-2'
                 key={g.id}
                 active={!selected ? false : selected === g.id}
                 onClick={() => { setSelected(g.id); onSelect(g.id) }}

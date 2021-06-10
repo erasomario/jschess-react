@@ -7,14 +7,14 @@ import { useAuth } from '../providers/ProvideAuth'
 export default function CreateGame({ onNewGame = (a) => a }) {
 
     const [error, setError] = useState(null)
-    const [otherUser, setUser] = useState(null)
+    const [player, setPlayer] = useState(null)
     const [user] = useAuth()
 
     const create = () => {
-        if (!otherUser) {
+        if (!player) {
             setError('Seleccione un jugador')
         } else {
-            apiRequest('/v1/games', 'post', user.api_key, { userId: otherUser.id }, (error, data) => {
+            apiRequest('/v1/games', 'post', user.api_key, { userId: player.id }, (error, data) => {
                 if (error) {
                     setError(error)
                 } else {
@@ -28,10 +28,10 @@ export default function CreateGame({ onNewGame = (a) => a }) {
         <Form>
             <Form.Group>
                 <Form.Label>Jugador</Form.Label>
-                <UserList onSelect={(u) => setUser(u)}></UserList>
+                <UserList onSelect={(u) => setPlayer(u)}></UserList>
             </Form.Group>
         </Form>
         {error && <Alert variant="danger">{error}</Alert>}
-        <Button onClick={() => { create() }}>Crear Juego</Button>
+        <Button onClick={create}>Crear Juego</Button>
     </div>
 }
