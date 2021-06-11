@@ -1,18 +1,52 @@
-export function Tile({ col, row, piece = null }) {
+export function Tile({ col, row, piece = null, reversed, src, dest, myTurn, myColor, highlights, onSelect = a => a }) {
 
-    const black = (col === 'a' || col === 'c' || col === 'e' || col === 'g') ? row % 2 !== 0 : row % 2 === 0;
+    const selectable = myTurn && piece && (myColor === 'white' && piece[0] === 'w' || myColor === 'black' && piece[0] === 'b')
 
+    const black = col % 2 !== 0 ? row % 2 !== 0 : row % 2 === 0;
 
+    const letters = { 1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h' }
+
+    const tl = {
+        position: "absolute", userSelect: 'none', width: '25px', height: '25px',
+        top: '0px', left: '0px',
+    }
+
+    const br = {
+        position: "absolute", userSelect: 'none', width: '25px', height: '25px',
+        bottom: '0px', right: '0px',
+        textAlign: 'right'
+    }
+
+    const onClick = () => {
+        if (selectable) {
+            onSelect();
+        }
+    }
+
+    const selected = src && src === `${col}${row}`;
+    const bgColor = selected ? (black ? '#ff0000' : '#ff0000') : (black ? '#b3e5fc' : '#ffffff')
+    const high = highlights.includes(`${col}${row}`)
+
+    const highStyle = high ? (piece ?
+        { position: "absolute", width: "60px", height: '60px', backgroundSize: '55px 55px', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url('/assets/circle.svg')` } :
+        { position: "absolute", width: "60px", height: '60px', backgroundSize: '15px 15px', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url('/assets/dot.svg')` })
+        : null
 
     return <>
-        <div style={{ width: '60px', height: '60px', position: 'relative', backgroundColor: black ? '#b3e5fc' : '' }}>
+        <div style={{ cursor: selectable ? 'pointer' : 'default', width: '60px', height: '60px', position: 'relative', backgroundColor: bgColor }}
+            onClick={onClick}
+        >
             {piece ?
-                <div style={{ position: "absolute", margin: "5px", width: "50px" }}>
-                    <img width={50} src={`/assets/${piece.slice(0, -1)}.svg`}></img>
+                <div style={{ position: "absolute", margin: "5px", width: "50px", height: '50px', backgroundSize: '50px 50px', backgroundImage: `url('/assets/${piece.slice(0, -1)}.svg')` }}>
+
                 </div> : ''
             }
-            {col === 'a' ? <div style={{ position: "absolute", top: "0px", left: '0px', verticalAlign: "top" }}>{row}</div> : ''}
-            {row === 1 ? <div style={{ position: "absolute", bottom: "0px", right: '0px', verticalAlign: "top" }}>{col}</div> : ''}
+            {high ?
+                <div style={highStyle }>
+                </div> : ''
+            }
+            {col === (reversed ? 8 : 1) ? <div style={{ ...tl, color: black ? '#FFFFFF' : '#b3e5fc' }}>{row}</div> : ''}
+            {row === (reversed ? 8 : 1) ? <div style={{ ...br, color: black ? '#FFFFFF' : '#b3e5fc' }}>{letters[col]}</div> : ''}
         </div>
 
     </>

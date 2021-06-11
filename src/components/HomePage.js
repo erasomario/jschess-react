@@ -25,8 +25,8 @@ export default function HomePage() {
         <Button onClick={logout}>Salir</Button>
         <Container fluid>
             <Row>
-                <Col className='m-0 p-0'><LeftTabs onGameSelected={gameSelected} ></LeftTabs></Col>
-                <Col className='m-0 p-0'><Table game={game}></Table></Col>
+                <Col xs={3} className='m-0 p-0'><LeftTabs onGameSelected={gameSelected} ></LeftTabs></Col>
+                <Col xs={6} className='m-0 p-0'><Table game={game}></Table></Col>
             </Row>
         </Container>
 
