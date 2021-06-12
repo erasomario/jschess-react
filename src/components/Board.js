@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react"
 import { useAuth } from "../providers/ProvideAuth"
+import { useGame } from "../providers/ProvideGame"
+import { apiRequest } from "../utils/ApiClient"
 import { Tile } from "./Tile"
 
 function isMine(myColor, piece) {
     return (myColor === piece[0])
 }
 
-export function Board({ reversed = false, game, turn }) {
+export function Board({ reversed = false }) {
+    const [game, setGame] = useGame()
     const [user] = useAuth()
     const [src, setSrc] = useState(null)
     const [dest, setDest] = useState(null)
@@ -28,10 +31,13 @@ export function Board({ reversed = false, game, turn }) {
     const rows = reversed ? [1, 2, 3, 4, 5, 6, 7, 8] : [8, 7, 6, 5, 4, 3, 2, 1]
     const cols = reversed ? [8, 7, 6, 5, 4, 3, 2, 1] : [1, 2, 3, 4, 5, 6, 7, 8]
     const board = {}
-    Object.entries(game.pieces).forEach((e) => {
-        const piece = e[turn];
-        const tile = e[1][game.turn]
-        board[tile] = piece
+    Object.entries(game.pieces).forEach((p) => {
+        const turn = Object.keys(p[1]).reduce((p, c) => {
+            const ci = parseInt(c)            
+            return ci > p && ci <= game.turn ? ci : p
+        }, -1)
+        const tile = p[1][turn]
+        board[tile] = p[0]
     })
 
     const scanTile = (arr, c, r, cdelta, rdelta) => {
@@ -66,7 +72,18 @@ export function Board({ reversed = false, game, turn }) {
     }
 
     const onSelect = (c, r) => {
-        const tile = `${c}${r}`;
+        const tile = `${c}${r}`
+
+        if (high.includes(tile)) {
+            //move
+            apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece: board[src], src: src, dest: tile }, (error, data) => {
+                if (!error && data) {
+                    setGame(data)
+                }
+            })
+            return;
+        }
+
         setSrc(tile)
         const piece = board[tile]
         const type = piece.slice(1, -1)

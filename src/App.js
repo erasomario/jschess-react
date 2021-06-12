@@ -6,6 +6,7 @@ import HomePage from './components/HomePage'
 import RegisterPage from './components/RegisterPage'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { ProvideAuth } from './providers/ProvideAuth'
+import { ProvideGame } from './providers/ProvideGame'
 
 function App() {
 
@@ -21,12 +22,14 @@ function App() {
           </Route>
           <Route path="/register">
             <RegisterPage />
-          </Route>          
+          </Route>
           <PrivateRoute path="/secret">
             <h1>Secret</h1>
           </PrivateRoute>
           <PrivateRoute path="/">
-            <HomePage />
+            <ProvideGame>
+              <HomePage />
+            </ProvideGame>
           </PrivateRoute>
         </Switch>
       </Router>

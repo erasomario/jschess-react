@@ -1,6 +1,6 @@
 export function Tile({ col, row, piece = null, reversed, src, dest, myTurn, myColor, highlights, onSelect = a => a }) {
 
-    const selectable = myTurn && piece && myColor === piece[0]
+    const selectable = myTurn && ((piece && myColor === piece[0])|| highlights.includes(`${col}${row}`))
 
     const black = col % 2 !== 0 ? row % 2 !== 0 : row % 2 === 0;
 
