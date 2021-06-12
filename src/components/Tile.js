@@ -1,6 +1,6 @@
 export function Tile({ col, row, piece = null, reversed, src, dest, myTurn, myColor, highlights, onSelect = a => a }) {
 
-    const selectable = myTurn && piece && (myColor === 'white' && piece[0] === 'w' || myColor === 'black' && piece[0] === 'b')
+    const selectable = myTurn && piece && myColor === piece[0]
 
     const black = col % 2 !== 0 ? row % 2 !== 0 : row % 2 === 0;
 
@@ -23,8 +23,8 @@ export function Tile({ col, row, piece = null, reversed, src, dest, myTurn, myCo
         }
     }
 
-    const selected = src && src === `${col}${row}`;
-    const bgColor = selected ? (black ? '#ff0000' : '#ff0000') : (black ? '#b3e5fc' : '#ffffff')
+    const selected = src && src === `${col}${row}`
+    const bgColor = black ? '#b3e5fc' : '#ffffff'
     const high = highlights.includes(`${col}${row}`)
 
     const highStyle = high ? (piece ?
@@ -34,19 +34,21 @@ export function Tile({ col, row, piece = null, reversed, src, dest, myTurn, myCo
 
     return <>
         <div style={{ cursor: selectable ? 'pointer' : 'default', width: '60px', height: '60px', position: 'relative', backgroundColor: bgColor }}
-            onClick={onClick}
-        >
-            {piece ?
-                <div style={{ position: "absolute", margin: "5px", width: "50px", height: '50px', backgroundSize: '50px 50px', backgroundImage: `url('/assets/${piece.slice(0, -1)}.svg')` }}>
-
-                </div> : ''
-            }
-            {high ?
-                <div style={highStyle }>
-                </div> : ''
-            }
+            onClick={onClick}>
             {col === (reversed ? 8 : 1) ? <div style={{ ...tl, color: black ? '#FFFFFF' : '#b3e5fc' }}>{row}</div> : ''}
             {row === (reversed ? 8 : 1) ? <div style={{ ...br, color: black ? '#FFFFFF' : '#b3e5fc' }}>{letters[col]}</div> : ''}
+            {selected &&
+                <div style={{ position: "absolute", width: "60px", height: '60px', backgroundRepeat: 'repeat', backgroundImage: `url('/assets/mask.png')` }}>
+                </div>
+            }
+            {high &&
+                <div style={highStyle}>
+                </div>
+            }
+            {piece &&
+                <div style={{ position: "absolute", margin: "5px", width: "50px", height: '50px', backgroundSize: '50px 50px', backgroundImage: `url('/assets/${piece.slice(0, -1)}.svg')` }}>
+                </div>
+            }
         </div>
 
     </>
