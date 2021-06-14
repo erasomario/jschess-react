@@ -1,5 +1,4 @@
 import React, { useContext, createContext, useState } from "react"
-import { apiRequest } from '../utils/ApiClient'
 
 const gameContext = createContext();
 

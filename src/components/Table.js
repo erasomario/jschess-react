@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useState } from "react"
 import { useAuth } from "../providers/ProvideAuth"
 import { useGame } from "../providers/ProvideGame"
 import { Board } from './Board'

@@ -1,4 +1,4 @@
-export function Tile({ col, row, piece = null, reversed, src, dest, myTurn, myColor, highlights, onSelect = a => a }) {
+export function Tile({ col, row, piece = null, reversed, src, myTurn, myColor, highlights, onSelect = a => a }) {
 
     const selectable = myTurn && ((piece && myColor === piece[0])|| highlights.includes(`${col}${row}`))
 
@@ -49,6 +49,7 @@ export function Tile({ col, row, piece = null, reversed, src, dest, myTurn, myCo
                 <div style={{ position: "absolute", margin: "5px", width: "50px", height: '50px', backgroundSize: '50px 50px', backgroundImage: `url('/assets/${piece.slice(0, -1)}.svg')` }}>
                 </div>
             }
+            <div style={{ position: "absolute", left:'20px', color:'#FF0000'}}>{`${col}${row}`}</div>
         </div>
 
     </>
