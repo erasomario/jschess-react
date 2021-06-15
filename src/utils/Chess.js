@@ -41,11 +41,9 @@ const scanTileK = (arr, board, myColor, cOrig, rOrig, cDest, rDest) => {
     }
 }
 
-const scanTileN = (arr, board, myColor, c, r, cdelta, rdelta) => {
-    const cc = c + cdelta
-    const rr = r + rdelta
-    if (cc >= 1 && cc <= 8 && rr >= 1 && rr <= 8) {
-        const tile = `${cc}${rr}`;
+const scanTileN = (arr, board, myColor, cDest, rDest) => {
+    if (cDest >= 1 && cDest <= 8 && rDest >= 1 && rDest <= 8) {
+        const tile = `${cDest}${rDest}`;
         if (board[tile]) {
             if (!isMine(myColor, board[tile].piece)) {
                 arr.push(tile)
@@ -72,28 +70,57 @@ const scanRow = (arr, board, myColor, c, r, cdelta, rdelta) => {
 }
 
 const getBoard = (pieces, turn) => {
-    const board = []
-    Object.entries(pieces).forEach((p) => {
-        const movs = Object.keys(p[1]).filter((c) => parseInt(c) <= turn);
-        const maxTurn = movs.reduce((p, c) => {
-            const ci = parseInt(c)
-            return ci > p ? ci : p
-        }, -1)
-        board[p[1][maxTurn]] = { piece: p[0], movs: movs.length }
+    const inGameTiles = []
+    const whiteCaptured = []
+    const blackCaptured = []
+    let lastMov
+    Object.entries(pieces).forEach(p => {
+        const movs = Object.keys(p[1]).map(s => parseInt(s)).sort((a, b) => a - b).filter(c => c <= turn)
+        const maxTurn = movs[movs.length - 1];
+        if (p[1][maxTurn] === 'c') {
+            if (p[0].slice(0, 1) === 'w') {
+                whiteCaptured.push(p[0])
+            } else {
+                blackCaptured.push(p[0])
+            }
+        } else {
+            inGameTiles[p[1][maxTurn]] = { piece: p[0], movs: movs.length, maxTurn }
+            if (maxTurn === turn) {
+                const mov = {
+                    piece: p[0],
+                    orig: p[1][movs[movs.length - 2]],
+                    dest: p[1][movs[movs.length - 1]]
+                }
+
+                if (!lastMov || lastMov.piece.slice(1, 2) === 'r') {
+                    lastMov = mov
+                }
+            }
+        }
     })
-    console.log(typeof board);
-    return board
+    return { inGameTiles, whiteCaptured: sortCaptures(whiteCaptured), blackCaptured: sortCaptures(blackCaptured), lastMov }
+}
+
+const sortCaptures = (list) => {
+    const conv = { p: 0, n: 1, b: 2, r: 3, q: 4 }
+    return list.sort((a, b) => {
+        const na = conv[a.slice(1, 2)], nb = conv[b.slice(1, 2)]
+        return (na > nb ? 1 : (na < nb ? -1 : 0))
+    })
 }
 
 const getKingSquares = (c, r) => {
     return [[c, r + 1], [c + 1, r + 1], [c + 1, r], [c + 1, r - 1], [c, r - 1], [c - 1, r - 1], [c - 1, r], [c - 1, r + 1]]
 }
 
+const getKnightSquares = (c, r) => {
+    return [[c + 1, r + 2], [c + 2, r + 1], [c + 2, r - 1], [c + 1, r - 2], [c - 1, r - 2], [c - 2, r - 1], [c - 2, r + 1], [c - 1, r + 2]]
+}
+
 const getAllAttackedByEnemy = (board, myColor) => {
     const enemySquares = Object.keys(board).filter(s => board[s] && board[s].piece.slice(0, 1) !== myColor)
     let attacked = []
     enemySquares.forEach(s => {
-        console.log(s);
         attacked = attacked.concat(getAttacked(board, myColor === 'w' ? 'b' : 'w', parseInt(s.slice(0, 1)), parseInt(s.slice(1, 2))))
     })
     return attacked
@@ -140,20 +167,12 @@ const getAttacked = (board, myColor, c, r) => {
         //TODO castling
         getKingSquares(c, r).forEach(a => scanTileK(arr, board, myColor, c, r, a[0], a[1]))
     } else if (type === 'r') {
-        //TODO CASTLING
         scanRow(arr, board, myColor, c, r, 0, 1)
         scanRow(arr, board, myColor, c, r, 0, -1)
         scanRow(arr, board, myColor, c, r, 1, 0)
         scanRow(arr, board, myColor, c, r, -1, 0)
     } else if (type === 'n') {
-        scanTileN(arr, board, myColor, c, r, 1, 2)
-        scanTileN(arr, board, myColor, c, r, 2, 1)
-        scanTileN(arr, board, myColor, c, r, 2, -1)
-        scanTileN(arr, board, myColor, c, r, 1, -2)
-        scanTileN(arr, board, myColor, c, r, -1, -2)
-        scanTileN(arr, board, myColor, c, r, -2, -1)
-        scanTileN(arr, board, myColor, c, r, -2, 1)
-        scanTileN(arr, board, myColor, c, r, -1, 2)
+        getKnightSquares(c, r).forEach(s => scanTileN(arr, board, myColor, s[0], s[1]))
     } else if (type === 'b') {
         scanRow(arr, board, myColor, c, r, 1, 1)
         scanRow(arr, board, myColor, c, r, 1, -1)
@@ -173,21 +192,19 @@ const getAttacked = (board, myColor, c, r) => {
         //first square
         if (!board[`${c}${r + delta}`]) {
             arr.push(`${c}${r + delta}`)
-        }
-        //second square        
-        if (board[tile].movs === 1) {
-            if (!board[`${c}${r + delta + delta}`] && !board[`${c}${r + delta}`]) {
+            //second square
+            if (board[tile].movs === 1 && !board[`${c}${r + delta + delta}`]) {
                 arr.push(`${c}${r + delta + delta}`)
             }
         }
-        //attack
+        //attacks
         if (board[`${c + 1}${r + delta}`]) {
-            if (myColor !== board[`${c + 1}${r + delta}`].piece[0]) {
+            if (myColor !== board[`${c + 1}${r + delta}`].piece.slice(0, 1)) {
                 arr.push(`${c + 1}${r + delta}`)
             }
         }
         if (board[`${c - 1}${r + delta}`]) {
-            if (myColor !== board[`${c - 1}${r + delta}`].piece[0]) {
+            if (myColor !== board[`${c - 1}${r + delta}`].piece.slice(0, 1)) {
                 arr.push(`${c - 1}${r + delta}`)
             }
         }

@@ -19,9 +19,6 @@ export default function LeftTabs({ onGameSelected = (a) => a }) {
         setKey("open")
     }
 
-    
-
-
     const getOpenGames = useCallback(() => {
         console.log('reloading open game list');
         apiRequest(`/v1/users/${user.id}/games/open`, 'GET', user.api_key, null, (error, data) => {

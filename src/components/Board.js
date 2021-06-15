@@ -3,23 +3,21 @@ import { useAuth } from "../providers/ProvideAuth"
 import { useGame } from "../providers/ProvideGame"
 import { apiRequest } from "../utils/ApiClient"
 import { Tile } from "./Tile"
-import { getBoard, getAttacked, getCastling } from '../utils/Chess'
+import { getAttacked, getCastling } from '../utils/Chess'
 
 export function Board({ reversed = false }) {
-    const [game, setGame] = useGame()
+    const [game, board, updateGame] = useGame()
     const [user] = useAuth()
     const [src, setSrc] = useState(null)
     const [high, setHigh] = useState([])
-    const [board, setBoard] = useState(null)
 
     useEffect(() => {
         setSrc(null)
         setHigh([])
-        setBoard(getBoard(game.pieces, game.turn))
     }, [game])
 
     const myColor = user.id === game.whitePlayerId ? 'w' : 'b'
-    const myTurn = game.current[0] === myColor;
+    const myTurn = game.current === myColor;
 
     if (!game || !board) {
         return <></>
@@ -32,16 +30,16 @@ export function Board({ reversed = false }) {
         const tile = `${c}${r}`
         if (high.includes(tile)) {
             //move
-            apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece: board[src].piece, src: src, dest: tile }, (error, data) => {
+            apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece: board.inGameTiles[src].piece, src: src, dest: tile }, (error, data) => {
                 if (!error && data) {
-                    setGame(data)
+                    updateGame(data)
                 }
             })
             return;
         }
         setSrc(tile)
-        const att = getAttacked(board, myColor, c, r)
-        const cast = getCastling(board, myColor, c, r)
+        const att = getAttacked(board.inGameTiles, myColor, c, r)
+        const cast = getCastling(board.inGameTiles, myColor, c, r)
         setHigh(att.concat(cast))
     }
 
@@ -51,8 +49,16 @@ export function Board({ reversed = false }) {
                 <tr key={r}>{
                     cols.map((c) => {
                         return <td key={c}>
-                            <Tile key={`${c}${r}`} col={c} row={r} piece={board[`${c}${r}`] && board[`${c}${r}`].piece} reversed={reversed}
-                                src={src} myTurn={myTurn} myColor={myColor} highlights={high}
+                            <Tile
+                                key={`${c}${r}`}
+                                col={c} row={r}
+                                piece={board.inGameTiles[`${c}${r}`] && board.inGameTiles[`${c}${r}`].piece}
+                                reversed={reversed}
+                                src={src} 
+                                myTurn={myTurn} 
+                                myColor={myColor} 
+                                highlights={high}
+                                lastMov={board.lastMov}
                                 onSelect={() => onSelect(c, r)}
                             >
                             </Tile>
