@@ -16,7 +16,11 @@ export function ProvideGame({ children }) {
         }
     }, [])
 
-    const val = [game, board, updateGame]
+    const updateTurn = useCallback((t) => {
+        setBoard(game ? getBoard(game.pieces, t) : null)
+    }, [game])
+
+    const val = [game, board, updateGame, updateTurn]
     return (
         <gameContext.Provider value={val}>
             {children}

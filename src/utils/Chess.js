@@ -85,7 +85,7 @@ const getBoard = (pieces, turn) => {
             }
         } else {
             inGameTiles[p[1][maxTurn]] = { piece: p[0], movs: movs.length, maxTurn }
-            if (maxTurn === turn) {
+            if (maxTurn === turn && turn > 0) {
                 const mov = {
                     piece: p[0],
                     orig: p[1][movs[movs.length - 2]],
@@ -98,7 +98,7 @@ const getBoard = (pieces, turn) => {
             }
         }
     })
-    return { inGameTiles, whiteCaptured: sortCaptures(whiteCaptured), blackCaptured: sortCaptures(blackCaptured), lastMov }
+    return { inGameTiles, whiteCaptured: sortCaptures(whiteCaptured), blackCaptured: sortCaptures(blackCaptured), lastMov, turn }
 }
 
 const sortCaptures = (list) => {

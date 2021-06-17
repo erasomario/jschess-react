@@ -14,10 +14,10 @@ export function Board({ reversed = false }) {
     useEffect(() => {
         setSrc(null)
         setHigh([])
-    }, [game])
+    }, [game, board])
 
     const myColor = user.id === game.whitePlayerId ? 'w' : 'b'
-    const myTurn = game.current === myColor;
+    const myTurn = myColor === 'w' ? game.turn % 2 === 0 : game.turn % 2 !== 0
 
     if (!game || !board) {
         return <></>
@@ -54,9 +54,9 @@ export function Board({ reversed = false }) {
                                 col={c} row={r}
                                 piece={board.inGameTiles[`${c}${r}`] && board.inGameTiles[`${c}${r}`].piece}
                                 reversed={reversed}
-                                src={src} 
-                                myTurn={myTurn} 
-                                myColor={myColor} 
+                                src={src}
+                                myTurn={myTurn}
+                                myColor={myColor}
                                 highlights={high}
                                 lastMov={board.lastMov}
                                 onSelect={() => onSelect(c, r)}

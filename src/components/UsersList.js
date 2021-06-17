@@ -23,7 +23,7 @@ export default function UserList({ onSelect = (a) => a }) {
         return <p>Cargando...</p>
     }
 
-    return <ListGroup>
+    return <ListGroup className="overflow-auto" style={{height: '100px'}}>
         {list && list.map((u) => <ListGroup.Item
             key={u.id}
             active={selected && selected.id === u.id}

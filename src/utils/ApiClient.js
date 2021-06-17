@@ -7,8 +7,11 @@ function apiRequest(endPoint, method, key, body, cb) {
   if (key) {
     opts.headers = { 'Authorization': `Bearer ${key}`, ...opts.headers }
   }
+  
+  const url = new URL(window.location.href)
+  const addr1 = `${url.protocol}//${url.host}/api`
 
-  const addr = process.env.NODE_ENV === 'development' ? 'http://localhost:4000/api' : 'http://localhost:4000/api';
+  const addr = process.env.NODE_ENV === 'development' ? 'http://localhost:4000/api' : addr1;
   fetch(addr + endPoint, opts)
     .then(response => {
       if (response.ok) {

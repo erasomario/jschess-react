@@ -5,14 +5,22 @@ import GamesList from "./GamesList";
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../providers/ProvideAuth";
 import { apiRequest } from "../utils/ApiClient";
+import { useGame } from "../providers/ProvideGame";
 
 export default function LeftTabs({ onGameSelected = (a) => a }) {
 
+    const [game] = useGame()
     const [openGamesList, setOpenGamesList] = useState([])
     const [selectedGame, setSelectedGame] = useState(null)
     const [user] = useAuth()
 
-    const [key, setKey] = useState('open');
+    const [key, setKey] = useState('open')
+
+    useEffect(() => {
+        setOpenGamesList((o) => o.map(g => (
+            (game && (game.id === g.id)) ? { ...g, turn: game.turn } : g)
+        ))
+    }, [game])
 
     const gameCreated = () => {
         getOpenGames()
