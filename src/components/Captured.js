@@ -1,18 +1,14 @@
 
-export function Captured({ position, reversed, game, board, user }) {
-
-
+export function Captured({ position, reversed, game, board }) {
 
     if (!game || !board) {
         return <></>
     }
-
-
     const white = (position === 'top' && reversed) || (position === 'bottom' && !reversed)
+    const myTurn = (white && board.turn % 2 === 0) || (!white && board.turn % 2 !== 0)
 
-    return <>
-        {position}
-        <div>{!white ? game.blackPlayerName : game.whitePlayerName}{(white && board.turn % 2 === 0) || (!white && board.turn % 2 !== 0) ? '*' : ''}</div>
+    return <div className='mt-1'>
+        <div style={{ fontWeight: (myTurn ? 'bold' : 'normal') }}>{!white ? game.blackPlayerName : game.whitePlayerName}</div>
         <div style={{ overflow: 'hidden', height: '30px' }}>
             {(!white ? board.whiteCaptured : board.blackCaptured).map(c =>
                 <div key={c}
@@ -20,5 +16,5 @@ export function Captured({ position, reversed, game, board, user }) {
                 </div>
             )}
         </div>
-    </>
+    </div>
 }

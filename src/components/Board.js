@@ -38,9 +38,12 @@ export function Board({ reversed = false }) {
             return;
         }
         setSrc(tile)
+        console.time()
         const att = getAttacked(board.inGameTiles, myColor, c, r)
         const cast = getCastling(board.inGameTiles, myColor, c, r)
+        console.timeEnd()
         setHigh(att.concat(cast))
+        
     }
 
     return <>
