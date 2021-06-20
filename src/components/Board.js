@@ -4,12 +4,14 @@ import { useGame } from "../providers/ProvideGame"
 import { apiRequest } from "../utils/ApiClient"
 import { Tile } from "./Tile"
 import { getAttacked, getCastling } from '../utils/Chess'
+import Modal from 'react-bootstrap/Modal'
 
 export function Board({ reversed = false }) {
     const [game, board, updateGame] = useGame()
     const [user] = useAuth()
     const [src, setSrc] = useState(null)
     const [high, setHigh] = useState([])
+    const [showModal, setShowModal] = useState(false)
 
     useEffect(() => {
         setSrc(null)
@@ -29,8 +31,13 @@ export function Board({ reversed = false }) {
     const onSelect = (c, r) => {
         const tile = `${c}${r}`
         if (high.includes(tile)) {
-            //move
-            apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece: board.inGameTiles[src].piece, src: src, dest: tile }, (error, data) => {
+            const piece = board.inGameTiles[src].piece
+            if (piece[1] === 'p' && ((piece[0] === 'w' && r === 8) || (piece[0] === 'b' && r === 1))) {
+                setShowModal(true)
+                return
+            }
+
+            apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src: src, dest: tile }, (error, data) => {
                 if (!error && data) {
                     updateGame(data)
                 }
@@ -43,24 +50,45 @@ export function Board({ reversed = false }) {
         const cast = getCastling(board.inGameTiles, myColor, c, r)
         console.timeEnd()
         setHigh(att.concat(cast))
-        
+
+    }
+
+
+    const promote = (p) => {
+        setShowModal(false)
+        const piece = board.inGameTiles[src].piece
+        apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src: src, prom: p }, (error, data) => {
+            if (!error && data) {
+                updateGame(data)
+            }
+        })
     }
 
     return <>
+        <Modal size='sm' show={showModal} onHide={() => setShowModal(false)}>
+            <Modal.Body>
+                <div style={{ cursor: 'pointer', position: 'relative', width: '245px', margin: 'auto' }}>
+                    {['q', 'r', 'b', 'n'].map(p => <div key={p} style={{ width: '60px', height: '60px', float: 'left', backgroundSize: '60px 60px', backgroundImage: `url('/assets/${myColor}${p}.svg')` }}
+                        onClick={() => promote(p)} />
+                    )}
+                </div>
+            </Modal.Body>
+        </Modal>
         <table border='0' cellSpacing="0" cellPadding="0">
             <tbody>{rows.map((r) =>
                 <tr key={r}>{
                     cols.map((c) => {
+                        const tile = `${c}${r}`
                         return <td key={c}>
                             <Tile
-                                key={`${c}${r}`}
+                                key={tile}
                                 col={c} row={r}
-                                piece={board.inGameTiles[`${c}${r}`] && board.inGameTiles[`${c}${r}`].piece}
+                                piece={board.inGameTiles[tile] && board.inGameTiles[tile].piece}
                                 reversed={reversed}
-                                src={src}
+                                selected={src && src === tile}
                                 myTurn={myTurn}
                                 myColor={myColor}
-                                highlights={high}
+                                highlight={high.includes(tile)}
                                 lastMov={board.lastMov}
                                 onSelect={() => onSelect(c, r)}
                             >

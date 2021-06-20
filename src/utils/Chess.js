@@ -245,4 +245,4 @@ const getAttacked = (board, myColor, c, r, checkForKingAttacks = true) => {
     return arr
 }
 
-module.exports = { getBoard, getAttacked, getCastling }
+module.exports = { getBoard, getAttacked, getCastling, isKingAttacked }
