@@ -25,24 +25,21 @@ export function Tile({ col, row, piece = null, reversed, selected, myTurn, myCol
     //const selected = 
     const bgColor = black ? '#b3e5fc' : '#ffffff'
     const high = highlight
-    const last = lastMov && (lastMov.dest === tile || lastMov.orig === tile)
-
+    
     const highStyle = high ? (piece ?
         { position: "absolute", width: "60px", height: '60px', backgroundSize: '55px 55px', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url('/assets/circle.svg')` } :
         { position: "absolute", width: "60px", height: '60px', backgroundSize: '15px 15px', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url('/assets/dot.svg')` })
-        : null
-
-    console.log('Tile re rendered');
+        : null   
 
     return <>
         <div style={{ cursor: selectable ? 'pointer' : 'default', width: '60px', height: '60px', position: 'relative', backgroundColor: bgColor }}
             onClick={onClick}>
-            {col === (reversed ? 8 : 1) ? <div style={{ ...tl, color: black ? '#FFFFFF' : '#b3e5fc' }}>{row}</div> : ''}
-            {row === (reversed ? 8 : 1) ? <div style={{ ...br, color: black ? '#FFFFFF' : '#b3e5fc' }}>{letters[col]}</div> : ''}
+            {col === (reversed ? 7 : 0) ? <div style={{ ...tl, color: black ? '#FFFFFF' : '#b3e5fc' }}>{row + 1}</div> : ''}
+            {row === (reversed ? 7 : 0) ? <div style={{ ...br, color: black ? '#FFFFFF' : '#b3e5fc' }}>{letters[col + 1]}</div> : ''}
             {selected &&
                 <div style={{ position: "absolute", width: "60px", height: '60px', backgroundRepeat: 'repeat', backgroundImage: `url('/assets/mask.png')` }} />
             }
-            {last &&
+            {lastMov &&
                 <div style={{ position: "absolute", width: "60px", height: '60px', backgroundRepeat: 'repeat', backgroundImage: `url('/assets/mask.png')` }} />
             }
             {high && <div style={highStyle} />}

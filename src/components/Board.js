@@ -3,7 +3,7 @@ import { useAuth } from "../providers/ProvideAuth"
 import { useGame } from "../providers/ProvideGame"
 import { apiRequest } from "../utils/ApiClient"
 import { Tile } from "./Tile"
-import { getAttacked, getCastling } from '../utils/Chess'
+import { getAttacked, getCastling, includes } from '../utils/Chess'
 import Modal from 'react-bootstrap/Modal'
 
 export function Board({ reversed = false }) {
@@ -11,53 +11,57 @@ export function Board({ reversed = false }) {
     const [user] = useAuth()
     const [src, setSrc] = useState(null)
     const [high, setHigh] = useState([])
+    const [castling, setCastling] = useState([])
     const [showModal, setShowModal] = useState(false)
 
     useEffect(() => {
         setSrc(null)
         setHigh([])
+        setCastling([])
     }, [game, board])
 
     const myColor = user.id === game.whitePlayerId ? 'w' : 'b'
-    const myTurn = myColor === 'w' ? game.turn % 2 === 0 : game.turn % 2 !== 0
+    const myTurn = myColor === 'w' ? game.movs.length % 2 === 0 : game.movs.length % 2 !== 0
 
     if (!game || !board) {
         return <></>
     }
 
-    const rows = reversed ? [1, 2, 3, 4, 5, 6, 7, 8] : [8, 7, 6, 5, 4, 3, 2, 1]
-    const cols = reversed ? [8, 7, 6, 5, 4, 3, 2, 1] : [1, 2, 3, 4, 5, 6, 7, 8]
+    const rows = reversed ? [0, 1, 2, 3, 4, 5, 6, 7] : [7, 6, 5, 4, 3, 2, 1, 0]
+    const cols = reversed ? [7, 6, 5, 4, 3, 2, 1, 0] : [0, 1, 2, 3, 4, 5, 6, 7]
 
     const onSelect = (c, r) => {
-        const tile = `${c}${r}`
-        if (high.includes(tile)) {
-            const piece = board.inGameTiles[src].piece
-            if (piece[1] === 'p' && ((piece[0] === 'w' && r === 8) || (piece[0] === 'b' && r === 1))) {
+
+        const castled = includes(castling, c, r)
+        const highlighted = includes(high, c, r)
+
+        if (highlighted || castled) {
+            const piece = board.inGameTiles[src[1]][src[0]]
+            if (piece && (piece[1] === 'p' && ((piece[0] === 'w' && r === 7) || (piece[0] === 'b' && r === 0)))) {
                 setShowModal(true)
                 return
             }
 
-            apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src: src, dest: tile }, (error, data) => {
+            apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src: src, dest: [c, r], cast: castled }, (error, data) => {
                 if (!error && data) {
                     updateGame(data)
                 }
             })
-            return;
+            return
         }
-        setSrc(tile)
+        setSrc([c, r])
         console.time()
-        const att = getAttacked(board.inGameTiles, myColor, c, r)
-        const cast = getCastling(board.inGameTiles, myColor, c, r)
+        const att = getAttacked(board.inGameTiles, board.touched, myColor, c, r)
+        const cast = getCastling(board.inGameTiles, board.touched, myColor, c, r)
+        setHigh(att)
+        setCastling(cast)
         console.timeEnd()
-        setHigh(att.concat(cast))
-
     }
-
 
     const promote = (p) => {
         setShowModal(false)
-        const piece = board.inGameTiles[src].piece
-        apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src: src, prom: p }, (error, data) => {
+        const piece = board.inGameTiles[src[1]][src[0]]
+        apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src: src, dest: [src[0], src[1] === 1 ? 0 : 7], prom: p }, (error, data) => {
             if (!error && data) {
                 updateGame(data)
             }
@@ -78,21 +82,20 @@ export function Board({ reversed = false }) {
             <tbody>{rows.map((r) =>
                 <tr key={r}>{
                     cols.map((c) => {
-                        const tile = `${c}${r}`
+                        const lm = board.turn > 0 && ((game.movs[board.turn - 1].sCol === c && game.movs[board.turn - 1].sRow === r) || (game.movs[board.turn - 1].dCol === c && game.movs[board.turn - 1].dRow === r))
                         return <td key={c}>
                             <Tile
-                                key={tile}
+                                key={`${c}${r}`}
                                 col={c} row={r}
-                                piece={board.inGameTiles[tile] && board.inGameTiles[tile].piece}
+                                piece={board.inGameTiles[r][c]}
                                 reversed={reversed}
-                                selected={src && src === tile}
+                                selected={src && (src[0] === c && src[1] === r)}
                                 myTurn={myTurn}
                                 myColor={myColor}
-                                highlight={high.includes(tile)}
-                                lastMov={board.lastMov}
+                                highlight={includes(high, c, r) || includes(castling, c, r)}
+                                lastMov={lm}
                                 onSelect={() => onSelect(c, r)}
-                            >
-                            </Tile>
+                            ></Tile>
                         </td>
                     }
                     )}

@@ -10,7 +10,7 @@ export function ProvideGame({ children }) {
     const updateGame = useCallback((g) => {
         setGame(g)
         if (g) {
-            setBoard(getBoard(g.pieces, g.turn))
+            setBoard(getBoard(g.movs, g.movs.length))
         } else {
             setBoard(null)
         }
