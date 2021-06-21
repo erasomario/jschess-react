@@ -47,7 +47,7 @@ export function Tile({ col, row, piece = null, reversed, selected, myTurn, myCol
                 <div style={{ position: "absolute", margin: "5px", width: "50px", height: '50px', backgroundSize: '50px 50px', backgroundImage: `url('/assets/${piece.slice(0, -1)}.svg')` }}>
                 </div>
             }
-            {true && <div style={{ position: "absolute", left: '20px', color: '#FF0000' }}>{tile}</div>}
+            {false && <div style={{ position: "absolute", left: '20px', color: '#FF0000' }}>{tile}</div>}
         </div>
 
 

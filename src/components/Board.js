@@ -5,6 +5,7 @@ import { apiRequest } from "../utils/ApiClient"
 import { Tile } from "./Tile"
 import { getAttacked, getCastling, includes } from '../utils/Chess'
 import Modal from 'react-bootstrap/Modal'
+import Alert from 'react-bootstrap/Alert'
 
 export function Board({ reversed = false }) {
     const [game, board, updateGame] = useGame()
@@ -13,6 +14,7 @@ export function Board({ reversed = false }) {
     const [high, setHigh] = useState([])
     const [castling, setCastling] = useState([])
     const [showModal, setShowModal] = useState(false)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         setSrc(null)
@@ -43,7 +45,10 @@ export function Board({ reversed = false }) {
             }
 
             apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src: src, dest: [c, r], cast: castled }, (error, data) => {
-                if (!error && data) {
+                if (error) {
+                    setError(error || "Error inesperado")
+                } else {
+                    setError(null)
                     updateGame(data)
                 }
             })
@@ -103,5 +108,8 @@ export function Board({ reversed = false }) {
             }
             </tbody>
         </table>
+        {(error && <Alert variant='danger'>
+            {error}
+        </Alert>)}
     </>
 }

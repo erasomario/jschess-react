@@ -26,9 +26,8 @@ export default function HomePage() {
 
     useEffect(() => {
         console.log('Connecting to socket.io')
-        const socket = process.env.NODE_ENV === 'development' ? socketIOClient("http://127.0.0.1:4000") : socketIOClient()
-        socket.emit('link', { id: user.id });
-
+        const opts = { query: { id: user.id } }
+        const socket = process.env.NODE_ENV === 'development' ? socketIOClient("http://127.0.0.1:4000", opts) : socketIOClient(opts)
         socket.on('gameTurnChanged', data => {
             console.log('gameTurnChanged')
             setToasts((t) => [...t, { id: new Date().getMilliseconds(), msg: data.msg }])

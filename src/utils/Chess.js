@@ -22,6 +22,7 @@ const getPosition = (board, piece) => {
 }
 
 const getBoard = (movs, turn) => {
+
     const board = getStartBoard()
     const whiteCaptured = []
     const blackCaptured = []
@@ -57,14 +58,13 @@ const getBoard = (movs, turn) => {
             }
         } else if (m.prom) {
             board[m.dRow][m.dCol] = m.prom
-        } else {
-
         }
     })
     if (lastMovedPiece) {
         touched.push(lastMovedPiece)
     }
     return { inGameTiles: board, whiteCaptured: sortCaptures(whiteCaptured), blackCaptured: sortCaptures(blackCaptured), touched, turn }
+
 }
 
 const isMine = (myColor, piece) => {
@@ -274,4 +274,4 @@ const getAttacked = (board, touched, myColor, c, r, checkForKingAttacks = true) 
     return arr
 }
 
-module.exports = { getBoard, getAttacked, getCastling, isKingAttacked, includes }
+module.exports = { getBoard, getAttacked, getCastling, isKingAttacked, getAllAttackedByMe, includes }
