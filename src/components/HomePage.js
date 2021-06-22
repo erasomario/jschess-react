@@ -10,6 +10,7 @@ import { Table } from './Table';
 import { useGame } from '../providers/ProvideGame'
 import { apiRequest } from '../utils/ApiClient'
 import socketIOClient from "socket.io-client";
+import Moves from '../components/Moves'
 
 export default function HomePage() {
 
@@ -76,6 +77,7 @@ export default function HomePage() {
             <Row>
                 <Col xs={3} className='m-0 p-0'><LeftTabs onGameSelected={gameSelected} /></Col>
                 <Col xs={6} className='m-0 p-0'><Table /></Col>
+                <Col xs={3} className='m-0 p-0'><Moves /></Col>
             </Row>
         </Container>
     </>

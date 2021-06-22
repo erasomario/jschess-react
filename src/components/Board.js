@@ -90,7 +90,6 @@ export function Board({ reversed = false }) {
                         const lm = board.turn > 0 && ((game.movs[board.turn - 1].sCol === c && game.movs[board.turn - 1].sRow === r) || (game.movs[board.turn - 1].dCol === c && game.movs[board.turn - 1].dRow === r))
                         return <td key={c}>
                             <Tile
-                                key={`${c}${r}`}
                                 col={c} row={r}
                                 piece={board.inGameTiles[r][c]}
                                 reversed={reversed}

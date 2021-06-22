@@ -17,7 +17,7 @@ export function ProvideGame({ children }) {
     }, [])
 
     const updateTurn = useCallback((t) => {
-        setBoard(game ? getBoard(game.pieces, t) : null)
+        setBoard(game ? getBoard(game.movs, t) : null)
     }, [game])
 
     const val = [game, board, updateGame, updateTurn]

@@ -22,7 +22,6 @@ const getPosition = (board, piece) => {
 }
 
 const getBoard = (movs, turn) => {
-
     const board = getStartBoard()
     const whiteCaptured = []
     const blackCaptured = []
@@ -40,7 +39,7 @@ const getBoard = (movs, turn) => {
         }
 
         if (srcPiece.slice(1, 2) === 'p' && m.sCol !== m.dCol && !destPiece) {
-            const capt = board[m.sRow][m.dCol]
+            const capt = board[m.sRow][m.dCol];
             board[m.sRow][m.dCol] = null;
             (capt.slice(0, 1) === 'w' ? whiteCaptured : blackCaptured).push(capt)
         }
@@ -64,7 +63,6 @@ const getBoard = (movs, turn) => {
         touched.push(lastMovedPiece)
     }
     return { inGameTiles: board, whiteCaptured: sortCaptures(whiteCaptured), blackCaptured: sortCaptures(blackCaptured), touched, turn }
-
 }
 
 const isMine = (myColor, piece) => {
