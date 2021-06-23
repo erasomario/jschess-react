@@ -11,6 +11,7 @@ export function Board({ reversed = false }) {
     const [game, board, updateGame] = useGame()
     const [user] = useAuth()
     const [src, setSrc] = useState(null)
+    const [dest, setDest] = useState(null)
     const [high, setHigh] = useState([])
     const [castling, setCastling] = useState([])
     const [showModal, setShowModal] = useState(false)
@@ -40,6 +41,7 @@ export function Board({ reversed = false }) {
         if (highlighted || castled) {
             const piece = board.inGameTiles[src[1]][src[0]]
             if (piece && (piece[1] === 'p' && ((piece[0] === 'w' && r === 7) || (piece[0] === 'b' && r === 0)))) {
+                setDest([c, r])
                 setShowModal(true)
                 return
             }
@@ -55,6 +57,7 @@ export function Board({ reversed = false }) {
             return
         }
         setSrc([c, r])
+        setDest(null)
         console.time()
         const att = getAttacked(board.inGameTiles, board.touched, myColor, c, r)
         const cast = getCastling(board.inGameTiles, board.touched, myColor, c, r)
@@ -66,7 +69,7 @@ export function Board({ reversed = false }) {
     const promote = (p) => {
         setShowModal(false)
         const piece = board.inGameTiles[src[1]][src[0]]
-        apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src: src, dest: [src[0], src[1] === 1 ? 0 : 7], prom: p }, (error, data) => {
+        apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src, dest, prom: p }, (error, data) => {
             if (!error && data) {
                 updateGame(data)
             }

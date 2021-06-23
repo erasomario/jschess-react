@@ -23,28 +23,35 @@ export function Tile({ col, row, piece = null, reversed, selected, myTurn, myCol
     }
 
     //const selected = 
-    const bgColor = black ? '#b3e5fc' : '#ffffff'
+    const bgColor = black ? '#79b8ab' : '#f7f4e7'
     const high = highlight
+
+    const { innerWidth: width, innerHeight: height } = window
+    const th = parseInt((height - 175) / 8)
     
+    const pieceSize = parseInt(th * 0.95)
+
     const highStyle = high ? (piece ?
-        { position: "absolute", width: "60px", height: '60px', backgroundSize: '55px 55px', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url('/assets/circle.svg')` } :
-        { position: "absolute", width: "60px", height: '60px', backgroundSize: '15px 15px', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url('/assets/dot.svg')` })
-        : null   
+        { position: "absolute", width: `${th}px`, height: `${th}px`, backgroundSize: `${th * 0.9}px ${th * 0.9}px`, backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url('/assets/circle.svg')` } :
+        { position: "absolute", width: `${th}px`, height: `${th}px`, backgroundSize: `${th * 0.3}px ${th * 0.3}px`, backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url('/assets/dot.svg')` })
+        : null
+
+    //console.log(th, pieceMargin, pieceSize);
 
     return <>
-        <div style={{ cursor: selectable ? 'pointer' : 'default', width: '60px', height: '60px', position: 'relative', backgroundColor: bgColor }}
+        <div style={{ cursor: selectable ? 'pointer' : 'default', width: `${th}px`, height: `${th}px`, position: 'relative', backgroundColor: bgColor }}
             onClick={onClick}>
             {col === (reversed ? 7 : 0) ? <div style={{ ...tl, color: black ? '#FFFFFF' : '#b3e5fc' }}>{row + 1}</div> : ''}
             {row === (reversed ? 7 : 0) ? <div style={{ ...br, color: black ? '#FFFFFF' : '#b3e5fc' }}>{letters[col + 1]}</div> : ''}
             {selected &&
-                <div style={{ position: "absolute", width: "60px", height: '60px', backgroundRepeat: 'repeat', backgroundImage: `url('/assets/mask.png')` }} />
+                <div style={{ position: "absolute", width: `${th}px`, height: `${th}px`, backgroundRepeat: 'repeat', backgroundImage: `url('/assets/mask.png')` }} />
             }
             {lastMov &&
-                <div style={{ position: "absolute", width: "60px", height: '60px', backgroundRepeat: 'repeat', backgroundImage: `url('/assets/mask.png')` }} />
+                <div style={{ position: "absolute", width: `${th}px`, height: `${th}px`, backgroundRepeat: 'repeat', backgroundImage: `url('/assets/mask.png')` }} />
             }
             {high && <div style={highStyle} />}
             {piece &&
-                <div style={{ position: "absolute", margin: "5px", width: "50px", height: '50px', backgroundSize: '50px 50px', backgroundImage: `url('/assets/${piece.slice(0, -1)}.svg')` }}>
+                <div style={{ position: "absolute", width: `${th}px`, height: `${th}px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `${pieceSize}px ${pieceSize}px`, backgroundImage: `url('/assets/${piece.slice(0, -1)}.svg')` }}>
                 </div>
             }
             {false && <div style={{ position: "absolute", left: '20px', color: '#FF0000' }}>{tile}</div>}
