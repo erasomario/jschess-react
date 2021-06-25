@@ -7,6 +7,8 @@ import { getAttacked, getCastling, includes } from '../utils/Chess'
 import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
 
+const letters = { 1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h' }
+
 export function Board({ reversed = false }) {
     const [game, board, updateGame] = useGame()
     const [user] = useAuth()
@@ -76,6 +78,12 @@ export function Board({ reversed = false }) {
         })
     }
 
+    const { innerWidth: width, innerHeight: height } = window
+    const th = Math.ceil((parseInt((height - 220) / 8)) / window.devicePixelRatio) * window.devicePixelRatio
+
+    const blackColor = '#79b8ab'
+    const whiteColor = '#f7f4e7'
+
     return <>
         <Modal size='sm' show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Body>
@@ -86,30 +94,51 @@ export function Board({ reversed = false }) {
                 </div>
             </Modal.Body>
         </Modal>
-        <table border='0' cellSpacing="0" cellPadding="0">
-            <tbody>{rows.map((r) =>
-                <tr key={r}>{
-                    cols.map((c) => {
-                        const lm = board.turn > 0 && ((game.movs[board.turn - 1].sCol === c && game.movs[board.turn - 1].sRow === r) || (game.movs[board.turn - 1].dCol === c && game.movs[board.turn - 1].dRow === r))
-                        return <td key={c}>
-                            <Tile
-                                col={c} row={r}
-                                piece={board.inGameTiles[r][c]}
-                                reversed={reversed}
-                                selected={src && (src[0] === c && src[1] === r)}
-                                myTurn={myTurn}
-                                myColor={myColor}
-                                highlight={includes(high, c, r) || includes(castling, c, r)}
-                                lastMov={lm}
-                                onSelect={() => onSelect(c, r)}
-                            ></Tile>
-                        </td>
-                    }
-                    )}
-                </tr>)
-            }
-            </tbody>
-        </table>
+
+        <div style={{
+            color: blackColor,
+            textAlign: "center",
+            position: 'relative',
+            width: `${(th * 8) + 60}px`, height: `${(th * 8) + 60}px`,
+            backgroundColor: `${whiteColor}`,
+            userSelect: 'none'
+        }}>
+
+
+            <div style={{ position: 'absolute', left: '30px' }}>{cols.map(c => <div key={`t${c}`} style={{  float: "left", width: `${th}px`, height: '26px' }}>{letters[c + 1]}</div>)}</div>
+            <div style={{ position: 'absolute', left: '30px', bottom: '0px' }}>{cols.map(c => <div key={`b${c}`} style={{ float: "left", textAlign: 'center', width: `${th}px`, height: '26px' }}>{letters[c + 1]}</div>)}</div>
+
+            <div style={{ position: 'absolute', top: `${30 + (th * 0.3)}px`, right: '0px' }}>{rows.map(r => <div key={`r${r}`} style={{ height: `${th}px`, width: '26px' }}>{r + 1}</div>)}</div>
+            <div style={{ position: 'absolute', top: `${30 + (th * 0.3)}px`, left: '0px' }}>{rows.map(r => <div key={`l${r}`} style={{ height: `${th}px`, width: '26px' }}>{r + 1}</div>)}</div>
+
+            <div style={{ position: 'absolute', left: '26px', top: '26px', backgroundColor: blackColor, width: `${(th * 8) + 8}px`, height: `${(th * 8) + 8}px` }}>
+                <div style={{ width: `${th * 8}px`, height: `${th * 8}px`, padding: '4px' }}>
+                    {rows.map((r) =>
+                        <div key={r} style={{ position: 'relative', width: `${th * 8}px`, height: `${th}px` }}>{
+                            cols.map((c) => {
+                                const lm = board.turn > 0 && ((game.movs[board.turn - 1].sCol === c && game.movs[board.turn - 1].sRow === r) || (game.movs[board.turn - 1].dCol === c && game.movs[board.turn - 1].dRow === r))
+                                return <Tile
+                                    key={c}
+                                    blackColor={blackColor}
+                                    whiteColor={whiteColor}
+                                    col={c} row={r}
+                                    piece={board.inGameTiles[r][c]}
+                                    reversed={reversed}
+                                    selected={src && (src[0] === c && src[1] === r)}
+                                    myTurn={myTurn}
+                                    myColor={myColor}
+                                    highlight={includes(high, c, r) || includes(castling, c, r)}
+                                    lastMov={lm}
+                                    onSelect={() => onSelect(c, r)}
+                                    size={th}
+                                ></Tile>
+                            }
+                            )}
+                        </div>)
+                    }</div>
+            </div>
+        </div>
+
         {(error && <Alert variant='danger'>
             {error}
         </Alert>)}

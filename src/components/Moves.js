@@ -97,7 +97,6 @@ export default function Moves() {
                 </tbody>
             </Table>
         </Scrollbars>
-
         <ButtonGroup aria-label="Basic example">
             <Button disabled={board.turn === 0} style={{ float: 'left' }} onClick={beg}>
                 <FaAngleDoubleLeft />
@@ -112,6 +111,5 @@ export default function Moves() {
                 <FaAngleDoubleRight />
             </Button>
         </ButtonGroup>
-
     </div>
 }
