@@ -13,8 +13,10 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import './blablabla.css'
 
+
 export default function HomePage() {
 
+    const [data, setData] = useState()
     const [user, , signout] = useAuth()
     const [game, , updateGame] = useGame()
 
@@ -47,6 +49,13 @@ export default function HomePage() {
         signout(() => { })
     }
 
+    useEffect(() => {
+        apiRequest(`/v1/users/${user.id}/picture`, 'GET', user.api_key, null)
+            .then(r => r.blob())
+            .then(blob => URL.createObjectURL(blob))
+            .then(setData)
+    }, [user.api_key, user.id])
+
     return <>
         <ToastContainer
             position="top-right"
@@ -59,6 +68,9 @@ export default function HomePage() {
             draggable
             pauseOnHover
         />
+
+        <img src={data} />
+
 
         <Container fluid>
             <Row>

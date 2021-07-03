@@ -1,10 +1,10 @@
-import { useInput } from '../hooks/useInput'
+import { useInput } from '../../hooks/useInput'
 import { useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
-import { apiRequest } from '../utils/ApiClient'
+import { apiRequest } from '../../utils/ApiClient'
 import { Link } from 'react-router-dom'
 
 export default function RecoverPage() {
