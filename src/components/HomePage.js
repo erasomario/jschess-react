@@ -26,22 +26,27 @@ import { getProfilePictureUrl } from '../controllers/user-controller';
 export default function HomePage() {
 
     const [pictureUrl, setPictureUrl] = useState()
-    const [user, , signout] = useAuth()
+    const { user, key, signOut } = useAuth()
     const [game, , updateGame] = useGame()
 
     const gameId = game ? game.id : ""
     const gameSelected = useCallback((id) => {
-        apiRequest(`/v1/games/${id}`, 'get', user.api_key, null, (error, data) => {
+        apiRequest(`/v1/games/${id}`, 'get', key, null, (error, data) => {
             updateGame(data)
         })
-    }, [user.api_key, updateGame]);
+    }, [key, updateGame]);
 
     useEffect(() => {
-        getProfilePictureUrl(user).then(setPictureUrl)
-    }, [user.api_key, user.id])
+        user && getProfilePictureUrl(user).then(setPictureUrl)
+    }, [user])
 
     useEffect(() => {
+        if (!user) {
+            return
+        }
+        
         console.log('Connecting to socket.io')
+        console.log(user.id);
         const opts = { query: { id: user.id } }
         const socket = process.env.NODE_ENV === 'development' ? socketIOClient("http://127.0.0.1:4000", opts) : socketIOClient(opts)
         socket.on('gameTurnChanged', data => {
@@ -54,12 +59,15 @@ export default function HomePage() {
             console.log('disconnecting from socket.io')
             socket.disconnect()
         }
-        //
-    }, [gameSelected, user.id, gameId]);
+    }, [gameSelected, user]);
 
     const logout = (e) => {
         e.preventDefault()
-        signout(() => { })
+        signOut(() => { })
+    }
+
+    if (!user) {
+        return <></>
     }
 
     return <>
@@ -80,7 +88,7 @@ export default function HomePage() {
                 <Col xs={6} className='m-0 p-0'><Table /></Col>
                 <Col xs={3} className='m-0 p-0'>
                     <DropdownButton as={ButtonGroup} title={user.username} variant="link">
-                        <Dropdown.Item><Link to="/edit">Editar Perfil</Link></Dropdown.Item>
+                        <Dropdown.Item as='span'><Link to="/edit">Editar Perfil</Link></Dropdown.Item>
                         <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
                     </DropdownButton>
                     <img width='50' height='50' src={pictureUrl} style={{ borderRadius: '50%' }} />

@@ -12,7 +12,7 @@ export default function LeftTabs({ onGameSelected = (a) => a }) {
     const [game] = useGame()
     const [openGamesList, setOpenGamesList] = useState([])
     const [selectedGame, setSelectedGame] = useState(null)
-    const [user] = useAuth()
+    const {user} = useAuth()
 
     const [key, setKey] = useState('open')
 

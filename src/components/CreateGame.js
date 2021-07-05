@@ -10,7 +10,7 @@ import ToggleButton from 'react-bootstrap/ToggleButton'
 const times = [5, 10, 15, 30, 60, 0]
 
 export default function CreateGame({ onNewGame = (a) => a }) {
-    const [user] = useAuth()
+    const {user} = useAuth()
     const [error, setError] = useState(null)
     const [player, setPlayer] = useState(null)
     const [getTimeProps, time] = useRadio(5)

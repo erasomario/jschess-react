@@ -11,7 +11,7 @@ const letters = { 1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h'
 
 export function Board({ reversed = false }) {
     const [game, board, updateGame] = useGame()
-    const [user] = useAuth()
+    const { user } = useAuth()
     const [src, setSrc] = useState(null)
     const [dest, setDest] = useState(null)
     const [high, setHigh] = useState([])
@@ -105,7 +105,7 @@ export function Board({ reversed = false }) {
         }}>
 
 
-            <div style={{ position: 'absolute', left: '30px' }}>{cols.map(c => <div key={`t${c}`} style={{  float: "left", width: `${th}px`, height: '26px' }}>{letters[c + 1]}</div>)}</div>
+            <div style={{ position: 'absolute', left: '30px' }}>{cols.map(c => <div key={`t${c}`} style={{ float: "left", width: `${th}px`, height: '26px' }}>{letters[c + 1]}</div>)}</div>
             <div style={{ position: 'absolute', left: '30px', bottom: '0px' }}>{cols.map(c => <div key={`b${c}`} style={{ float: "left", textAlign: 'center', width: `${th}px`, height: '26px' }}>{letters[c + 1]}</div>)}</div>
 
             <div style={{ position: 'absolute', top: `${30 + (th * 0.3)}px`, right: '0px' }}>{rows.map(r => <div key={`r${r}`} style={{ height: `${th}px`, width: '26px' }}>{r + 1}</div>)}</div>

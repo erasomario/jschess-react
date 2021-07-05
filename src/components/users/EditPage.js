@@ -5,13 +5,11 @@ import { Link } from 'react-router-dom'
 import { FaArrowLeft } from "react-icons/fa";
 import { FaUserPlus } from "react-icons/fa";
 import { FaCamera } from "react-icons/fa";
-
-import Control from '../Control';
-
 import { FaUser } from 'react-icons/fa'
 import { FaLock } from 'react-icons/fa'
 import { FaEnvelope } from 'react-icons/fa'
 import { FaCopy } from 'react-icons/fa'
+import { FaWindowClose } from "react-icons/fa";
 
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -19,23 +17,24 @@ import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 import { useAuth } from '../../providers/ProvideAuth'
 import { useEffect } from 'react';
-import { FaWindowClose } from "react-icons/fa";
+
 import './EditPage.css'
 import { getProfilePictureUrl, removeProfilePicture, updateProfilePicture } from '../../controllers/user-controller';
+import Control from '../Control';
 
 export default function EditPage() {
     const [pictureUrl, setPictureUrl] = useState()
-    const [user, , , refreshKey] = useAuth()
+    const { user, key, refreshKey } = useAuth()
     const [usernameProps, , usernameFocus] = useInput("chiquimarzo")
     const [emailProps, , mailFocus] = useInput("chiquimarzo@gmail.com")
     const [passProps, , passFocus] = useInput("123456")
     const [passConfProps, , passConfFocus] = useInput("123456")
 
     const [error, setError] = useState()
-    const [page, setPage] = useState('create')
+    const [page, setPage] = useState(null)
     useEffect(() => {
         getProfilePictureUrl(user).then(setPictureUrl).catch(setError)
-    }, [user.api_key, user.id])
+    }, [user])
 
     const register = (e) => {
         if (!usernameProps.value) {
@@ -66,13 +65,13 @@ export default function EditPage() {
 
     const removePp = () => {
         removeProfilePicture(user)
-            .then(() => { refreshKey() })
+            .then(() => { refreshKey(key) })
             .catch(e => setError(e))
     }
 
     const updatePp = (file) => {
-        updateProfilePicture(user, file)
-            .then(() => { refreshKey() })
+        file && updateProfilePicture(user, file)
+            .then(() => { refreshKey(key) })
             .catch(e => setError(e))
     }
 
@@ -88,58 +87,83 @@ export default function EditPage() {
                         <Card.Title><Link to="/"><FaArrowLeft className='mr-2' /></Link>
                             Editar Perfil
                         </Card.Title>
-                        {page === 'create' &&
-                            <>
-                                <div style={{ position: 'relative', overflow: 'hidden' }} className='mb-3'>
-                                    <div style={{ position: 'relative', float: 'left' }} className='mr-3'>
-                                        {user.hasPicture && <FaWindowClose onClick={removePp} style={{ position: 'absolute', right: '0px', cursor: 'pointer' }} />}
-                                        <img src={pictureUrl} style={{ borderRadius: '50%' }} className='pp' />
-                                        <div>
-                                            <label htmlFor="file-input" style={{ cursor: 'pointer' }}>
-                                                <div className='pb' variant="light"><FaCamera className='mr-2' /><span style={{ verticalAlign: 'middle' }}>{user.hasPicture ? 'Cambiar' : 'Agregar'}</span></div>
-                                            </label>
-                                        </div>
-                                        <input type="file" id="file-input" accept="image/png, image/gif, image/jpeg" style={{ display: 'none' }}
-                                            onChange={event => {
-                                                updatePp(event.target.files[0])
-                                            }} />
-                                    </div>
-                                    <div style={{ position: 'relative', float: 'left' }}>
-                                        <h4>{user.username}</h4>
-                                    </div>
+
+                        {user && <div style={{ position: 'relative', overflow: 'hidden' }} className='mb-3'>
+                            <div style={{ position: 'relative', float: 'left' }} className='mr-3'>
+                                {user.hasPicture && <FaWindowClose onClick={removePp} style={{ position: 'absolute', right: '0px', cursor: 'pointer' }} />}
+                                <img alt="profile_picture" src={pictureUrl} style={{ borderRadius: '50%' }} className='pp' />
+                                <div>
+                                    <label htmlFor="file-input" style={{ cursor: 'pointer' }}>
+                                        <div className='pb' variant="light"><FaCamera className='mr-2' /><span style={{ verticalAlign: 'middle' }}>{user.hasPicture ? 'Cambiar' : 'Agregar'}</span></div>
+                                    </label>
                                 </div>
+                                <input type="file" id="file-input" accept="image/png, image/gif, image/jpeg" style={{ display: 'none' }}
+                                    onChange={event => {
+                                        updatePp(event.target.files[0])
+                                    }} />
+                            </div>
+                            <div style={{ position: 'relative', float: 'left' }}>
+                                <h4>{user.username}<Button variant="link" onClick={() => setPage('username')}>Editar</Button></h4>
+                                <div>
+                                    <Button variant="link" onClick={() => setPage('password')}>Cambiar Contraseña</Button>
+                                </div>
+                                <div>
+                                    <Button variant="link" onClick={() => setPage('email')}>Cambiar Correo</Button>
+                                </div>
+                            </div>
+                        </div>}
 
+                        {!user && <div style={{ position: 'relative', overflow: 'hidden' }} className='mb-3'>
+                            <div style={{ position: 'relative', float: 'left' }} className='mr-3'>
+                                <img alt="profile_picture" src={pictureUrl} style={{ borderRadius: '50%' }} className='pp' />
+                                <div>
+                                    <div className='pb' variant="light"><FaCamera className='mr-2' /><span style={{ verticalAlign: 'middle' }}>Agregar</span></div>
+                                </div>
+                            </div>
+                            <div style={{ position: 'relative', float: 'left' }}>
+                                <h4>Usuario</h4>
+                            </div>
+                        </div>}
 
-                                <Card.Text>
-                                    Puede crear una cuenta únicamente con los siguientes datos:
-                                </Card.Text>
+                        {page &&
+                            <>
                                 <Form>
-                                    <Control label='Nombre de Usuario' type="text" {...usernameProps} ><FaUser /></Control>
-                                    <Control label='Email' type="email"
-                                        placeholder='Para recuperar su cuenta si tiene olvida su contraseña' {...emailProps} >
-                                        <FaEnvelope />
-                                    </Control>
                                     <Control label='Contraseña' type="password"
                                         placeholder="Contraseña que usará para iniciar sesión" {...passProps} >
                                         <FaLock />
                                     </Control>
-                                    <Control label='Confirmación de la Contraseña' type="password"
-                                        placeholder="Repita la contraseña" {...passConfProps} >
-                                        <FaCopy />
-                                    </Control>
-                                    {error && <Alert variant="danger">{error}</Alert>}
-                                    <Button variant="primary" onClick={register}>Crear Cuenta<FaUserPlus className='ml-2' /></Button>
+                                    {page === 'username' &&
+                                        <>
+                                            <Control label='Nombre de Usuario' type="text" {...usernameProps} ><FaUser /></Control>
+                                        </>
+                                    }
+
+                                    {page === 'email' &&
+                                        <>
+                                            <Control label='Email' type="email"
+                                                placeholder='Para recuperar su cuenta si tiene olvida su contraseña' {...emailProps} >
+                                                <FaEnvelope />
+                                            </Control>
+                                        </>
+                                    }
+
+                                    {page === 'password' &&
+                                        <>
+                                            <Control label='Contraseña' type="password"
+                                                placeholder="Contraseña que usará para iniciar sesión" {...passProps} >
+                                                <FaLock />
+                                            </Control>
+                                            <Control label='Confirmación de la Contraseña' type="password"
+                                                placeholder="Repita la contraseña" {...passConfProps} >
+                                                <FaCopy />
+                                            </Control>
+                                        </>
+                                    }
+                                    <Button variant="primary" onClick={register}>Guardar<FaUserPlus className='ml-2' /></Button>
                                 </Form>
                             </>
                         }
-                        {page === 'created' &&
-                            <>
-                                <Card.Text>
-                                    {usernameProps.value} su cuenta se creó con éxito, ahora puede iniciar sesión con los datos que suministró
-                                </Card.Text>
-                                <Link to="/login"><Button variant="primary">Ir al Inicio de Sesión</Button></Link>
-                            </>
-                        }
+                        {error && <Alert variant="danger">{error}</Alert>}
                     </Card.Body>
                 </Card>
             </div>

@@ -1,7 +1,7 @@
 const { apiRequest } = require("../utils/ApiClient")
 
 const getProfilePictureUrl = user => {
-    if (user.hasPicture) {
+    if (user?.hasPicture) {
         return apiRequest(`/v1/users/${user.id}/picture`, 'GET', user.api_key, null)
             .then(r => r.blob())
             .then(blob => URL.createObjectURL(blob))

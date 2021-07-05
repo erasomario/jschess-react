@@ -4,7 +4,7 @@ import { Board } from './Board'
 import { Captured } from './Captured'
 
 export function Table() {
-    const [user] = useAuth()
+    const {user} = useAuth()
     const [game, board] = useGame()
     const reversed = game ? user.id !== game.whitePlayerId : false;
     if (!game || !board) {

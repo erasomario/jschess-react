@@ -4,7 +4,7 @@ import { useAuth } from '../providers/ProvideAuth'
 
 export default function GamesList({ onSelect = (a) => a, games, selected: extSelected }) {
 
-    const [user] = useAuth()
+    const {user} = useAuth()
     const [selected, setSelected] = useState(extSelected)
     useEffect(() => { setSelected(extSelected) }, [extSelected])
 

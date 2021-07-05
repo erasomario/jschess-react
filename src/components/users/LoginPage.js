@@ -17,7 +17,7 @@ import Control from '../Control'
 export default function LoginPage() {
   const [error, setError] = useState();
   const history = useHistory();
-  const [user, signIn] = useAuth();
+  const {user, signIn} = useAuth();
   const location = useLocation();
 
   const [loginProps, , loginFocus] = useInput("alderick84");

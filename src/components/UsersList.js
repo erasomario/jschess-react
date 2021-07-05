@@ -10,7 +10,7 @@ export default function UserList({ onSelect = (a) => a, style }) {
 
     const [list, setList] = useState([])
     const [selected, setSelected] = useState(null)
-    const [user] = useAuth()
+    const { user } = useAuth()
     const [props] = useInput()
 
     useEffect(() => {
@@ -29,11 +29,11 @@ export default function UserList({ onSelect = (a) => a, style }) {
     }, [user, props.value])
 
     return <>
-        <Form>
-            <Form.Group>
-                <Form.Control {...props} placeholder="Escriba parte del nombre" />
-            </Form.Group>
-        </Form>
+
+        <Form.Group>
+            <Form.Control {...props} placeholder="Escriba parte del nombre" />
+        </Form.Group>
+
         <Scrollbars style={style} className='mb-2'>
             {list.length > 0 && <ListGroup>
                 {list && list.map((u) => <ListGroup.Item

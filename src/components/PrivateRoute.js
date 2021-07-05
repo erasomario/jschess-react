@@ -2,11 +2,11 @@ import { Route, Redirect } from 'react-router-dom'
 import { useAuth } from '../providers/ProvideAuth'
 
 export function PrivateRoute({ children, ...rest }) {
-    const [user] = useAuth();
+    const { key } = useAuth();
     return (
         <Route {...rest}
             render={({ location }) => {
-                return user ? (children) : (<Redirect
+                return key ? (children) : (<Redirect
                     to={{
                         pathname: "/login",
                         state: { from: location }
