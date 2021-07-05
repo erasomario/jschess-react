@@ -35,14 +35,16 @@ function useProvideAuth() {
 
   const signin = (login, password, remember) => {
     return apiRequest('/v1/api_keys', 'POST', null, { login, password })
-      .then(data => {
+      .then(key => {
         if (remember) {
-          localStorage.setItem('user', JSON.stringify(data))
+          localStorage.setItem('user', JSON.stringify(key))
+          sessionStorage.removeItem('user')
         } else {
-          sessionStorage.setItem('user', JSON.stringify(data))
+          sessionStorage.setItem('user', JSON.stringify(key))
+          localStorage.removeItem('user')
         }
-        setUser(data)
-        return data
+        setUser(key)
+        return key
       })
   }
 
@@ -52,5 +54,18 @@ function useProvideAuth() {
     sessionStorage.removeItem('user');
     cb();
   };
-  return [user, signin, signout]
+
+  const refreshKey = () => {
+    return apiRequest('/v1/api_keys', 'PUT', user.api_key, null).then(key => {
+      if (localStorage.getItem('user') !== null) {
+        localStorage.setItem('user', JSON.stringify(key))
+      }
+      if (sessionStorage.getItem('user') !== null) {
+        sessionStorage.setItem('user', JSON.stringify(key))
+      }
+      setUser(key)
+    })
+  }
+
+  return [user, signin, signout, refreshKey]
 }

@@ -1,0 +1,33 @@
+.pb{
+    text-align: center;
+}
+
+@media (min-width: 0px) {
+    .pp {
+        width: 5em;
+        height: 5em;
+    }
+    .pb {
+        width: 5em;
+    }
+}
+
+@media (min-width: 768px) {
+    .pp {
+        width: 7em;
+        height: 7em;
+    }
+    .pb {
+        width: 7em;
+    }
+}
+
+@media (min-width: 992px) {
+    .pp {
+        width: 8em;
+        height: 8em;
+    }
+    .pb {
+        width: 8em;
+    }
+}

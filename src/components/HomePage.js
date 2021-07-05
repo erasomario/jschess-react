@@ -12,11 +12,20 @@ import Moves from '../components/Moves'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import './blablabla.css'
-
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import Dropdown from 'react-bootstrap/Dropdown'
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+import { getProfilePictureUrl } from '../controllers/user-controller';
 
 export default function HomePage() {
 
-    const [data, setData] = useState()
+    const [pictureUrl, setPictureUrl] = useState()
     const [user, , signout] = useAuth()
     const [game, , updateGame] = useGame()
 
@@ -26,6 +35,10 @@ export default function HomePage() {
             updateGame(data)
         })
     }, [user.api_key, updateGame]);
+
+    useEffect(() => {
+        getProfilePictureUrl(user).then(setPictureUrl)
+    }, [user.api_key, user.id])
 
     useEffect(() => {
         console.log('Connecting to socket.io')
@@ -49,13 +62,6 @@ export default function HomePage() {
         signout(() => { })
     }
 
-    useEffect(() => {
-        apiRequest(`/v1/users/${user.id}/picture`, 'GET', user.api_key, null)
-            .then(r => r.blob())
-            .then(blob => URL.createObjectURL(blob))
-            .then(setData)
-    }, [user.api_key, user.id])
-
     return <>
         <ToastContainer
             position="top-right"
@@ -68,18 +74,16 @@ export default function HomePage() {
             draggable
             pauseOnHover
         />
-
-        <img src={data} />
-
-
         <Container fluid>
             <Row>
                 <Col xs={3} className='m-0 p-0'><LeftTabs onGameSelected={gameSelected} /></Col>
                 <Col xs={6} className='m-0 p-0'><Table /></Col>
                 <Col xs={3} className='m-0 p-0'>
-                    <NavDropdown title={user.username} id="basic-nav-dropdown" alignRight>
-                        <NavDropdown.Item onClick={logout}>Salir</NavDropdown.Item>
-                    </NavDropdown>
+                    <DropdownButton as={ButtonGroup} title={user.username} variant="link">
+                        <Dropdown.Item><Link to="/edit">Editar Perfil</Link></Dropdown.Item>
+                        <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
+                    </DropdownButton>
+                    <img width='50' height='50' src={pictureUrl} style={{ borderRadius: '50%' }} />
                     <Moves />
                 </Col>
             </Row>
