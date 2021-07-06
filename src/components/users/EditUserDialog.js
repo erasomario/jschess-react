@@ -1,6 +1,5 @@
 import { useInput } from '../../hooks/useInput'
-import { useCallback, useState } from 'react'
-
+import { useState } from 'react'
 import { FaCamera } from "react-icons/fa"
 import { FaUser } from 'react-icons/fa'
 import { FaLock } from 'react-icons/fa'
