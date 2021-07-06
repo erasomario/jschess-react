@@ -7,7 +7,6 @@ import { ProvideGame } from './providers/ProvideGame'
 import RecoverPage from './components/users/RecoverPage'
 import LoginPage from './components/users/LoginPage'
 import RegisterPage from './components/users/RegisterPage'
-import EditPage from './components/users/EditPage'
 
 function App() {
 
@@ -23,12 +22,7 @@ function App() {
           </Route>
           <Route path="/register">
             <RegisterPage />
-          </Route>
-
-          <PrivateRoute path="/edit">
-            <EditPage />
-          </PrivateRoute>
-
+          </Route>          
           <PrivateRoute path="/">
             <ProvideGame>
               <HomePage />

@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useAuth } from '../providers/ProvideAuth';
 import LeftTabs from './LeftTabs';
 import { Col, Container, Row } from 'react-bootstrap';
-import Navbar from 'react-bootstrap/Navbar'
-import NavDropdown from 'react-bootstrap/NavDropdown'
 import { Table } from './Table';
 import { useGame } from '../providers/ProvideGame'
 import { apiRequest } from '../utils/ApiClient'
@@ -15,16 +13,12 @@ import './blablabla.css'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Dropdown from 'react-bootstrap/Dropdown'
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-} from "react-router-dom";
+import EditUserDialog from '../components/users/EditUserDialog'
 import { getProfilePictureUrl } from '../controllers/user-controller';
 
 export default function HomePage() {
 
+    const [showDialog, setShowDialog] = useState(false)
     const [pictureUrl, setPictureUrl] = useState()
     const { user, key, signOut } = useAuth()
     const [game, , updateGame] = useGame()
@@ -44,7 +38,7 @@ export default function HomePage() {
         if (!user) {
             return
         }
-        
+
         console.log('Connecting to socket.io')
         console.log(user.id);
         const opts = { query: { id: user.id } }
@@ -82,13 +76,15 @@ export default function HomePage() {
             draggable
             pauseOnHover
         />
+
+        <EditUserDialog show={showDialog} onHide={() => { setShowDialog(false) }}></EditUserDialog>
         <Container fluid>
             <Row>
                 <Col xs={3} className='m-0 p-0'><LeftTabs onGameSelected={gameSelected} /></Col>
                 <Col xs={6} className='m-0 p-0'><Table /></Col>
                 <Col xs={3} className='m-0 p-0'>
                     <DropdownButton as={ButtonGroup} title={user.username} variant="link">
-                        <Dropdown.Item as='span'><Link to="/edit">Editar Perfil</Link></Dropdown.Item>
+                        <Dropdown.Item onClick={() => setShowDialog(true)}>Editar Perfil</Dropdown.Item>
                         <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
                     </DropdownButton>
                     <img width='50' height='50' src={pictureUrl} style={{ borderRadius: '50%' }} />
