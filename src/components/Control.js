@@ -16,7 +16,7 @@ export default class Control extends React.Component {
     render() {
         const { label, children, ...rest } = this.props
         return <Form.Group>
-            <Form.Label>{label}</Form.Label>
+            {label && <Form.Label>{label}</Form.Label>}
             <InputGroup className="mb-2">
                 <InputGroup.Prepend>
                     <InputGroup.Text>{children}</InputGroup.Text>

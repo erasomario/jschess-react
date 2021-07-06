@@ -1,12 +1,12 @@
 const { apiRequest } = require("../utils/ApiClient")
 
-const getProfilePictureUrl = user => {
+const getProfilePictureUrl = async user => {
     if (user?.hasPicture) {
-        return apiRequest(`/v1/users/${user.id}/picture`, 'GET', user.api_key, null)
-            .then(r => r.blob())
-            .then(blob => URL.createObjectURL(blob))
+        const r = await apiRequest(`/v1/users/${user.id}/picture`, 'GET', user.api_key, null)
+        const blob = await r.blob()
+        return URL.createObjectURL(blob)
     } else {
-        return Promise.resolve(`/assets/nopp.svg`)
+        return `/assets/nopp.svg`
     }
 }
 
@@ -18,8 +18,23 @@ const updateProfilePicture = (user, file) => {
     return apiRequest(`/v1/users/${user.id}/picture`, 'PUT', user.api_key, file)
 }
 
+const editUsername = (user, password, newUsername) => {
+    return apiRequest(`/v1/users/${user.id}/username`, 'PUT', user.api_key, { password, newUsername })
+}
+
+const editPassword = (user, password, newPassword) => {
+    return apiRequest(`/v1/users/${user.id}/password`, 'PUT', user.api_key, { password, newPassword })
+}
+
+const editEmail = (user, password, newEmail) => {
+    return apiRequest(`/v1/users/${user.id}/email`, 'PUT', user.api_key, { password, newEmail })
+}
+
 module.exports = {
     getProfilePictureUrl,
     updateProfilePicture,
-    removeProfilePicture
+    removeProfilePicture,
+    editUsername,
+    editPassword,
+    editEmail,
 }

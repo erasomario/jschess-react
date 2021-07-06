@@ -10,6 +10,9 @@
     .pb {
         width: 5em;
     }
+    .camera{
+        display: none;
+    }
 }
 
 @media (min-width: 768px) {
@@ -20,6 +23,9 @@
     .pb {
         width: 7em;
     }
+    .camera{
+        display: inline;
+    }
 }
 
 @media (min-width: 992px) {
@@ -29,5 +35,8 @@
     }
     .pb {
         width: 8em;
+    }
+    .camera{
+        display: inline;
     }
 }
