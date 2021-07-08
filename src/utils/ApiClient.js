@@ -26,13 +26,13 @@ function apiRequest(endPoint, method, key, body) {
                 if (response.ok) {
                     return response.json()
                 } else {
-                    return response.json().then(e => Promise.reject(e?.error || `Error Inesperado ${response.status}`))
+                    return response.json().then(e => Promise.reject(Error(e?.error || `Error Inesperado ${response.status}`)))
                 }
             } else {
                 if (response.ok) {
                     return Promise.resolve(response)
                 } else {
-                    return Promise.reject(`Error Inesperado ${response.status}`)
+                    return Promise.reject(Error(`Error Inesperado ${response.status}`))
                 }
             }
         })

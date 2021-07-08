@@ -1,13 +1,6 @@
 import { useInput } from '../../hooks/useInput'
 import { useState } from 'react'
-import { FaCamera } from "react-icons/fa"
-import { FaUser } from 'react-icons/fa'
-import { FaLock } from 'react-icons/fa'
-import { FaEnvelope } from 'react-icons/fa'
-import { FaCopy } from 'react-icons/fa'
-import { FaCheck } from 'react-icons/fa'
-import { FaWindowClose } from "react-icons/fa"
-
+import { FaCamera, FaUser, FaLock, FaEnvelope, FaCopy, FaCheck, FaWindowClose } from 'react-icons/fa'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
@@ -24,7 +17,7 @@ import {
     updateProfilePicture,
     editEmail
 } from '../../controllers/user-controller'
-import Control from '../Control'
+import Input from '../Input'
 
 export default function EditPage({ show, onHide = a => a }) {
     const { user, key, refreshKey } = useAuth()
@@ -35,14 +28,17 @@ export default function EditPage({ show, onHide = a => a }) {
     const [emailProps, , emailFocus] = useInput()
     const [passProps, , passFocus] = useInput()
     const [passConfProps, , passConfFocus] = useInput()
-
-    const [msg, setMsg] = useState()
-    const [msgType, setMsgType] = useState()
+    const [msg, setMsg] = useState(null)
     const [page, setPage] = useState(null)
 
     useEffect(() => {
         getProfilePictureUrl(user).then(setPictureUrl).catch(setMsg)
-    }, [user])
+        setUsername(user.username)
+    }, [user, setUsername])
+
+    useEffect(() => {
+        setError()
+    }, [page])
 
     useEffect(() => {
         if (!show) {
@@ -52,13 +48,11 @@ export default function EditPage({ show, onHide = a => a }) {
     }, [show])
 
     const setError = (msg) => {
-        setMsg(msg)
-        setMsgType("danger")
+        setMsg(msg ? { msg, type: "danger" } : null)
     }
 
     const setSuccess = (msg) => {
-        setMsg(msg)
-        setMsgType("success")
+        setMsg(msg ? { msg, type: "success" } : null)
     }
 
     const removePp = () => {
@@ -76,8 +70,8 @@ export default function EditPage({ show, onHide = a => a }) {
     }
 
     const save = async (e) => {
+        e.preventDefault()
         try {
-            e.preventDefault()
             if (!origPassProps.value) {
                 origPassFocus()
                 throw Error('Debe escribir la contraseña actual')
@@ -110,7 +104,7 @@ export default function EditPage({ show, onHide = a => a }) {
                 await editEmail(user, origPassProps.value, emailProps.value)
                 setSuccess("El email se cambió con éxito")
             }
-            setOrigPass()
+            setOrigPass('')
             await refreshKey(user.api_key)
         } catch (e) {
             setError(e.message)
@@ -120,81 +114,77 @@ export default function EditPage({ show, onHide = a => a }) {
     return (
         <Modal show={show} onHide={() => onHide()}>
             <Modal.Header closeButton>
-                <Modal.Title>{user?.username}<Button variant="link" onClick={() => { setUsername(user?.username); setPage('username'); }}>Editar</Button></Modal.Title>
+                <Modal.Title>{user?.username}<Button variant="link" onClick={() => { setPage('username') }}>Editar</Button></Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {user && <div style={{ position: 'relative', overflow: 'hidden' }} className='mb-3'>
-                    <div style={{ position: 'relative', float: 'left' }} className='mr-3'>
-                        {user.hasPicture && <FaWindowClose onClick={removePp} style={{ position: 'absolute', right: '0px', cursor: 'pointer' }} />}
-                        <img alt="profile_picture" src={pictureUrl} style={{ borderRadius: '50%' }} className='pp' />
-                        <div className='pb'>
-                            <label htmlFor="file-input" style={{ cursor: 'pointer' }}>
-                                <div variant="light"><FaCamera className='mr-2 camera' /><span style={{ verticalAlign: 'middle' }}>{user.hasPicture ? 'Cambiar' : 'Agregar'}</span></div>
-                            </label>
+                <Form onSubmit={save}>
+                    {user && <div style={{ position: 'relative', overflow: 'hidden' }} className='mb-3'>
+                        <div style={{ position: 'relative', float: 'left' }} className='mr-3'>
+                            {user.hasPicture && <FaWindowClose onClick={removePp} style={{ position: 'absolute', right: '0px', cursor: 'pointer' }} />}
+                            <img alt="profile_picture" src={pictureUrl} style={{ borderRadius: '50%' }} className='pp' />
+                            <div className='pb'>
+                                <label htmlFor="file-input" style={{ cursor: 'pointer' }}>
+                                    <div variant="light"><FaCamera className='mr-2 camera' /><span style={{ verticalAlign: 'middle' }}>{user.hasPicture ? 'Cambiar' : 'Agregar'}</span></div>
+                                </label>
+                            </div>
+                            <input type="file" id="file-input" accept="image/png, image/gif, image/jpeg" style={{ display: 'none' }}
+                                onChange={event => {
+                                    updatePp(event.target.files[0])
+                                }} />
                         </div>
-                        <input type="file" id="file-input" accept="image/png, image/gif, image/jpeg" style={{ display: 'none' }}
-                            onChange={event => {
-                                updatePp(event.target.files[0])
-                            }} />
-                    </div>
-                    <div style={{ position: 'relative', float: 'left' }}>
-                        <div>
-                            <Button variant="link" onClick={() => setPage('password')}>Cambiar Contraseña</Button>
+                        <div style={{ position: 'relative', float: 'left' }}>
+                            <div>
+                                <Button variant="link" onClick={() => setPage('password')}>Cambiar Contraseña</Button>
+                            </div>
+                            <div>
+                                <Button variant="link" onClick={() => setPage('email')}>Cambiar Correo</Button>
+                            </div>
                         </div>
-                        <div>
-                            <Button variant="link" onClick={() => setPage('email')}>Cambiar Correo</Button>
-                        </div>
-                    </div>
-                </div>}
+                    </div>}
 
-                {!user && <div style={{ position: 'relative', overflow: 'hidden' }} className='mb-3'>
-                    <div style={{ position: 'relative', float: 'left' }} className='mr-3'>
-                        <img alt="profile_picture" src={pictureUrl} style={{ borderRadius: '50%' }} className='pp' />
-                        <div>
-                            <div className='pb' variant="light"><span style={{ verticalAlign: 'middle' }}>Agregar</span></div>
+                    {!user && <div style={{ position: 'relative', overflow: 'hidden' }} className='mb-3'>
+                        <div style={{ position: 'relative', float: 'left' }} className='mr-3'>
+                            <img alt="profile_picture" src={pictureUrl} style={{ borderRadius: '50%' }} className='pp' />
+                            <div>
+                                <div className='pb' variant="light"><span style={{ verticalAlign: 'middle' }}>Agregar</span></div>
+                            </div>
                         </div>
-                    </div>
-                    <div style={{ position: 'relative', float: 'left' }}>
-                        <h4>Usuario</h4>
-                    </div>
-                </div>}
+                        <div style={{ position: 'relative', float: 'left' }}>
+                            <h4>Usuario</h4>
+                        </div>
+                    </div>}
 
-                {page &&
-                    <>
-                        <Form>
-                            <Control label='Contraseña Actual' type="password"
+                    {page &&
+                        <>
+                            <Input id="curPassword" label='Contraseña Actual' type="password"
                                 placeholder="Contraseña que usa para iniciar sesión" {...origPassProps} >
                                 <FaLock />
-                            </Control>
-                            {page === 'username' && <Control label='Nombre de Usuario' type="text" {...usernameProps} ><FaUser />
-                            </Control>
-                            }
-                            {page === 'email' && <Control label='Email' type="email"
-                                placeholder='Para recuperar su cuenta si tiene olvida su contraseña' {...emailProps} >
+                            </Input>
+                            {page === 'username' && <Input id="username" label='Nombre de Usuario' type="text" {...usernameProps} autocomplete="off" >
+                                <FaUser />
+                            </Input>}
+                            {page === 'email' && <Input id="email" label='Email' type="email" autocomplete="off"
+                                placeholder='Para recuperar su cuenta si olvida su contraseña' {...emailProps} >
                                 <FaEnvelope />
-                            </Control>
-                            }
-                            {page === 'password' &&
-                                <>
-                                    <Control label='Contraseña Nueva' type="password"
-                                        placeholder="Contraseña que usará para iniciar sesión" {...passProps} >
-                                        <FaLock />
-                                    </Control>
-                                    <Control label='Confirmación de la Contraseña' type="password"
-                                        placeholder="Repita la contraseña" {...passConfProps} >
-                                        <FaCopy />
-                                    </Control>
-                                </>
-                            }
-
-                        </Form>
-                    </>
-                }
-                {msg && <Alert variant={msgType} className='mt-3'>{msg}</Alert>}
+                            </Input>}
+                            {page === 'password' && <>
+                                <Input id="newPassword" label='Contraseña Nueva' type="password"
+                                    placeholder="Contraseña que usará para iniciar sesión" {...passProps} >
+                                    <FaLock />
+                                </Input>
+                                <Input id="conf" label='Confirmación de la Contraseña' type="password"
+                                    placeholder="Repita la contraseña nueva" {...passConfProps} >
+                                    <FaCopy />
+                                </Input>
+                            </>}
+                        </>
+                    }
+                    {msg && <Alert variant={msg.type} className='mt-3'>{msg.msg}</Alert>}
+                    <Button className="float-right" variant="primary" disabled={!page} type="submit">Guardar
+                        <FaCheck className='ml-2' />
+                    </Button>
+                </Form>
             </Modal.Body>
-            <Modal.Footer>
-                <Button variant="primary" disabled={!page} onClick={save}>Guardar<FaCheck className='ml-2' /></Button>
-            </Modal.Footer>
         </Modal>
     )
 }

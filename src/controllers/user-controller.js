@@ -30,11 +30,32 @@ const editEmail = (user, password, newEmail) => {
     return apiRequest(`/v1/users/${user.id}/email`, 'PUT', user.api_key, { password, newEmail })
 }
 
+const addUser = async (username, email, password, file) => {
+    const usr = await apiRequest(`/v1/users/`, 'POST', null, { username, email, password })
+    if (file) {
+        await apiRequest(`/v1/users/${usr.id}/picture`, 'PUT', usr.api_key, file)
+        return usr
+    } else {
+        return usr
+    }
+}
+
+const generateRecoveryKey = async (login) => {
+    return apiRequest('/v1/recovery_keys/', 'POST', null, { login })
+}
+
+const recoverPassword = async (id, recoveryKey, password) => {
+    return apiRequest(`/v1/users/${id}/password/recovery`, 'POST', null, { recoveryKey, password })
+}
+
 module.exports = {
+    addUser,
     getProfilePictureUrl,
     updateProfilePicture,
     removeProfilePicture,
     editUsername,
     editPassword,
     editEmail,
+    generateRecoveryKey,
+    recoverPassword,
 }

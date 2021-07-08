@@ -1,34 +1,37 @@
 import { useInput } from '../../hooks/useInput'
-import { useState } from 'react'
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
-import Alert from 'react-bootstrap/Alert';
-import { apiRequest } from '../../utils/ApiClient'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import Form from 'react-bootstrap/Form'
+import Alert from 'react-bootstrap/Alert'
+import { generateRecoveryKey, recoverPassword } from '../../controllers/user-controller'
+import { FaUser, FaLock, FaCopy, FaArrowLeft, FaArrowRight } from 'react-icons/fa'
+import Input from '../Input'
 
 export default function RecoverPage() {
 
-  const [loginProps] = useInput("alderick84");
-  const [keyProps, , keyFocus] = useInput("");
-  const [passProps, , passFocus] = useInput("123456");
-  const [passConfProps, , passConfFocus] = useInput("123456");
+  const [loginProps] = useInput("")
+  const [keyProps, , keyFocus] = useInput("")
+  const [passProps, , passFocus] = useInput("")
+  const [passConfProps, , passConfFocus] = useInput("")
 
   const [error, setError] = useState();
   const [recoveryData, setRecoveryData] = useState(null);
   const [page, setPage] = useState('login');
 
-  let startRecover = (e) => {
+  useEffect(() => {
+    setError()
+  }, [page])
+
+  const generateKey = (e) => {
     e.preventDefault();
-    apiRequest('/v1/recovery_keys/', 'POST', null, { login: loginProps.value }, (error, data) => {
-      if (error) {
-        setError(error);
-      } else {
-        setRecoveryData(data);
+    generateRecoveryKey(loginProps.value)
+      .then(data => {
+        setRecoveryData(data)
         setPage('key')
-      }
-    })
-  };
+      }).catch(e => setError(e.message))
+  }
 
   let sendKey = (e) => {
     e.preventDefault();
@@ -40,38 +43,49 @@ export default function RecoverPage() {
       setError('Debe escribir una nueva contraseña')
     } else if (!passConfProps.value) {
       passConfFocus()
-      setError('Debe escribir una confirmación de nueva contraseña')
+      setError('Debe escribir la confirmación de nueva contraseña')
     } else if (passProps.value !== passConfProps.value) {
       passConfFocus()
       setError('La contraseña y su confirmación no coinciden')
     } else {
-      apiRequest(`/v1/users/${recoveryData.id}/recovered_password`, 'PUT', null, { recoveryKey: keyProps.value, password: passProps.value }, (error, data) => {
-        if (error) {
-          setError(error);
-        } else {
-          setPage('end')
-        }
-      })
+      recoverPassword(recoveryData.id, keyProps.value, passProps.value)
+        .then(() => setPage('end'))
+        .catch(e => setError(e.message))
     }
-  };
+  }
 
   return (
-    <>
-      <Card style={{ width: '36rem' }} className="mx-auto">
+    <div className='p-3 pt-4' style={{
+      background: 'linear-gradient(0deg, #eef2f3 0%, #8e9eab 100%)',
+      height: '100vh'
+    }}>
+
+      <Card className="mx-auto dialog">
         <Card.Body>
-          <Card.Title>Recuperar Contraseña</Card.Title>
+          <Card.Title>
+            {(page === 'login' || page === 'end') && <Link to="/login"><FaArrowLeft className='mr-2' /></Link>}
+            {page === 'key' && <FaArrowLeft className='mr-2 text-primary' style={{ cursor: "pointer" }} onClick={() => setPage('login')} />}
+            <span className='align-middle'>
+              Recuperar Contraseña
+            </span>
+          </Card.Title>
+
           {page === 'login' &&
             <>
               <Card.Text>
-                Si olvidó su nombre de usuario o contraseña, escriba el correo o el nombre de usuario que usó para registrarse y recibirá instrucciones para recuperar su cuenta.
+                Si olvidó sus datos de acceso, escriba el correo o el nombre de usuario que usó para registrarse y recibirá instrucciones para recuperar su cuenta.
               </Card.Text>
-              <Form>
-                <Form.Group controlId="login">
-                  <Form.Label>Nombre de Usuario o Email</Form.Label>
-                  <Form.Control {...loginProps} type="text" />
-                </Form.Group>
+              <Form onSubmit={generateKey}>
+                <Input id='login' label='Nombre de Usuario o Email' {...loginProps} type="text" autocomplete="off">
+                  <FaUser />
+                </Input>
                 {error && <Alert variant="danger">{error}</Alert>}
-                <Button variant="primary" onClick={startRecover}>Recuperar</Button>
+                <Button variant="primary" type="submit" className="float-right">
+                  <span className='align-middle'>
+                    Continuar
+                  </span>
+                  <FaArrowRight className='ml-2' />
+                </Button>
               </Form>
             </>
           }
@@ -80,21 +94,26 @@ export default function RecoverPage() {
               <Card.Text>
                 A su correo {recoveryData.mail} se envió su nombre de usuario y una clave de {recoveryData.keyLenght} caracteres.
               </Card.Text>
-              <Form>
-                <Form.Group controlId="key">
-                  <Form.Label>Clave</Form.Label>
-                  <Form.Control {...keyProps} type="text" placeholder={`Clave de ${recoveryData.keyLenght} caracteres que llegó a su correo`} />
-                </Form.Group>
-                <Form.Group controlId="pass">
-                  <Form.Label>Nueva Contraseña</Form.Label>
-                  <Form.Control type="password" {...passProps} placeholder='Nueva contraseña que usará para iniciar sesión' />
-                </Form.Group>
-                <Form.Group controlId="passConf">
-                  <Form.Label>Confirmación de la Nueva Contraseña</Form.Label>
-                  <Form.Control type="password" {...passConfProps} placeholder='Repita la nueva contraseña' />
-                </Form.Group>
+              <Form onSubmit={sendKey}>
+                <Input autocomplete='off' id='key' label='Clave' {...keyProps} type='text' placeholder={`Clave de ${recoveryData.keyLenght} caracteres que llegó a su correo`} >
+                  <FaLock />
+                </Input>
+
+                <Input id='pass' label='Nueva Contraseña' {...passProps} type='password' placeholder='Nueva contraseña que usará para iniciar sesión' >
+                  <FaLock />
+                </Input>
+
+                <Input id='conf' label='Confirmación de la Nueva Contraseña' {...passProps} type='password' placeholder='Repita la nueva contraseña' >
+                  <FaCopy />
+                </Input>
+
                 {error && <Alert variant="danger">{error}</Alert>}
-                <Button variant="primary" onClick={sendKey}>Continuar</Button>
+                <Button variant="primary" type="submit" className="float-right">
+                  <span className='align-middle'>
+                    Continuar
+                  </span>
+                  <FaArrowRight className='ml-2' />
+                </Button>
               </Form>
             </>
           }
@@ -108,6 +127,6 @@ export default function RecoverPage() {
           }
         </Card.Body>
       </Card>
-    </>
-  );
+    </div>
+  )
 }

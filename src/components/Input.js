@@ -2,11 +2,14 @@ import Form from 'react-bootstrap/Form'
 import { InputGroup } from 'react-bootstrap'
 import React from 'react';
 
-export default class Control extends React.Component {
+export default class Input extends React.Component {
 
     constructor(props) {
         super(props)
         this.ref = React.createRef();
+        if (!props.id) {
+            throw Error('id is missing')
+        }
     }
 
     focus = () => {
@@ -14,13 +17,13 @@ export default class Control extends React.Component {
     }
 
     render() {
-        const { label, children, ...rest } = this.props
-        return <Form.Group>
+        const { label, children, id, name, ...rest } = this.props
+        return <Form.Group controlId={id}>
             {label && <Form.Label>{label}</Form.Label>}
             <InputGroup className="mb-2">
-                <InputGroup.Prepend>
+                {children && <InputGroup.Prepend>
                     <InputGroup.Text>{children}</InputGroup.Text>
-                </InputGroup.Prepend>
+                </InputGroup.Prepend>}
                 <Form.Control {...rest} ref={this.ref} />
             </InputGroup>
         </Form.Group>
