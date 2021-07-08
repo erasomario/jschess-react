@@ -64,33 +64,54 @@ export default function HomePage() {
         return <></>
     }
 
-    return <>
-        <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-        />
+    const br = {
+        display: 'inline-block',
+        fontSize: "15px",
+        position: "absolute", userSelect: 'none', width: '5%', height: '10%',
+        textAlign: 'right',
+        verticalAlign: 'bottom',
+        backgroundColor: 'red',
+        lineHeight:'normal',
+    }
 
-        <EditUserDialog show={showDialog} onHide={() => { setShowDialog(false) }}></EditUserDialog>
-        <Container fluid>
-            <Row>
-                <Col xs={3} className='m-0 p-0'><LeftTabs onGameSelected={gameSelected} /></Col>
-                <Col xs={6} className='m-0 p-0'><Table /></Col>
-                <Col xs={3} className='m-0 p-0'>
-                    <DropdownButton as={ButtonGroup} title={user.username} variant="link">
-                        <Dropdown.Item onClick={() => setShowDialog(true)}>Editar Perfil</Dropdown.Item>
-                        <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
-                    </DropdownButton>
-                    <img width='50' height='50' src={pictureUrl} style={{ borderRadius: '50%' }} />
-                    <Moves />
-                </Col>
-            </Row>
-        </Container>
+    return <>
+
+        
+        {<div style={{ ...br, color: 'blue' }}><div style={{verticalAlign: 'bottom'}}>A</div></div>}
+
+
+        <div className='p-3 pt-4' style={{
+            background: 'linear-gradient(0deg, #eef2f3 0%, #CED6DC 100%)',
+            height: '100vh'
+        }}>
+
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+
+            <EditUserDialog show={showDialog} onHide={() => { setShowDialog(false) }}></EditUserDialog>
+            <Container fluid>
+                <Row>
+                    <Col xs={3} className='m-0 p-0'><LeftTabs onGameSelected={gameSelected} /></Col>
+                    <Col xs={6} className='m-0 p-0'><Table /></Col>
+                    <Col xs={3} className='m-0 p-0'>
+                        <DropdownButton as={ButtonGroup} title={user.username} variant="link">
+                            <Dropdown.Item onClick={() => setShowDialog(true)}>Editar Perfil</Dropdown.Item>
+                            <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
+                        </DropdownButton>
+                        <img alt="" width='50' height='50' src={pictureUrl} style={{ borderRadius: '50%' }} />
+                        <Moves />
+                    </Col>
+                </Row>
+            </Container>
+        </div>
     </>
 }

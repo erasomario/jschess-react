@@ -1,6 +1,6 @@
 const { apiRequest } = require("../utils/ApiClient")
 
-const getProfilePictureUrl = async user => {
+const getProfilePictureUrl = async (user) => {
     if (user?.hasPicture) {
         const r = await apiRequest(`/v1/users/${user.id}/picture`, 'GET', user.api_key, null)
         const blob = await r.blob()

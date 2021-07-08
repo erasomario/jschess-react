@@ -45,7 +45,7 @@ export default function LoginPage() {
   }
   return (
     <div className='p-3 pt-4' style={{
-      background: 'linear-gradient(0deg, #eef2f3 0%, #8e9eab 100%)',
+      background: 'linear-gradient(0deg, #eef2f3 0%, #a1afb9 100%)',
       height: '100vh'
     }}>
 
