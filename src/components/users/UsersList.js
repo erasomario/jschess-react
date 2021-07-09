@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import { apiRequest } from '../utils/ApiClient'
-import { useAuth } from '../providers/ProvideAuth'
+import { useAuth } from '../../providers/ProvideAuth'
 import { Scrollbars } from 'react-custom-scrollbars';
 import ListGroup from 'react-bootstrap/ListGroup'
-import { useInput } from '../hooks/useInput';
+import { useInput } from '../../hooks/useInput';
 import Form from 'react-bootstrap/Form'
+import { findUsersLike } from '../../controllers/user-controller';
 
 export default function UserList({ onSelect = (a) => a, style }) {
 
@@ -12,28 +12,22 @@ export default function UserList({ onSelect = (a) => a, style }) {
     const [selected, setSelected] = useState(null)
     const { user } = useAuth()
     const [props] = useInput()
+    const [error, setError] = useState();
 
     useEffect(() => {
         if (props.value.length >= 3) {
-            apiRequest(`/v1/users?like=${props.value}`, 'GET', user.api_key, null, (error, data) => {
-                if (!error) {
-                    setList(data.filter((u) => u.id !== user.id))
-                } else {
-                    console.log(error);
-                }
-            })
+            findUsersLike(props.value, user.api_key)
+                .then(data => setList(data.filter((u) => u.id !== user.id)))
+                .catch(e => setError(e.message))
         } else {
             setList([])
         }
-
     }, [user, props.value])
 
     return <>
-
         <Form.Group>
             <Form.Control {...props} placeholder="Escriba parte del nombre" />
         </Form.Group>
-
         <Scrollbars style={style} className='mb-2'>
             {list.length > 0 && <ListGroup>
                 {list && list.map((u) => <ListGroup.Item

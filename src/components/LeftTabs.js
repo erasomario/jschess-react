@@ -1,6 +1,6 @@
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import CreateGame from "./CreateGame";
+import CreateGame from "./games/CreateGame";
 import GamesList from "./GamesList";
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../providers/ProvideAuth";
@@ -12,7 +12,7 @@ export default function LeftTabs({ onGameSelected = (a) => a }) {
     const [game] = useGame()
     const [openGamesList, setOpenGamesList] = useState([])
     const [selectedGame, setSelectedGame] = useState(null)
-    const {user} = useAuth()
+    const { user } = useAuth()
 
     const [key, setKey] = useState('open')
 
@@ -47,15 +47,9 @@ export default function LeftTabs({ onGameSelected = (a) => a }) {
     }, [getOpenGames]);
 
 
-    return <Tabs
-        id="controlled-tab-example"
-        activeKey={key}
-        onSelect={(k) => setKey(k)}>
-        <Tab eventKey="new" title="Nueva Partida">
-            <CreateGame onNewGame={gameCreated}></CreateGame>
-        </Tab>
-        <Tab eventKey="open" title="Partidas">
-            <GamesList games={openGamesList} selected={selectedGame} onSelect={onGameSelected} ></GamesList>
-        </Tab>
-    </Tabs>
+    return <>
+        
+
+        
+    </>
 }

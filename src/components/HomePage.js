@@ -15,10 +15,15 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Dropdown from 'react-bootstrap/Dropdown'
 import EditUserDialog from '../components/users/EditUserDialog'
 import { getProfilePictureUrl } from '../controllers/user-controller';
+import CreateGame from './games/CreateGame';
+import { Button } from "react-bootstrap";
+import { FaPlus } from "react-icons/fa";
+
 
 export default function HomePage() {
 
-    const [showDialog, setShowDialog] = useState(false)
+    const [showUserDialog, setShowUserDialog] = useState(false)
+    const [showNewGameDialog, setShowNewGameDialog] = useState(false)
     const [pictureUrl, setPictureUrl] = useState()
     const { user, key, signOut } = useAuth()
     const [game, , updateGame] = useGame()
@@ -64,21 +69,7 @@ export default function HomePage() {
         return <></>
     }
 
-    const br = {
-        display: 'inline-block',
-        fontSize: "15px",
-        position: "absolute", userSelect: 'none', width: '5%', height: '10%',
-        textAlign: 'right',
-        verticalAlign: 'bottom',
-        backgroundColor: 'red',
-        lineHeight:'normal',
-    }
-
     return <>
-
-        
-        {<div style={{ ...br, color: 'blue' }}><div style={{verticalAlign: 'bottom'}}>A</div></div>}
-
 
         <div className='p-3 pt-4' style={{
             background: 'linear-gradient(0deg, #eef2f3 0%, #CED6DC 100%)',
@@ -97,14 +88,20 @@ export default function HomePage() {
                 pauseOnHover
             />
 
-            <EditUserDialog show={showDialog} onHide={() => { setShowDialog(false) }}></EditUserDialog>
+            <EditUserDialog show={showUserDialog} onHide={() => { setShowUserDialog(false) }}></EditUserDialog>
+            <CreateGame show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }}></CreateGame>
             <Container fluid>
                 <Row>
-                    <Col xs={3} className='m-0 p-0'><LeftTabs onGameSelected={gameSelected} /></Col>
+                    <Col xs={3} className='m-0 p-0'>
+                        <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus></FaPlus></Button>
+
+
+                        <LeftTabs onGameSelected={gameSelected} />
+                    </Col>
                     <Col xs={6} className='m-0 p-0'><Table /></Col>
                     <Col xs={3} className='m-0 p-0'>
                         <DropdownButton as={ButtonGroup} title={user.username} variant="link">
-                            <Dropdown.Item onClick={() => setShowDialog(true)}>Editar Perfil</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setShowUserDialog(true)}>Editar Perfil</Dropdown.Item>
                             <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
                         </DropdownButton>
                         <img alt="" width='50' height='50' src={pictureUrl} style={{ borderRadius: '50%' }} />

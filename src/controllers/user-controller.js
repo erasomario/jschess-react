@@ -48,6 +48,10 @@ const recoverPassword = async (id, recoveryKey, password) => {
     return apiRequest(`/v1/users/${id}/password/recovery`, 'POST', null, { recoveryKey, password })
 }
 
+const findUsersLike = async (like, apiKey) => {
+    return apiRequest(`/v1/users/like/${like}`, 'GET', apiKey, null)
+}
+
 module.exports = {
     addUser,
     getProfilePictureUrl,
@@ -58,4 +62,5 @@ module.exports = {
     editEmail,
     generateRecoveryKey,
     recoverPassword,
+    findUsersLike,
 }
