@@ -16,13 +16,12 @@ import {
     removeProfilePicture,
     updateProfilePicture,
     editEmail
-} from '../../controllers/user-controller'
+} from '../../controllers/user-client'
 import Input from '../Input'
 
 export default function EditPage({ show, onHide = a => a }) {
     const { user, key, refreshKey } = useAuth()
     const [pictureUrl, setPictureUrl] = useState()
-
     const [origPassProps, setOrigPass, origPassFocus] = useInput()
     const [usernameProps, setUsername, usernameFocus] = useInput()
     const [emailProps, , emailFocus] = useInput()

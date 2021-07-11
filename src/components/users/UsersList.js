@@ -1,25 +1,28 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../providers/ProvideAuth'
-import { Scrollbars } from 'react-custom-scrollbars';
 import ListGroup from 'react-bootstrap/ListGroup'
 import { useInput } from '../../hooks/useInput';
 import Form from 'react-bootstrap/Form'
-import { findUsersLike } from '../../controllers/user-controller';
+import { findUsersLike } from '../../controllers/user-client';
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
 
 export default function UserList({ onSelect = (a) => a, style }) {
 
+    const { user } = useAuth()
     const [list, setList] = useState([])
     const [selected, setSelected] = useState(null)
-    const { user } = useAuth()
+
     const [props] = useInput()
     const [error, setError] = useState();
 
     useEffect(() => {
         if (props.value.length >= 3) {
             findUsersLike(props.value, user.api_key)
-                .then(data => setList(data.filter((u) => u.id !== user.id)))
+                .then(data => { setList(data.filter((u) => u.id !== user.id)); setError() })
                 .catch(e => setError(e.message))
         } else {
+            setError()
             setList([])
         }
     }, [user, props.value])
@@ -28,7 +31,8 @@ export default function UserList({ onSelect = (a) => a, style }) {
         <Form.Group>
             <Form.Control {...props} placeholder="Escriba parte del nombre" />
         </Form.Group>
-        <Scrollbars style={style} className='mb-2'>
+
+        <SimpleBar style={style}>
             {list.length > 0 && <ListGroup>
                 {list && list.map((u) => <ListGroup.Item
                     key={u.id}
@@ -48,6 +52,11 @@ export default function UserList({ onSelect = (a) => a, style }) {
                     No se encontraron jugadores similares a "{props.value}"
                 </div>
             </div>}
-        </Scrollbars>
+            {error && <div style={{ height: '100%', display: 'table-cell', verticalAlign: 'middle' }}>
+                <div>
+                    {error}
+                </div>
+            </div>}
+        </SimpleBar>
     </>
 }

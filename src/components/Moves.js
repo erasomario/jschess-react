@@ -3,7 +3,6 @@ import Table from 'react-bootstrap/Table'
 import Badge from 'react-bootstrap/Badge'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Button from 'react-bootstrap/Button'
-import { Scrollbars } from 'react-custom-scrollbars';
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { useLayoutEffect, useRef } from "react"
@@ -84,7 +83,7 @@ export default function Moves() {
                 </tr>
             </thead>
         </Table>
-        <Scrollbars ref={scbarsRef} className='mb-2'>
+        <div ref={scbarsRef} className='mb-2'>
             <Table striped size="sm" style={{ userSelect: 'none', margin: '0px' }}>
                 <tbody>
                     {mat.map
@@ -96,7 +95,7 @@ export default function Moves() {
                     }
                 </tbody>
             </Table>
-        </Scrollbars>
+        </div>
         <ButtonGroup aria-label="Basic example">
             <Button disabled={board.turn === 0} style={{ float: 'left' }} onClick={beg}>
                 <FaAngleDoubleLeft />

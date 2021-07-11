@@ -14,11 +14,10 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Dropdown from 'react-bootstrap/Dropdown'
 import EditUserDialog from '../components/users/EditUserDialog'
-import { getProfilePictureUrl } from '../controllers/user-controller';
+import { getProfilePictureUrl } from '../controllers/user-client';
 import CreateGame from './games/CreateGame';
 import { Button } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
-
 
 export default function HomePage() {
 
@@ -92,14 +91,12 @@ export default function HomePage() {
             <CreateGame show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }}></CreateGame>
             <Container fluid>
                 <Row>
-                    <Col xs={3} className='m-0 p-0'>
+                    <Col s={3} className='m-0 p-0'>
                         <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus></FaPlus></Button>
-
-
                         <LeftTabs onGameSelected={gameSelected} />
                     </Col>
-                    <Col xs={6} className='m-0 p-0'><Table /></Col>
-                    <Col xs={3} className='m-0 p-0'>
+                    <Col s={6} className='m-0 p-0'><Table /></Col>
+                    <Col s={3} className='m-0 p-0'>
                         <DropdownButton as={ButtonGroup} title={user.username} variant="link">
                             <Dropdown.Item onClick={() => setShowUserDialog(true)}>Editar Perfil</Dropdown.Item>
                             <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>

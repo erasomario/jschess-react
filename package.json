@@ -1,5 +1,5 @@
 {
-  "name": "chess-client",
+  "name": "chess_client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -8,12 +8,12 @@
     "@testing-library/user-event": "^12.1.10",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.1",
-    "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-toastify": "^7.0.4",
+    "simplebar-react": "^2.3.4",
     "socket.io-client": "^4.1.2",
     "web-vitals": "^1.0.1"
   },

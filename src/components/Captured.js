@@ -1,5 +1,5 @@
 import { useAuth } from "../providers/ProvideAuth"
-import { getProfilePictureUrl } from '../controllers/user-controller'
+import { getProfilePictureUrl } from '../controllers/user-client'
 import { useEffect, useState } from "react"
 
 export function Captured({ position, reversed = false, game, board }) {

@@ -52,7 +52,7 @@ const findUsersLike = async (like, apiKey) => {
     return apiRequest(`/v1/users/like/${like}`, 'GET', apiKey, null)
 }
 
-module.exports = {
+export {
     addUser,
     getProfilePictureUrl,
     updateProfilePicture,

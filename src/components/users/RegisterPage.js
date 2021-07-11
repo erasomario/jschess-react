@@ -7,7 +7,6 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
-import { addUser } from '../../controllers/user-controller';
 
 export default function RegisterPage() {
     const [file, setFile] = useState(null)
@@ -19,7 +18,8 @@ export default function RegisterPage() {
     const [error, setError] = useState();
     const [page, setPage] = useState('create');
 
-    const register = () => {
+    const register = (e) => {
+        e.preventDefault()
         if (!usernameProps.value) {
             usernameFocus()
             setError('Debe escribir un nombre de usuario')
@@ -36,11 +36,7 @@ export default function RegisterPage() {
             passConfFocus()
             setError('La contraseña y su confirmación no coinciden')
         } else {
-            addUser(usernameProps.value, emailProps.value, passProps.value, file)
-                .then(() => {
-                    setPage('created')
-                    setError(null)
-                }).catch(e => setError(e.message))
+            
         }
     };
 
@@ -64,8 +60,10 @@ export default function RegisterPage() {
                                 Puede crear una cuenta únicamente con los siguientes datos:
                             </Card.Text>
                             <Form onSubmit={register}>
-                                <Input id="username" label='Nombre de Usuario' type="text" {...usernameProps} ><FaUser /></Input>
-                                <Input id="email" label='Email' type="email"
+                                <Input autocomplete="off" id="username" label='Nombre de Usuario' type="text" {...usernameProps} >
+                                    <FaUser />
+                                </Input>
+                                <Input autocomplete="off" id="email" label='Email' type="email"
                                     placeholder='Para recuperar su cuenta si tiene olvida su contraseña' {...emailProps} >
                                     <FaEnvelope />
                                 </Input>
