@@ -7,7 +7,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
 import Modal from 'react-bootstrap/Modal'
 import { FaArrowLeft, FaArrowRight, FaChessPawn } from 'react-icons/fa'
-//import { createGame } from '../../controllers/game-client'
+import { createGame } from '../../controllers/game-client'
 
 const times = [5, 10, 15, 30, 60, 0]
 
@@ -34,10 +34,9 @@ export default function CreateGame({ show, onHide = a => a, onNewGame = a => a }
         if (!player) {
             setError('Seleccione un oponente')
         } else {
-            console.log(player)
-           /* createGame(user.api_key, player.id, time, additionTime, color)
+            createGame(user.api_key, player.id, time, additionTime, color)
                 .then(onNewGame)
-                .catch(e => setError(e.message))*/
+                .catch(e => setError(e.message))
         }
     }
 

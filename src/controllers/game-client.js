@@ -1,9 +1,14 @@
 const { apiRequest } = require("../utils/ApiClient")
 
-const createGame = async (apiKey, playerId, time, addition, color) => {
-    return await apiRequest(`v1/games/`, 'POST', apiKey, { playerId, time, addition, color })
+const createGame = async (apiKey, opponentId, time, addition, color) => {
+    return await apiRequest(`/v1/games/`, 'POST', apiKey, { opponentId, time, addition, color })
+}
+
+const findGameById = async (gameId, apiKey) => {
+    return await apiRequest(`/v1/games/${gameId}`, "GET", apiKey)
 }
 
 module.exports = {
     createGame,
+    findGameById
 }

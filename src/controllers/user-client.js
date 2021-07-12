@@ -52,6 +52,10 @@ const findUsersLike = async (like, apiKey) => {
     return apiRequest(`/v1/users/like/${like}`, 'GET', apiKey, null)
 }
 
+const findGamesByStatus = async (userId, apiKey, status) => {
+    return apiRequest(`/v1/users/${userId}/games/${status}`, 'GET', apiKey, null)
+}
+
 export {
     addUser,
     getProfilePictureUrl,
@@ -63,4 +67,5 @@ export {
     generateRecoveryKey,
     recoverPassword,
     findUsersLike,
+    findGamesByStatus
 }

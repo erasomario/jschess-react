@@ -11,7 +11,7 @@ const letters = { 1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h'
 const startBoard = getStartBoard()
 
 export function Board({ reversed = false }) {
-    const [game, board, updateGame] = useGame()
+    const { game, board, updateGame } = useGame()
     const { user } = useAuth()
     const [src, setSrc] = useState(null)
     const [dest, setDest] = useState(null)

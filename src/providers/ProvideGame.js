@@ -20,7 +20,7 @@ export function ProvideGame({ children }) {
         setBoard(game ? getBoard(game.movs, t) : null)
     }, [game])
 
-    const val = [game, board, updateGame, updateTurn]
+    const val = { game, board, updateGame, updateTurn }
     return (
         <gameContext.Provider value={val}>
             {children}

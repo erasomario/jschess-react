@@ -159,10 +159,10 @@ export default function EditPage({ show, onHide = a => a }) {
                                 placeholder="Contraseña que usa para iniciar sesión" {...origPassProps} >
                                 <FaLock />
                             </Input>
-                            {page === 'username' && <Input id="username" label='Nombre de Usuario' type="text" {...usernameProps} autocomplete="off" >
+                            {page === 'username' && <Input id="username" label='Nombre de Usuario' type="text" {...usernameProps} autoComplete="off" >
                                 <FaUser />
                             </Input>}
-                            {page === 'email' && <Input id="email" label='Email' type="email" autocomplete="off"
+                            {page === 'email' && <Input id="email" label='Email' type="email" autoComplete="off"
                                 placeholder='Para recuperar su cuenta si olvida su contraseña' {...emailProps} >
                                 <FaEnvelope />
                             </Input>}

@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
+import { addUser } from '../../controllers/user-client'
 
 export default function RegisterPage() {
     const [file, setFile] = useState(null)
@@ -36,7 +37,11 @@ export default function RegisterPage() {
             passConfFocus()
             setError('La contraseña y su confirmación no coinciden')
         } else {
-            
+            addUser(usernameProps.value, emailProps.value, passProps.value, file)
+                .then(() => {
+                    setPage('created')
+                    setError(null)
+                }).catch(e => setError(e.message))
         }
     };
 

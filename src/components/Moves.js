@@ -11,13 +11,13 @@ const unicode = { K: ['\u2654', '\u265A'], Q: ['\u2655', '\u265B'], R: ['\u2656'
 
 export default function Moves() {
 
-    const [game, board, , updateTurn] = useGame()
+    const { game, board, updateTurn } = useGame()
     const scbarsRef = useRef(null)
     useLayoutEffect(() => {
-        if (scbarsRef.current) {
+      /*  if (scbarsRef.current) {
             const scrollHeight = scbarsRef.current.getScrollHeight() * ((board.turn / game.movs.length) - 0.1)
             scbarsRef.current.scrollTop(scrollHeight)
-        }
+        }*/
     }, [game, board])
 
     if (!game || !board) {

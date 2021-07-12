@@ -1,7 +1,6 @@
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import CreateGame from "./games/CreateGame";
-import GamesList from "./GamesList";
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../providers/ProvideAuth";
 import { apiRequest } from "../utils/ApiClient";
@@ -9,7 +8,7 @@ import { useGame } from "../providers/ProvideGame";
 
 export default function LeftTabs({ onGameSelected = (a) => a }) {
 
-    const [game] = useGame()
+    const {game} = useGame()
     const [openGamesList, setOpenGamesList] = useState([])
     const [selectedGame, setSelectedGame] = useState(null)
     const { user } = useAuth()

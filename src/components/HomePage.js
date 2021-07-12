@@ -17,15 +17,17 @@ import EditUserDialog from '../components/users/EditUserDialog'
 import { getProfilePictureUrl } from '../controllers/user-client';
 import CreateGame from './games/CreateGame';
 import { Button } from "react-bootstrap";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaClipboardList } from "react-icons/fa";
+import GamesList from './games/GamesList';
 
 export default function HomePage() {
 
     const [showUserDialog, setShowUserDialog] = useState(false)
     const [showNewGameDialog, setShowNewGameDialog] = useState(false)
+    const [showGamesDialog, setShowGamesDialog] = useState(false)
     const [pictureUrl, setPictureUrl] = useState()
     const { user, key, signOut } = useAuth()
-    const [game, , updateGame] = useGame()
+    const { game, board, updateGame, updateTurn } = useGame()
 
     const gameId = game ? game.id : ""
     const gameSelected = useCallback((id) => {
@@ -64,9 +66,15 @@ export default function HomePage() {
         signOut(() => { })
     }
 
+    const onNewGame = (game) => {
+        setShowNewGameDialog(false)
+        updateGame(game)
+    }
+
     if (!user) {
         return <></>
     }
+
 
     return <>
 
@@ -88,11 +96,14 @@ export default function HomePage() {
             />
 
             <EditUserDialog show={showUserDialog} onHide={() => { setShowUserDialog(false) }}></EditUserDialog>
-            <CreateGame show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }}></CreateGame>
+            <CreateGame show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }} onNewGame={onNewGame}></CreateGame>
+            <GamesList show={showGamesDialog} onHide={() => { setShowGamesDialog(false) }}></GamesList>
+
             <Container fluid>
                 <Row>
                     <Col s={3} className='m-0 p-0'>
-                        <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus></FaPlus></Button>
+                        <Button style={{ display: 'block' }} variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
+                        <Button style={{ display: 'block' }} className="mt-2" variant="primary" onClick={() => setShowGamesDialog(true)}><FaClipboardList style={{ marginTop: -4 }} ></FaClipboardList></Button>
                         <LeftTabs onGameSelected={gameSelected} />
                     </Col>
                     <Col s={6} className='m-0 p-0'><Table /></Col>
