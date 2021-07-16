@@ -1,8 +1,9 @@
 const { apiRequest } = require("../utils/ApiClient")
 
-const getProfilePictureUrl = async (user) => {
-    if (user?.hasPicture) {
-        const r = await apiRequest(`/v1/users/${user.id}/picture`, 'GET', user.api_key, null)
+const getProfilePictureUrl = async (userId, hasPicture, apiKey) => {
+    console.log("getting profile picture for ", userId)
+    if (userId && hasPicture) {
+        const r = await apiRequest(`/v1/users/${userId}/picture`, 'GET', apiKey, null)
         const blob = await r.blob()
         return URL.createObjectURL(blob)
     } else {
@@ -56,6 +57,10 @@ const findGamesByStatus = async (userId, apiKey, status) => {
     return apiRequest(`/v1/users/${userId}/games/${status}`, 'GET', apiKey, null)
 }
 
+const findUserById = async (userId, apiKey) => {
+    return apiRequest(`/v1/users/${userId}`, 'GET', apiKey, null)
+}
+
 export {
     addUser,
     getProfilePictureUrl,
@@ -67,5 +72,6 @@ export {
     generateRecoveryKey,
     recoverPassword,
     findUsersLike,
-    findGamesByStatus
+    findGamesByStatus,
+    findUserById,
 }

@@ -31,11 +31,6 @@ export default function EditPage({ show, onHide = a => a }) {
     const [page, setPage] = useState(null)
 
     useEffect(() => {
-        getProfilePictureUrl(user).then(setPictureUrl).catch(setMsg)
-        setUsername(user.username)
-    }, [user, setUsername])
-
-    useEffect(() => {
         setError()
     }, [page])
 
@@ -43,8 +38,12 @@ export default function EditPage({ show, onHide = a => a }) {
         if (!show) {
             setPage()
             setError()
+        } else {
+            console.log("klfjlakjfas;lkfj;laskfjas;klfjasl;kfjas;lkfjas;lkfjas;lkfjslkfjaslkfjaslkfjasl");
+            getProfilePictureUrl(user.id, user.hasPicture, user.api_key).then(setPictureUrl).catch(e => setMsg(e.message))
+            setUsername(user.username)
         }
-    }, [show])
+    }, [show, user, setUsername])
 
     const setError = (msg) => {
         setMsg(msg ? { msg, type: "danger" } : null)

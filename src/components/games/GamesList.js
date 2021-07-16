@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ListGroup from 'react-bootstrap/ListGroup'
 import { useAuth } from '../../providers/ProvideAuth'
 import Modal from 'react-bootstrap/Modal'
@@ -10,6 +10,8 @@ import { findGameById } from '../../controllers/game-client';
 
 export default function GamesList({ style, show, onHide = a => a, onSelect = (a) => a }) {
 
+    const selectedDOM = useRef()
+
     const { game, board, updateGame, updateTurn } = useGame()
     const [error, setError] = useState()
     const [games, setGames] = useState()
@@ -17,8 +19,10 @@ export default function GamesList({ style, show, onHide = a => a, onSelect = (a)
 
     useEffect(() => {
         if (show) {
+            console.log("find games by status")
             findGamesByStatus(user.id, user.api_key, "open")
                 .then(setGames)
+                .then(selectedDOM.current?.scrollIntoView())
                 .catch(e => setError(e.message))
         }
     }, [show, setGames, setError, user])
@@ -45,14 +49,14 @@ export default function GamesList({ style, show, onHide = a => a, onSelect = (a)
                     {!games && <p>Cargando...</p>}
                     {!games?.length === 0 && <p>No hay partidas en curso...</p>}
                     {games && games.map(g =>
-                        //(g.whiteId === user.id && g.turn % 2 === 0)
                         <ListGroup.Item
+                            ref={game?.id === g.id ? selectedDOM : null}
                             className='m-0 p-2'
                             key={g.id}
                             active={game?.id === g.id}
                             onClick={() => select(g.id)}
                             style={{ cursor: 'pointer' }}>
-                            <div style={{ fontWeight: 'bold' }}>{g.whiteId === user.id ? g.whiteName : g.blackName}</div>
+                            <div style={{ fontWeight: 'bold' }}>{g.whiteId === user.id ? g.blackName : g.whiteName}</div>
                             <p className='m-0 p-0'>{g.turn % 2 === 0 ? `Turno de ${g.whiteName}` : `Turno de ${g.blackName}`}</p>
                         </ListGroup.Item>)}
                 </ListGroup>

@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
-import { FaDoorOpen,  FaChessKnight, FaUser, FaLock } from "react-icons/fa"
+import { FaDoorOpen, FaChessKnight, FaUser, FaLock } from "react-icons/fa"
 import Input from '../Input'
 import './dialogs.css'
 
@@ -28,6 +28,10 @@ export default function LoginPage() {
       history.replace(from);
     }
   }, [user, from, history])
+
+  useEffect(() => {
+    loginFocus()
+  }, [loginFocus])
 
   const login = (e) => {
     e.preventDefault()

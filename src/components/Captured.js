@@ -2,41 +2,54 @@ import { useAuth } from "../providers/ProvideAuth"
 import { getProfilePictureUrl } from '../controllers/user-client'
 import { useEffect, useState } from "react"
 
-export function Captured({ position, reversed = false, game, board }) {
+export function Captured({ player, pieces, myTurn, mode }) {
     const { user } = useAuth()
     const [url, setUrl] = useState()
-    let white, myTurn, playerName, pieces
-    if (game && board) {
-        white = (position === 'top' && reversed) || (position === 'bottom' && !reversed)
-        myTurn = (white && board.turn % 2 === 0) || (!white && board.turn % 2 !== 0)
-        playerName = !white ? game.blackPlayerName : game.whitePlayerName;
-        pieces = !white ? board.whiteCaptured : board.blackCaptured
-    } else {
-        white = position !== 'top'
-        myTurn = position !== 'top'
-        playerName = position === 'top' ? 'Oponente' : user.username
-        pieces = []
 
-    }
+    const cnts = { p: 0, r: 0, n: 0, b: 0, q: 0 }
+    const capCol = (pieces && pieces[0]) ? pieces[0][0] : null
 
+    pieces.forEach(p => {
+        cnts[p[1]]++;
+    });
+
+    const ptypes = ['p', 'n', 'b', 'r', 'q'].filter(t => cnts[t] > 0)
 
     useEffect(() => {
-        if (game && board) {
-        } else {
-            if (position === 'bottom') {
-                getProfilePictureUrl(user).then(setUrl)
-            } else {
-                getProfilePictureUrl({ id: null, hasPicture: false, api_key: user.api_key }).then(setUrl)
-            }
-        }
-    }, [game, board, user, position])
+        getProfilePictureUrl(player?.id, player?.hasPicture, user?.api_key).then(setUrl)
+    }, [user, player])
 
-    return <div className='mt-1'>
+    if (mode[0] === 'v') {
+        const flexDirection = mode[1] !== 't' ? "column" : "column-reverse"
+        return <div style={{ display: "flex", flexDirection, alignItems: "flex-end", fontSize: "2.1vh", gap: "0.5em", backgroundColor: "" }}>
+            <div style={{ height: "1.8em" }}></div>
+            <div style={{ display: "flex", height: '2.5em', fontSize: "0.7em", justifyItems: "flex-end" }}>
+                {ptypes.map(c => <div key={c}
+                    style={{
+                        color: '#747474', paddingLeft: "2.2em", marginLeft: "0.5em",
+                        width: "2.5em", height: '2.5em', backgroundSize: '2.5em 2.5em',
+                        backgroundImage: `url('/assets/${capCol}${c}.svg')`
+                    }}>
+                    {cnts[c]}
+                </div>
+                )}
+            </div>
+            <div style={{ fontSize: "2em" }}>00:00</div>
+            <div style={{ display: "flex", alignItems: 'center' }}>
+                {myTurn && <div className='mr-2' style={{ width: '1em', height: '1em', backgroundColor: '#4caf50', borderRadius: '50%' }}></div>}
+                <img alt="" src={url} style={{ borderRadius: '15%', width: "5em", height: "5em" }} />
+            </div>
+            <div style={{ fontSize: '1.2em', fontWeight: (myTurn ? 'bold' : 'normal') }}>
+                {player?.username || "Oponente"}
+            </div>
+        </div>
+    }
 
+    return <div>
         <div style={{ overflow: "hidden", position: "relative" }}>
-            <img alt="" width='50' height='50' className='mr-2' src={url} style={{ borderRadius: '15%', float: "left" }} />
+            <img alt="" width='55' height='55' className='mr-2' src={url} style={{ borderRadius: '15%', float: "left" }} />
             <div style={{ float: "left" }} >
-                <div style={{ fontWeight: (myTurn ? 'bold' : 'normal') }}>{playerName}</div>
+                <div style={{ fontWeight: (myTurn ? 'bold' : 'normal') }}>{player?.username || "Oponente"}</div>
                 <div style={{ overflow: 'hidden', height: '30px' }}>
                     {pieces.map(c =>
                         <div key={c}

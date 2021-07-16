@@ -6,11 +6,12 @@ import { Tile } from "./Tile"
 import { getAttacked, getCastling, includes, getStartBoard } from '../utils/Chess'
 import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
+import { createMove } from "../controllers/game-client"
 
 const letters = { 1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h' }
 const startBoard = getStartBoard()
 
-export function Board({ reversed = false }) {
+export function Board({ reversed = false, size }) {
     const { game, board, updateGame } = useGame()
     const { user } = useAuth()
     const [src, setSrc] = useState(null)
@@ -26,7 +27,7 @@ export function Board({ reversed = false }) {
         setCastling([])
     }, [game, board])
 
-    const myColor = game ? (user.id === game.whitePlayerId ? 'w' : 'b') : ''
+    const myColor = game ? (user.id === game.whiteId ? 'w' : 'b') : ''
     const myTurn = game ? (myColor === 'w' ? game.movs.length % 2 === 0 : game.movs.length % 2 !== 0) : false
 
     const rows = reversed ? [0, 1, 2, 3, 4, 5, 6, 7] : [7, 6, 5, 4, 3, 2, 1, 0]
@@ -44,15 +45,7 @@ export function Board({ reversed = false }) {
                 setShowModal(true)
                 return
             }
-
-            apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src: src, dest: [c, r], cast: castled }, (error, data) => {
-                if (error) {
-                    setError(error || "Error inesperado")
-                } else {
-                    setError(null)
-                    updateGame(data)
-                }
-            })
+            createMove(user.api_key, game.id, piece, src, [c, r], castled).then(updateGame).catch(e => setError(e.message))
             return
         }
         setSrc([c, r])
@@ -76,38 +69,43 @@ export function Board({ reversed = false }) {
     }
 
     const coords = 'in'
-    const space = coords !== 'out' ? 180 : 220
 
-    const { innerWidth: width, innerHeight: height } = window
-    const th = Math.ceil((parseInt((height - space) / 8)) / window.devicePixelRatio) * window.devicePixelRatio
+    const th = size / 8
 
     const blackColor = '#ADC5CF'
     const whiteColor = '#F5F8F9'
 
     const innerBoard = () => {
-        return rows.map((r) =>
-            <div key={r} style={{ position: 'relative', width: `${th * 8}px`, height: `${th}px` }}>{
-                cols.map((c) => {
-                    const lm = board?.turn > 0 && ((game.movs[board.turn - 1].sCol === c && game.movs[board.turn - 1].sRow === r) || (game.movs[board.turn - 1].dCol === c && game.movs[board.turn - 1].dRow === r))
-                    return <Tile
-                        key={c}
-                        blackColor={blackColor}
-                        whiteColor={whiteColor}
-                        col={c} row={r}
-                        piece={(board ? board.inGameTiles : startBoard)[r][c]}
-                        reversed={reversed}
-                        selected={src && (src[0] === c && src[1] === r)}
-                        myTurn={myTurn}
-                        myColor={myColor}
-                        highlight={includes(high, c, r) || includes(castling, c, r)}
-                        lastMov={lm}
-                        onSelect={() => onSelect(c, r)}
-                        size={th}
-                        showCoords={coords === 'in'}
-                    ></Tile>
-                }
-                )}
-            </div>)
+        return <>
+            {rows.map((r) =>
+                <div key={r} style={{
+                    display: 'flex',
+                    flexDirection: 'row'
+                }}>{
+                        cols.map((c) => {
+                            const lm = board?.turn > 0 && ((game.movs[board.turn - 1].sCol === c && game.movs[board.turn - 1].sRow === r) || (game.movs[board.turn - 1].dCol === c && game.movs[board.turn - 1].dRow === r))
+                            return <Tile
+                                key={c}
+                                blackColor={blackColor}
+                                whiteColor={whiteColor}
+                                col={c} row={r}
+                                piece={(board ? board.inGameTiles : startBoard)[r][c]}
+                                reversed={reversed}
+                                selected={src && (src[0] === c && src[1] === r)}
+                                myTurn={myTurn}
+                                myColor={myColor}
+                                highlight={includes(high, c, r) || includes(castling, c, r)}
+                                lastMov={lm}
+                                onSelect={() => onSelect(c, r)}
+                                size={th}
+                                showCoords={coords === 'in'}
+                            ></Tile>
+                        }
+                        )}
+                </div>
+            )}
+            {(error && <Alert variant='danger'>{error}</Alert>)}
+        </>
     }
 
     return <>
@@ -143,15 +141,13 @@ export function Board({ reversed = false }) {
         {coords !== 'out' &&
             <div style={{
                 userSelect: 'none',
-                position: 'relative',
-                width: `${(th * 8)}px`, height: `${(th * 8)}px`,
+                display: 'flex',
+                flexDirection: 'column'
             }}>
                 {innerBoard()}
             </div>
         }
 
-        {(error && <Alert variant='danger'>
-            {error}
-        </Alert>)}
+
     </>
 }

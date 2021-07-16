@@ -4,8 +4,26 @@ import { apiRequest } from '../utils/ApiClient'
 const authContext = createContext();
 
 export function ProvideAuth({ children }) {
+
+  const [remember, setRemember] = useState(() => {
+    const local = localStorage.getItem('key')
+    return local ? true : false
+  })
+
+  const getStoredKey = () => {
+    const local = localStorage.getItem('key')
+    if (local) {
+      return local
+    }
+    const session = sessionStorage.getItem('key')
+    if (session) {
+      return session
+    }
+    return null
+  }
+
   const [user, setUser] = useState()
-  const [key, setKey] = useState(getStoredKey())
+  const [key, setKey] = useState(getStoredKey)
 
   useEffect(() => {
     refreshKey(key)
@@ -14,9 +32,11 @@ export function ProvideAuth({ children }) {
   const signIn = async (login, password, remember) => {
     const user = await apiRequest('/v1/api_keys', 'POST', null, { login, password })
     if (remember) {
+      setRemember(true)
       localStorage.setItem('key', user.api_key)
       sessionStorage.removeItem('key')
     } else {
+      setRemember(false)
       sessionStorage.setItem('key', user.api_key)
       localStorage.removeItem('key')
     }
@@ -27,8 +47,8 @@ export function ProvideAuth({ children }) {
   const signOut = () => {
     setUser(null)
     setKey(null)
-    localStorage.removeItem('key')
-    sessionStorage.removeItem('key')
+    localStorage.clear()
+    sessionStorage.clear()
     return Promise.resolve()
   }
 
@@ -45,24 +65,12 @@ export function ProvideAuth({ children }) {
     }
     setUser(usr);
   }
-  const auth = { user, key, signIn, signOut, refreshKey }
+  const auth = { user, key, remember, signIn, signOut, refreshKey }
   return (
     <authContext.Provider value={auth}>
       {children}
     </authContext.Provider>
   )
-}
-
-const getStoredKey = () => {
-  const local = localStorage.getItem('key')
-  if (local) {
-    return local
-  }
-  const session = sessionStorage.getItem('key')
-  if (session) {
-    return session
-  }
-  return null
 }
 
 export function useAuth() {

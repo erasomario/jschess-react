@@ -1,6 +1,6 @@
 const getAddress = () => {
     const url = new URL(window.location.href)
-    return process.env.NODE_ENV === 'development' ? `${url.protocol}//${url.hostname}:4000/api` : `${url.protocol}//${url.host}/api`
+    return process.env.NODE_ENV === 'development' ? `${url.protocol}//${url.hostname}:4000` : `${url.protocol}//${url.host}`
 }
 
 function apiRequest(endPoint, method, key, body) {
@@ -19,7 +19,7 @@ function apiRequest(endPoint, method, key, body) {
         opts.headers = { 'Authorization': `Bearer ${key}`, ...opts.headers }
     }
 
-    return fetch(getAddress() + endPoint, opts)
+    return fetch(getAddress() + "/api" + endPoint, opts)
         .then(response => {
             var contentType = response.headers.get("content-type");
             if (contentType && contentType.indexOf("application/json") !== -1) {

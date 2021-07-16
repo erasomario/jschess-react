@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 
 export const useInput = (initialValue = '') => {
     const ref = useRef(null)
@@ -6,6 +6,6 @@ export const useInput = (initialValue = '') => {
     return [
         { value, onChange: e => setValue(e.target.value), ref },//props
         setValue,
-        () => ref.current && ref.current.focus()//grabfocus
+        useCallback(() => { ref.current && ref.current.focus() }, [ref])//grabfocus
     ];
 }

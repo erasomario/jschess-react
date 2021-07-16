@@ -1,3 +1,4 @@
+import { mix } from "../utils/Colors";
 
 export function Tile({
     col,
@@ -40,33 +41,34 @@ export function Tile({
         }
     }
 
-    //const selected = 
-
-    const bgColor = black ? blackColor : whiteColor
+    let bgColor = black ? blackColor : whiteColor
     const high = highlight
-    const pieceSize = parseInt(size * 0.95)
+    
+    const circle = {
+        borderRadius: '50%',
+        border: "5px solid rgba(128, 128, 128, 0.3)",
+        position: "absolute", left: '5%' , top: '5%', width: `90%`, height: `90%`
+    }
 
-    const highStyle = high ? (piece ?
-        { position: "absolute", width: `${size}px`, height: `${size}px`, backgroundSize: `${size * 0.9}px ${size * 0.9}px`, backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url('/assets/circle.svg')` } :
-        { position: "absolute", width: `${size}px`, height: `${size}px`, backgroundSize: `${size * 0.3}px ${size * 0.3}px`, backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url('/assets/dot.svg')` })
-        : null
+    const dot = {
+        borderRadius: '50%',
+        backgroundColor: "rgba(128, 128, 128, 0.3)",
+        position: "absolute", left: '35%' , top: '35%', width: `30%`, height: `30%`
+    }
 
-    //console.log(size, pieceMargin, pieceSize);
+    const highStyle = high ? (piece ? circle: dot): null    
+    if (selected || lastMov) {
+        bgColor = "#" + mix(bgColor.slice(1), '2196F3', 0.25)
+    }
 
     return <>
         <div style={{ cursor: selectable ? 'pointer' : 'default', width: `${size}px`, height: `${size}px`, position: 'relative', backgroundColor: bgColor, float: 'left' }}
             onClick={onClick}>
             {showCoords && col === (reversed ? 7 : 0) ? <div style={{ ...tl, color: black ? whiteColor : blackColor }}>{row + 1}</div> : ''}
             {showCoords && row === (reversed ? 7 : 0) ? <div style={{ ...br, color: black ? whiteColor : blackColor }}>{letters[col + 1]}</div> : ''}
-            {selected &&
-                <div style={{ position: "absolute", width: `${size}px`, height: `${size}px`, opacity: "0.25", backgroundColor: '#2196F3' }} />
-            }
-            {lastMov &&
-                <div style={{ position: "absolute", width: `${size}px`, height: `${size}px`, opacity: "0.25", backgroundColor: '#2196F3' }} />
-            }
             {high && <div style={highStyle} />}
             {piece &&
-                <div style={{ position: "absolute", width: `${size}px`, height: `${size}px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `${pieceSize}px ${pieceSize}px`, backgroundImage: `url('/assets/${piece.slice(0, -1)}.svg')` }}>
+                <div style={{ position: "absolute", width: "100%", height: "100%", backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", backgroundImage: `url('/assets/${piece.slice(0, -1)}.svg')` }}>
                 </div>
             }
             {false && <div style={{ position: "absolute", left: '20px', color: '#FF0000' }}>{tile}</div>}

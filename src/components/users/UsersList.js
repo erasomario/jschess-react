@@ -7,14 +7,18 @@ import { findUsersLike } from '../../controllers/user-client';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 
-export default function UserList({ onSelect = (a) => a, style }) {
+export default function UserList({ onSelect = (a) => a, style, focus }) {
 
     const { user } = useAuth()
     const [list, setList] = useState([])
     const [selected, setSelected] = useState(null)
 
-    const [props] = useInput()
+    const [props, , grabFocus] = useInput()
     const [error, setError] = useState();
+
+    useEffect(() => {        
+            grabFocus()        
+    }, [grabFocus])
 
     useEffect(() => {
         if (props.value.length >= 3) {
