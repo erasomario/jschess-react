@@ -39,6 +39,7 @@ export default function HomePage() {
 
     useEffect(() => {
         user && getProfilePictureUrl(user.id, user.hasPicture, user.api_key).then(setPictureUrl)
+        document.body.style.backgroundColor = '#eef2f3'
     }, [user])
 
     useEffect(() => {

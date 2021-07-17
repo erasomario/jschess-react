@@ -16,7 +16,7 @@ export default function Moves() {
     const { game, board, updateTurn } = useGame()
     const scbarsRef = useRef(null)
     useLayoutEffect(() => {
-        if (scbarsRef.current) {            
+        if (scbarsRef.current) {
             scbarsRef.current.scrollIntoView(false)
         }
     }, [game, board])
@@ -48,58 +48,65 @@ export default function Moves() {
         }
         return <>
             {board.turn !== t &&
-                <td style={{ cursor: 'pointer', width: '40%', fontSize: '1em', height: '1em' }} onClick={() => updateTurn(t)}>
-                    {l}</td>}
+                <span style={{ cursor: "pointer", fontSize: "1em", flexBasis: "40%", padding: "0.1em 0.3em 0.1em 0.3em" }} onClick={() => updateTurn(t)}>
+                    {l}</span>}
             {board.turn === t &&
-                <td ref={scbarsRef} style={{ width: '40%', height: '1em' }}>
-                    <Badge variant="primary" style={{ margin: '0px', fontSize: '1em', fontWeight: 'normal' }}>
-                        {l}</Badge>
-                </td>}
+                <span ref={scbarsRef} style={{ flexBasis: "40%" }}>
+                    <span style={{ backgroundColor: "#007bff", color: "#FFFFFF", borderRadius: "0.25em", padding: "0.1em 0.3em 0.1em 0.3em" }}>{l}</span>
+                </span>}
         </>
     }
 
-    return <div style={{width: '17em', fontSize: '2.1vh' }}>
-        <Table striped size="sm" style={{ userSelect: 'none', margin: '0px' }}>
-            <thead>
-                <tr>
-                    <th style={{ width: '20%' }}>#</th>
-                    <th style={{ width: '40%' }}>
-                        <div style={{ width: "1.5em", height: '1.5em', backgroundSize: '1.5em 1.5em', backgroundImage: `url('/assets/wp.svg')` }} />
-                    </th>
-                    <th style={{ width: '40%' }}>
-                        <div style={{ width: "1.5em", height: '1.5em', backgroundSize: '1.5em 1.5em', backgroundImage: `url('/assets/bp.svg')` }} />
-                    </th>
-                </tr>
-            </thead>
-        </Table>
-        <SimpleBar style={{ height: "18em" }} className='mb-2'>
-            <Table striped size="sm" style={{ userSelect: 'none', margin: '0px' }}>
-                <tbody>
-                    {mat.map
-                        ((r, i) => {
-                            return <tr key={i}>
-                                <td style={{ width: '20%' }}>{i + 1}</td>
-                                <MoveCell row={i} col={0} mov={r[0]} />
-                                <MoveCell row={i} col={1} mov={r[1]} />
-                            </tr>
-                        })
-                    }
-                </tbody>
-            </Table>
+    return <div style={{ width: '17em', fontSize: '2.1vh' }}>
+
+
+        <div style={{
+            display: "flex",
+            fontSize: "1em",
+            height: "2.2em",
+            alignItems: "center",
+            backgroundColor: (1 % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : ""),
+            borderRadius: "0.25em"
+        }}>
+            <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>#</div>
+            <div style={{ flexBasis: "40%", width: "1.5em", height: '1.5em', backgroundSize: '1.5em 1.5em', backgroundRepeat: "no-repeat", backgroundImage: `url('/assets/wp.svg')` }} />
+            <div style={{ flexBasis: "40%", width: "1.5em", height: '1.5em', backgroundSize: '1.5em 1.5em', backgroundRepeat: "no-repeat", backgroundImage: `url('/assets/bp.svg')` }} />
+        </div>
+        <SimpleBar style={{ height: "22em" }} className='mb-2'>
+            <div style={{ userSelect: 'none', margin: '0px' }}>
+                {mat.map
+                    ((r, i) => {
+                        return <div style={{
+                            display: "flex",
+                            fontSize: "1em",
+                            height: "2.2em",
+                            alignItems: "center",
+                            backgroundColor: (i % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : ""),
+                            borderRadius: "0.25em"
+                        }} key={i}>
+                            <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>{i + 1}</div>
+                            <MoveCell row={i} col={0} mov={r[0]} />
+                            <MoveCell row={i} col={1} mov={r[1]} />
+                        </div>
+                    })
+                }
+
+            </div>
         </SimpleBar>
-        {true && <ButtonGroup>
-            <Button disabled={board.turn === 0} style={{ float: 'left', height: '2.5em' }} onClick={beg}>
-                <FaAngleDoubleLeft style={{height: '1em' }}/>
-            </Button>
-            <Button disabled={board.turn === 0} style={{ float: 'left', height: '2.5em' }} onClick={prev} >
-                <FaAngleLeft style={{height: '1em' }}/>
-            </Button>
-            <Button disabled={board.turn === game.movs.length} style={{ float: 'left', height: '2.5em' }} onClick={next} >
-                <FaAngleRight style={{height: '1em' }}/>
-            </Button>
-            <Button disabled={board.turn === game.movs.length} style={{ float: 'left', height: '2.5em' }} onClick={end} >
-                <FaAngleDoubleRight style={{height: '1em' }} />
-            </Button>
-        </ButtonGroup>}
+        {true &&
+            <ButtonGroup>
+                <Button disabled={board.turn === 0} onClick={beg}>
+                    <FaAngleDoubleLeft style={{ height: '1em' }} />
+                </Button>
+                <Button disabled={board.turn === 0} onClick={prev} >
+                    <FaAngleLeft style={{ height: '1em' }} />
+                </Button>
+                <Button disabled={board.turn === game.movs.length} onClick={next} >
+                    <FaAngleRight style={{ height: '1em' }} />
+                </Button>
+                <Button disabled={board.turn === game.movs.length} onClick={end} >
+                    <FaAngleDoubleRight style={{ height: '1em' }} />
+                </Button>
+            </ButtonGroup>}
     </div>
 }
