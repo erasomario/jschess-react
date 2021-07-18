@@ -4,7 +4,6 @@ var mix = function (color_1, color_2, weight) {
     function h2d(h) { return parseInt(h, 16); } // convert a hex value to decimal 
 
     weight = (typeof (weight) !== 'undefined') ? weight : 50; // set the weight to 50%, if that argument is omitted
-    console.log(color_1, color_2, weight);
     var color = "";
 
     for (var i = 0; i <= 5; i += 2) { // loop through each of the 3 hex pairs—red, green, and blue
@@ -16,7 +15,6 @@ var mix = function (color_1, color_2, weight) {
             
 
             val = d2h(Math.floor((v1 * (1 - weight)) + (v2 * weight)));
-            console.log(v1, v2, (v1 * (1 - weight)) + (v2 * weight));
         while (val.length < 2) { val = '0' + val; } // prepend a '0' if val results in a single digit
 
         color += val; // concatenate val to our new color string

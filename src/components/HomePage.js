@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useAuth } from '../providers/ProvideAuth';
 import { useGame } from '../providers/ProvideGame'
 import socketIOClient from "socket.io-client"
-import Moves from '../components/Moves'
+import Moves from '../components/moves/Moves'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import './blablabla.css'
