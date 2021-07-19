@@ -1,17 +1,17 @@
 import { useGame } from "../../providers/ProvideGame"
 import { FaAngleLeft, FaAngleRight, FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa'
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useMemo } from "react"
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 import './moves.css'
 
 const unicode = { K: ['\u2654', '\u265A'], Q: ['\u2655', '\u265B'], R: ['\u2656', '\u265C'], B: ['\u2657', '\u265D'], N: ['\u2658', '\u265E'] }
 
-const getMatElement = (game, i) => {
-    if (!game.movs[i]) {
+const getMatElement = (movs, i) => {
+    if (!movs[i]) {
         return null;
     }
-    let lbl = game.movs[i].label;
+    let lbl = movs[i].label;
     const firstL = lbl.slice(0, 1)
     if (['K', 'Q', 'R', 'B', 'N'].includes(firstL)) {
         lbl = unicode[firstL][i % 2 === 0 ? 0 : 1] + lbl.slice(1)
@@ -19,32 +19,24 @@ const getMatElement = (game, i) => {
     return { turn: i + 1, label: lbl }
 }
 
-const getMatrix = (game) => {
-    if (!game) {
+const getMatrix = (movs) => {
+    if (!movs) {
         return []
     }
     const mat = []
-    for (let i = 0; i < Math.ceil(game.movs.length / 2); i++) {
-        mat.push([getMatElement(game, i * 2), getMatElement(game, (i * 2) + 1)])
+    for (let i = 0; i < Math.ceil(movs.length / 2); i++) {
+        mat.push([getMatElement(movs, i * 2), getMatElement(movs, (i * 2) + 1)])
     }
     return mat
 }
 
 export default function Moves() {
-
-    const { game, board, updateTurn } = useGame()
-    const scbarsRef = useRef(null)
-    const [mat, setMat] = useState([])
-
-    useEffect(() => {
-        setMat(getMatrix(game))
-    }, [game])
-
-    useEffect(() => {
-        if (scbarsRef.current) {
-            scbarsRef.current.scrollIntoView({ block: "nearest", behavior: "auto" })
-        }
-    }, [board])
+    const { game, updateTurn } = useGame()
+    const mat = useMemo(() => getMatrix(game?.movs), [game?.movs])
+    const board = game ? game.board : null
+    const sc = useCallback(node => {
+        node?.scrollIntoView({ block: "nearest", behavior: "auto" })
+    }, [])
 
     const prev = () => updateTurn(board.turn - 1)
     const next = () => updateTurn(board.turn + 1)
@@ -67,13 +59,13 @@ export default function Moves() {
     return <div style={{ width: '17em', fontSize: '2.1vh' }}>
         <div className="movRow">
             <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>#</div>
-            <div className="pawn" style={{backgroundImage: `url('/assets/wp.svg')` }} />
-            <div className="pawn" style={{backgroundImage: `url('/assets/bp.svg')` }} />
+            <div className="pawn" style={{ backgroundImage: `url('/assets/wp.svg')` }} />
+            <div className="pawn" style={{ backgroundImage: `url('/assets/bp.svg')` }} />
         </div>
         <SimpleBar style={{ height: "22em" }}>
             {mat.map((r, i) => {
                 return <div
-                    ref={(r[0].turn === board.turn || r[1]?.turn === board.turn) ? scbarsRef : null}
+                    ref={(r[0].turn === game.board.turn || r[1]?.turn === game.board.turn) ? sc : null}
                     className="movRow"
                     style={{
                         backgroundColor: (i % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : ""),
@@ -84,6 +76,7 @@ export default function Moves() {
                 </div>
             })}
         </SimpleBar>
+
         <div style={{ display: "flex" }}>
             <button className="movBtn" onClick={beg} disabled={!board || board.turn === 1} >
                 <FaAngleDoubleLeft className="movBtnIcon" />
@@ -98,5 +91,5 @@ export default function Moves() {
                 <FaAngleDoubleRight className="movBtnIcon" />
             </button>
         </div>
-    </div>
+    </div >
 }

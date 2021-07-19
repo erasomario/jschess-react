@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useLayoutEffect, useState } from "react"
 import { useAuth } from "../providers/ProvideAuth"
 import { useGame } from "../providers/ProvideGame"
 import { apiRequest } from "../utils/ApiClient"
@@ -12,7 +12,8 @@ const letters = { 1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h'
 const startBoard = getStartBoard()
 
 export function Board({ reversed = false, size }) {
-    const { game, board, updateGame } = useGame()
+    console.log("board repaint")
+    const { game, updateGame } = useGame()
     const { user } = useAuth()
     const [src, setSrc] = useState(null)
     const [dest, setDest] = useState(null)
@@ -21,11 +22,11 @@ export function Board({ reversed = false, size }) {
     const [showModal, setShowModal] = useState(false)
     const [error, setError] = useState(null)
 
-    useEffect(() => {
-        setSrc(null)
-        setHigh([])
-        setCastling([])
-    }, [game, board])
+    useLayoutEffect(() => {
+        setSrc()
+        setHigh()
+        setCastling()
+    }, [game?.board?.turn])
 
     const myColor = game ? (user.id === game.whiteId ? 'w' : 'b') : ''
     const myTurn = game ? (myColor === 'w' ? game.movs.length % 2 === 0 : game.movs.length % 2 !== 0) : false
@@ -37,6 +38,7 @@ export function Board({ reversed = false, size }) {
 
         const castled = includes(castling, c, r)
         const highlighted = includes(high, c, r)
+        const board = game.board
 
         if (highlighted || castled) {
             const piece = board.inGameTiles[src[1]][src[0]]
@@ -45,22 +47,22 @@ export function Board({ reversed = false, size }) {
                 setShowModal(true)
                 return
             }
-            createMove(user.api_key, game.id, piece, src, [c, r], castled).then(updateGame).catch(e => setError(e.message))
+            createMove(user.api_key, game.id, piece, src, [c, r], castled)
+                .catch(e => setError(e.message))
             return
         }
         setSrc([c, r])
         setDest(null)
-        console.time()
+
         const att = getAttacked(board.inGameTiles, board.touched, myColor, c, r)
         const cast = getCastling(board.inGameTiles, board.touched, myColor, c, r)
         setHigh(att)
         setCastling(cast)
-        console.timeEnd()
     }
 
     const promote = (p) => {
         setShowModal(false)
-        const piece = board.inGameTiles[src[1]][src[0]]
+        const piece = game.board.inGameTiles[src[1]][src[0]]
         apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src, dest, prom: p }, (error, data) => {
             if (!error && data) {
                 updateGame(data)
@@ -69,9 +71,7 @@ export function Board({ reversed = false, size }) {
     }
 
     const coords = 'in'
-
     const th = size / 8
-
     const blackColor = '#ADC5CF'
     const whiteColor = '#F5F8F9'
 
@@ -83,13 +83,13 @@ export function Board({ reversed = false, size }) {
                     flexDirection: 'row'
                 }}>{
                         cols.map((c) => {
-                            const lm = board?.turn > 0 && ((game.movs[board.turn - 1].sCol === c && game.movs[board.turn - 1].sRow === r) || (game.movs[board.turn - 1].dCol === c && game.movs[board.turn - 1].dRow === r))
+                            const lm = (game && game.board.turn > 0) && ((game.movs[game.board.turn - 1].sCol === c && game.movs[game.board.turn - 1].sRow === r) || (game.movs[game.board.turn - 1].dCol === c && game.movs[game.board.turn - 1].dRow === r))
                             return <Tile
                                 key={c}
                                 blackColor={blackColor}
                                 whiteColor={whiteColor}
                                 col={c} row={r}
-                                piece={(board ? board.inGameTiles : startBoard)[r][c]}
+                                piece={(game ? game.board.inGameTiles : startBoard)[r][c]}
                                 reversed={reversed}
                                 selected={src && (src[0] === c && src[1] === r)}
                                 myTurn={myTurn}
@@ -147,7 +147,5 @@ export function Board({ reversed = false, size }) {
                 {innerBoard()}
             </div>
         }
-
-
     </>
 }

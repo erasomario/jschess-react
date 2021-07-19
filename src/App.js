@@ -7,6 +7,7 @@ import { ProvideGame } from './providers/ProvideGame'
 import RecoverPage from './components/users/RecoverPage'
 import LoginPage from './components/users/LoginPage'
 import RegisterPage from './components/users/RegisterPage'
+import { ProvideSocket } from './providers/ProvideSocket';
 
 function App() {
 
@@ -22,11 +23,13 @@ function App() {
           </Route>
           <Route path="/register">
             <RegisterPage />
-          </Route>          
+          </Route>
           <PrivateRoute path="/">
-            <ProvideGame>
-              <HomePage />
-            </ProvideGame>
+            <ProvideSocket>
+              <ProvideGame>
+                <HomePage />
+              </ProvideGame>
+            </ProvideSocket>
           </PrivateRoute>
         </Switch>
       </Router>

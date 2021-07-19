@@ -7,25 +7,26 @@ import 'simplebar/dist/simplebar.min.css';
 import { findGamesByStatus } from '../../controllers/user-client';
 import { useGame } from '../../providers/ProvideGame';
 import { findGameById } from '../../controllers/game-client';
+import { Alert } from 'react-bootstrap';
 
 export default function GamesList({ style, show, onHide = a => a, onSelect = (a) => a }) {
 
     const selectedDOM = useRef()
 
-    const { game, board, updateGame, updateTurn } = useGame()
+    const { game, updateGame } = useGame()
     const [error, setError] = useState()
     const [games, setGames] = useState()
     const { user } = useAuth()
 
     useEffect(() => {
         if (show) {
-            console.log("find games by status")
+            setError()
             findGamesByStatus(user.id, user.api_key, "open")
                 .then(setGames)
                 .then(selectedDOM.current?.scrollIntoView())
                 .catch(e => setError(e.message))
         }
-    }, [show, setGames, setError, user])
+    }, [show, user])
 
     const select = async (gameId) => {
         try {
@@ -61,6 +62,7 @@ export default function GamesList({ style, show, onHide = a => a, onSelect = (a)
                         </ListGroup.Item>)}
                 </ListGroup>
             </SimpleBar>
+            {error && <Alert variant="danger">{error}</Alert>}
         </Modal.Body>
     </Modal>
 }
