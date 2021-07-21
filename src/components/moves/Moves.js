@@ -5,8 +5,9 @@ import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 import './moves.css'
 import getMoveData from "./MoveUtils"
+import { FaPlus, FaClipboardList } from "react-icons/fa";
 
-export default function Moves() {
+export default function Moves({ style }) {
     const { game, updateTurn } = useGame()
     const data = useMemo(() => getMoveData(game), [game])
     const board = game ? game.board : null
@@ -38,7 +39,17 @@ export default function Moves() {
             <div className="pawn" style={{ backgroundImage: `url('/assets/wp.svg')` }} />
             <div className="pawn" style={{ backgroundImage: `url('/assets/bp.svg')` }} />
         </div>
-        <SimpleBar style={{ height: "22em" }}>
+        {data.show === "noGame" &&
+            <div className="instructionsCard" style={{ height: style.height, }}>
+                <div><b>Bienvenido</b></div>
+                <div>Puede iniciar un juego contra amigos o el computador en <FaPlus />, o consultar sus partidas en curso y pasadas en <FaClipboardList />.</div>
+            </div>
+        }
+        {data.show === "noMovs" &&
+            <div style={{ height: style.height }}>
+            </div>
+        }
+        {data.show === "movs" && <SimpleBar style={{ height: style.height }}>
             {data.matrix.map((r, i) => {
                 return <div
                     ref={(r[0].turn === game.board.turn || r[1]?.turn === game.board.turn) ? sc : null}
@@ -51,13 +62,13 @@ export default function Moves() {
             })}
             {data.winLabel &&
                 <div className="movRow"
-                    style={{padding: "0.75em", display: "flex", flexDirection: "column", alignItems: "center", height: "auto", backgroundColor: (data.matrix.length % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : "") }} >
+                    style={{ padding: "0.75em", display: "flex", flexDirection: "column", alignItems: "center", height: "auto", backgroundColor: (data.matrix.length % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : "") }} >
                     <div style={{ fontWeight: "bold" }}>{data.winLabel}</div>
                     {data.winDetail && <div style={{ fontSize: "0.8em", textAlign: "center" }}>{data.winDetail}</div>}
                 </div>}
-        </SimpleBar>
+        </SimpleBar>}
 
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", marginTop: "1em" }}>
             <button className="movBtn" onClick={beg} disabled={data.prevBtnDisabled} >
                 <FaAngleDoubleLeft className="movBtnIcon" />
             </button>

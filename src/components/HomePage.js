@@ -118,7 +118,7 @@ export default function HomePage() {
                         <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
                     </DropdownButton>}
                     <img alt="" src={pictureUrl} style={{ borderRadius: '50%', width: "2em", height: "2em" }} />
-                    <Moves></Moves>
+                    <Moves style={{ height: "22em" }}></Moves>
                 </div>
             </div>
         </div>

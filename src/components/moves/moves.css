@@ -67,6 +67,18 @@
     display: flex;
     align-items: center;
     font-size: 1em;
-    height: 2.2em;    
+    height: 2.2em;
     border-radius: 0.25em
+}
+
+.instructionsCard {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.25em;
+    background-color: rgba(255, 255, 255, 0.3);
+    font-size: 0.9em;
+    gap: 1em;
 }

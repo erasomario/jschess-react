@@ -14,7 +14,7 @@ const getMatElement = (movs, i) => {
 
 const getMatrix = (movs) => {
     if (!movs) {
-        return []
+        return null
     }
     const mat = []
     for (let i = 0; i < Math.ceil(movs.length / 2); i++) {
@@ -23,8 +23,12 @@ const getMatrix = (movs) => {
     return mat
 }
 
+/**
+ * Returns data to fill the move UI
+ * @param {*} game 
+ * @returns always returns an object
+ */
 const getMoveData = (game) => {
-
     let winDetail, winLabel
     if (game?.result) {
         if (game.result === "w") {
@@ -47,6 +51,7 @@ const getMoveData = (game) => {
         winDetail,
         prevBtnDisabled: !game?.board || game.board.turn === 1,
         nextBtnDisabled: !game?.board || game.board.turn === game.movs.length,
+        show: (!game ? "noGame" : (!game.movs ? "noMovs" : "movs")),
     }
 }
 

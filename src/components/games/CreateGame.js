@@ -68,7 +68,7 @@ export default function CreateGame({ show, onHide = a => a, onNewGame = a => a }
             {page === 'player' && <Form onSubmit={nextPage}>
                 <Form.Group>
                     <Form.Label>Oponente</Form.Label>
-                    <UserList focus={show} style={{ height: '15rem' }} onSelect={(u) => setPlayer(u)}></UserList>
+                    <UserList focus={show} style={{ height: '15rem' }} onSelect={(u) => { setPlayer(u); setError() }}></UserList>
                 </Form.Group>
                 {error && <Alert className='mt-3' variant="danger">{error}</Alert>}
                 <Button className='float-right' type="submit"><span className='align-baseline'>Continuar</span><FaArrowRight className='ml-2' /></Button>
