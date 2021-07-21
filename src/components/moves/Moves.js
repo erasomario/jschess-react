@@ -4,35 +4,11 @@ import { useCallback, useMemo } from "react"
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 import './moves.css'
-
-const unicode = { K: ['\u2654', '\u265A'], Q: ['\u2655', '\u265B'], R: ['\u2656', '\u265C'], B: ['\u2657', '\u265D'], N: ['\u2658', '\u265E'] }
-
-const getMatElement = (movs, i) => {
-    if (!movs[i]) {
-        return null;
-    }
-    let lbl = movs[i].label;
-    const firstL = lbl.slice(0, 1)
-    if (['K', 'Q', 'R', 'B', 'N'].includes(firstL)) {
-        lbl = unicode[firstL][i % 2 === 0 ? 0 : 1] + lbl.slice(1)
-    }
-    return { turn: i + 1, label: lbl }
-}
-
-const getMatrix = (movs) => {
-    if (!movs) {
-        return []
-    }
-    const mat = []
-    for (let i = 0; i < Math.ceil(movs.length / 2); i++) {
-        mat.push([getMatElement(movs, i * 2), getMatElement(movs, (i * 2) + 1)])
-    }
-    return mat
-}
+import getMoveData from "./MoveUtils"
 
 export default function Moves() {
     const { game, updateTurn } = useGame()
-    const mat = useMemo(() => getMatrix(game?.movs), [game?.movs])
+    const data = useMemo(() => getMoveData(game), [game])
     const board = game ? game.board : null
     const sc = useCallback(node => {
         node?.scrollIntoView({ block: "nearest", behavior: "auto" })
@@ -63,31 +39,35 @@ export default function Moves() {
             <div className="pawn" style={{ backgroundImage: `url('/assets/bp.svg')` }} />
         </div>
         <SimpleBar style={{ height: "22em" }}>
-            {mat.map((r, i) => {
+            {data.matrix.map((r, i) => {
                 return <div
                     ref={(r[0].turn === game.board.turn || r[1]?.turn === game.board.turn) ? sc : null}
                     className="movRow"
-                    style={{
-                        backgroundColor: (i % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : ""),
-                    }} key={i}>
+                    style={{ backgroundColor: (i % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : "") }} key={i}>
                     <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>{i + 1}</div>
                     <MoveCell mov={r[0]} />
                     <MoveCell mov={r[1]} />
                 </div>
             })}
+            {data.winLabel &&
+                <div className="movRow"
+                    style={{padding: "0.75em", display: "flex", flexDirection: "column", alignItems: "center", height: "auto", backgroundColor: (data.matrix.length % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : "") }} >
+                    <div style={{ fontWeight: "bold" }}>{data.winLabel}</div>
+                    {data.winDetail && <div style={{ fontSize: "0.8em", textAlign: "center" }}>{data.winDetail}</div>}
+                </div>}
         </SimpleBar>
 
         <div style={{ display: "flex" }}>
-            <button className="movBtn" onClick={beg} disabled={!board || board.turn === 1} >
+            <button className="movBtn" onClick={beg} disabled={data.prevBtnDisabled} >
                 <FaAngleDoubleLeft className="movBtnIcon" />
             </button>
-            <button className="movBtn" onClick={prev} disabled={!board || board.turn === 1}  >
+            <button className="movBtn" onClick={prev} disabled={data.prevBtnDisabled}  >
                 <FaAngleLeft className="movBtnIcon" />
             </button>
-            <button className="movBtn" onClick={next} disabled={!board || board.turn === game.movs.length}  >
+            <button className="movBtn" onClick={next} disabled={data.nextBtnDisabled}  >
                 <FaAngleRight className="movBtnIcon" />
             </button>
-            <button className="movBtn" onClick={end} disabled={!board || board.turn === game.movs.length}  >
+            <button className="movBtn" onClick={end} disabled={data.nextBtnDisabled}  >
                 <FaAngleDoubleRight className="movBtnIcon" />
             </button>
         </div>

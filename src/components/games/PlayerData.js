@@ -1,15 +1,44 @@
 import { useAuth } from "../../providers/ProvideAuth"
 import { getProfilePictureUrl } from '../../controllers/user-client'
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import { secsToStr } from "./PlayerDataUtils"
+import { useGame } from "../../providers/ProvideGame"
+import { timeout } from "../../controllers/game-client"
 
 export function PlayerData({ playerInfo, mode }) {
     const { key } = useAuth()
     const [url, setUrl] = useState()
-    const { captures, turn, playerId, playerName, hasPicture, color } = playerInfo
+    const { captures, turn, playerId, playerName, hasPicture, color, tick, result } = playerInfo
+    const invColor = color === "w" ? "b" : "w"
+    const [elapsed, setElapsed] = useState(0)
+    const { game } = useGame()
 
     useEffect(() => {
         getProfilePictureUrl(playerId, hasPicture, key).then(setUrl)
     }, [playerId, hasPicture, key])
+
+
+    const calcElapsed = useCallback(() => {
+        const e = parseInt((new Date() - new Date(game.lastMovAt)) / 1000)
+        if (playerInfo.remainingTime - e <= 0) {
+            timeout(key, game.id).catch(e => e)
+        }
+        return e
+    }, [game?.id, game?.lastMovAt, key, playerInfo.remainingTime])
+
+    useEffect(() => {
+        if (tick) {
+            setElapsed(calcElapsed())
+            const t = setInterval(() => {
+                setElapsed(calcElapsed())
+            }, 1000)
+            return () => { clearInterval(t) }
+        } else {
+            setElapsed(0)
+        }
+    }, [tick, game?.lastMovAt, calcElapsed])
+
+    const alert = playerInfo.remainingTime - elapsed < (game?.time * 60) * 0.2
 
     if (mode[0] === 'v') {
         const flexDirection = mode[1] !== 't' ? "column" : "column-reverse"
@@ -21,13 +50,15 @@ export function PlayerData({ playerInfo, mode }) {
                         style={{
                             color: '#747474', paddingLeft: "2.2em", marginLeft: "0.5em",
                             width: "2.5em", height: '2.5em', backgroundSize: '2.5em 2.5em',
-                            backgroundImage: `url('/assets/${color}${c[0]}.svg')`
+                            backgroundImage: `url('/assets/${invColor}${c[0]}.svg')`
                         }}>
                         {c[1]}
                     </div> : null)
                 })}
             </div>
-            <div style={{ fontSize: "2em" }}>00:00</div>
+            <div style={{ fontSize: "2em", color: (alert ? "red" : "") }}>
+                {secsToStr(playerInfo.remainingTime - elapsed)}
+            </div>
             <div style={{ display: "flex", alignItems: 'center' }}>
                 {turn && <div className='mr-2' style={{ width: '1em', height: '1em', backgroundColor: '#4caf50', borderRadius: '50%' }}></div>}
                 <img alt="" src={url} style={{ borderRadius: '15%', width: "5em", height: "5em" }} />
@@ -35,6 +66,8 @@ export function PlayerData({ playerInfo, mode }) {
             <div style={{ fontSize: '1.2em', fontWeight: (turn ? 'bold' : 'normal') }}>
                 {playerName}
             </div>
+            <div style={{ fontSize: '0.9em', margin: "-0.8em  0 -0.8em 0" }}>{result}</div>
+
         </div>
     }
 

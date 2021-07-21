@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useAuth } from '../providers/ProvideAuth';
 import { useGame } from '../providers/ProvideGame'
 import Moves from '../components/moves/Moves'

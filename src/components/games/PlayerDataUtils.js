@@ -6,55 +6,87 @@ const getCounters = (pieces) => {
     return cnts
 }
 
-export const getPlayersData = (game, user, reversed) => {
-    let topCaptures, bottomCaptures, topTurn, bottomTurn, topPlayer, bottomPlayer, topHasPicture, bottomHasPicture, topId, bottomId, topColor, bottomColor
+const getRemainingTime = (game, color) => {
+    let secs = game.time * 60
+    for (let i = 0; i < game.movs.length; i++) {
+        if ((color === 'w' && i % 2 === 0) || (color === 'b' && i % 2 !== 0)) {
+            if (game.movs[i].time) {
+                secs -= game.movs[i].time
+                secs += game.addition
+            }
+        }
+    }
+    return parseInt(secs)
+}
 
+const getResultLabel = (game, color) => {
+    if (!game.result) {
+        return null
+    } else if (game.result === 'd') {
+        return "Empate"
+    } else if (game.result === color) {
+        return "Ganador"
+    }
+}
+
+export const secsToStr = secs => {
+    const min = secs < 0
+    const asecs = Math.abs(secs)
+    const s = asecs % 60
+    const m = (asecs - s) / 60
+    return (min ? "-" : "") + m.toString().padStart(2, "0") + ":" + s.toString().padStart(2, "0")
+}
+
+export const getPlayersData = (game, user, reversed) => {
+    const top = {}, bottom = {}
     if (game) {
         const turn = game.board.turn % 2 === 0 ? 'w' : 'b'
-        topColor = reversed ? 'w' : 'b'
-        bottomColor = reversed ? 'b' : 'w'
-        topTurn = topColor === turn
-        bottomTurn = bottomColor === turn
-        topCaptures = topColor === 'w' ? game.board.blackCaptured : game.board.whiteCaptured
-        bottomCaptures = bottomColor === 'w' ? game.board.blackCaptured : game.board.whiteCaptured
-        topPlayer = reversed ? game.whiteName : game.blackName
-        bottomPlayer = reversed ? game.blackName : game.whiteName
-        topHasPicture = reversed ? game.whiteName : game.blackName
-        bottomHasPicture = reversed ? game.blackName : game.whiteName
-        topId = reversed ? game.whiteId : game.blackId
-        bottomId = reversed ? game.blackId : game.whiteId
+        top.color = reversed ? 'w' : 'b'
+        top.turn = top.color === turn
+        top.captures = getCounters(top.color === 'w' ? game.board.blackCaptured : game.board.whiteCaptured)
+        top.playerName = reversed ? game.whiteName : game.blackName
+        top.hasPicture = reversed ? game.whiteHasPicture : game.blackHasPicture
+        top.playerId = reversed ? game.whiteId : game.blackId
+        top.remainingTime = getRemainingTime(game, top.color)
+        top.tick = top.turn && game.movs.length >= 2 && game.board.turn === game.movs.length && !game.result
+        top.result = getResultLabel(game, top.color)
+
+        bottom.color = reversed ? 'b' : 'w'
+        bottom.turn = bottom.color === turn
+        bottom.captures = getCounters(bottom.color === 'w' ? game.board.blackCaptured : game.board.whiteCaptured)
+        bottom.playerName = reversed ? game.blackName : game.whiteName
+        bottom.hasPicture = reversed ? game.blackHasPicture : game.whiteHasPicture
+        bottom.playerId = reversed ? game.blackId : game.whiteId
+        bottom.remainingTime = getRemainingTime(game, bottom.color)
+        bottom.tick = bottom.turn && game.movs.length >= 2 && game.board.turn === game.movs.length && !game.result
+        bottom.result = getResultLabel(game, bottom.color)
     } else {
-        topCaptures = []
-        bottomCaptures = []
-        topPlayer = "Oponente"
-        topHasPicture = false
-        bottomPlayer = user.userName
-        bottomHasPicture = user.hasPicture
-        topId = null
-        bottomId = user.id
-        topColor = 'b'
-        bottomColor = 'w'
+        top.captures = {}
+        top.playerName = "Oponente"
+        top.hasPicture = false
+        top.playerId = null
+        top.color = 'b'
+        top.remainingTime = 300
+        top.tick = false
+        top.result = null
+
+        bottom.captures = {}
+        bottom.playerName = user.username
+        bottom.hasPicture = user.hasPicture
+        bottom.playerId = user.id
+        bottom.color = 'w'
+        bottom.remainingTime = 300
+        bottom.tick = false
+        bottom.result = null
     }
 
-    //    topPieces = ['wp1', 'wp2', 'wp3', 'wp4', 'wp5', 'wp6', 'wp7', 'wp8', 'wr1', 'wr2', 'wn1', 'wn2', 'wb1', 'wb2', 'wq2']
-    //   bottomPieces = ['bp1', 'bp2', 'bp3', 'bp4', 'bp5', 'bp6', 'bp7', 'bp8', 'br1', 'br2', 'bn1', 'bn2', 'bb1', 'bb2', 'bq2']
-
-    return [
-        {
-            color: topColor,
-            captures: getCounters(topCaptures),
-            turn: topTurn,
-            playerId: topId,
-            playerName: topPlayer,
-            hasPicture: topHasPicture
-        },
-        {
-            color: bottomColor,
-            captures: getCounters(bottomCaptures),
-            turn: bottomTurn,
-            playerId: bottomId,
-            playerName: bottomPlayer,
-            hasPicture: bottomHasPicture
+    if (game?.endType === "time") {
+        if (top.remainingTime < bottom.remainingTime) {
+            top.remainingTime = 0
+        } else {
+            bottom.remainingTime = 0
         }
-    ]
+    }
+
+    return [top, bottom]
 }

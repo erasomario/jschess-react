@@ -48,6 +48,7 @@ export function Board({ reversed = false, size }) {
                 return
             }
             createMove(user.api_key, game.id, piece, src, [c, r], castled)
+                .then(() => setError(null))
                 .catch(e => setError(e.message))
             return
         }
