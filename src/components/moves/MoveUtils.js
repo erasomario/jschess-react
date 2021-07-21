@@ -28,7 +28,7 @@ const getMatrix = (movs) => {
  * @param {*} game 
  * @returns always returns an object
  */
-const getMoveData = (game) => {
+const getMoveData = (game, user) => {
     let winDetail, winLabel
     if (game?.result) {
         if (game.result === "w") {
@@ -49,9 +49,10 @@ const getMoveData = (game) => {
         matrix: getMatrix(game?.movs),
         winLabel,
         winDetail,
-        prevBtnDisabled: !game?.board || game.board.turn === 1,
+        prevBtnDisabled: !game?.board || game.board.turn <= 1,
         nextBtnDisabled: !game?.board || game.board.turn === game.movs.length,
-        show: (!game ? "noGame" : (!game.movs ? "noMovs" : "movs")),
+        show: (!game ? "noGame" : (!game.movs || game.movs.length === 0 ? "noMovs" : "movs")),
+        myColor: game?.whiteId === user?.id ? "w" : "b"
     }
 }
 

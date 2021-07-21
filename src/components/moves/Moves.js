@@ -6,10 +6,12 @@ import 'simplebar/dist/simplebar.min.css'
 import './moves.css'
 import getMoveData from "./MoveUtils"
 import { FaPlus, FaClipboardList } from "react-icons/fa";
+import { useAuth } from "../../providers/ProvideAuth"
 
 export default function Moves({ style }) {
+    const { user } = useAuth()
     const { game, updateTurn } = useGame()
-    const data = useMemo(() => getMoveData(game), [game])
+    const data = useMemo(() => getMoveData(game, user), [game, user])
     const board = game ? game.board : null
     const sc = useCallback(node => {
         node?.scrollIntoView({ block: "nearest", behavior: "auto" })
@@ -36,17 +38,19 @@ export default function Moves({ style }) {
     return <div style={{ width: '17em', fontSize: '2.1vh' }}>
         <div className="movRow">
             <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>#</div>
-            <div className="pawn" style={{ backgroundImage: `url('/assets/wp.svg')` }} />
-            <div className="pawn" style={{ backgroundImage: `url('/assets/bp.svg')` }} />
+            <div className="headerPawn" style={{ backgroundImage: `url('/assets/wp.svg')` }} />
+            <div className="headerPawn" style={{ backgroundImage: `url('/assets/bp.svg')` }} />
         </div>
         {data.show === "noGame" &&
             <div className="instructionsCard" style={{ height: style.height, }}>
                 <div><b>Bienvenido</b></div>
-                <div>Puede iniciar un juego contra amigos o el computador en <FaPlus />, o consultar sus partidas en curso y pasadas en <FaClipboardList />.</div>
+                <div>Puede iniciar un juego contra amigos o contra el computador en <FaPlus />, o consultar sus partidas en curso y pasadas en <FaClipboardList />.</div>
             </div>
         }
         {data.show === "noMovs" &&
-            <div style={{ height: style.height }}>
+            <div className="instructionsCard" style={{ height: style.height, }}>
+                <div><b>Juega con las {data.myColor === "w" ? "Blancas" : "Negras"}</b></div>
+                <div>{data.myColor === "w" ? "Es su turno para iniciar" : "Es el turno de su oponente para iniciar"}</div>
             </div>
         }
         {data.show === "movs" && <SimpleBar style={{ height: style.height }}>

@@ -1,0 +1,13 @@
+.pawn {
+    width: 1.5em;
+    height: 1.5em;
+    background-size: 1.5em 1.5em;
+    background-repeat: no-repeat;
+    flex-basis: 1.5em;
+}
+
+.playerSubRow {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+}

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../../providers/ProvideAuth'
 import ListGroup from 'react-bootstrap/ListGroup'
-import { useInput } from '../../hooks/useInput';
 import Form from 'react-bootstrap/Form'
 import { findUsersLike } from '../../controllers/user-client';
 import SimpleBar from 'simplebar-react';
