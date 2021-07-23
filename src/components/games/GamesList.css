@@ -9,5 +9,13 @@
 .playerSubRow {
     display: flex;
     flex-direction: row;
-    gap: 0.5em;
+    align-items: center;
+}
+
+.gameListDot {
+    width: 0.75em;
+    height: 0.75em;
+    background-color: #4caf50;
+    border-radius: 50%;
+    margin-Left: 0.5em
 }

@@ -11,7 +11,7 @@ import { Alert } from 'react-bootstrap';
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
 import "./GamesList.css"
-import { FaPlus } from 'react-icons/fa';
+import { FaMedal, FaPlus } from 'react-icons/fa';
 
 const Loading = ({ style }) => {
     return <div style={style}>Cargando</div>
@@ -33,15 +33,20 @@ const GameItem = React.forwardRef((props, ref) => {
 
     const { game: g, onSelect, selectedGame } = props
 
-    let whiteLabel, blackLabel
+    let whiteDot, blackDot, draw
     if (g.result) {
-        whiteLabel = g.result === "w" ? "Ganador" : (g.result === "d" ? "Empate" : "")
-        blackLabel = g.result === "b" ? "Ganador" : (g.result === "d" ? "Empate" : "")
+        if (g.result === "w") {
+            whiteDot = true
+        } else if (g.result === "b") {
+            blackDot = true
+        } else if (g.result === "d") {
+            draw = true;
+        }
     } else {
         if (g.turn % 2 === 0) {
-            whiteLabel = "Turno de Jugar"
+            whiteDot = true
         } else {
-            blackLabel = "Turno de Jugar"
+            blackDot = true
         }
     }
 
@@ -54,14 +59,21 @@ const GameItem = React.forwardRef((props, ref) => {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div>
                 <div className="playerSubRow">
-                    <Pawn color={'w'} />{g.whiteName}<b>{whiteLabel}</b>
+                    <Pawn color={'w'} />{g.whiteName}
+                    {(whiteDot && !g.result) && <div className="gameListDot" />}
+                    {(whiteDot && g.result) && <FaMedal style={{ marginLeft: "0.5em" }} />}
                 </div>
                 <div className="playerSubRow">
-                    <Pawn color={'b'} />{g.blackName}<b>{blackLabel}</b>
+                    <Pawn color={'b'} />{g.blackName}
+                    {(blackDot && !g.result) && <div className="gameListDot" />}
+                    {(blackDot && g.result) && <FaMedal style={{ marginLeft: "0.5em" }} />}
                 </div>
             </div>
             {g.result &&
-                <div style={{ display: "flex", alignItems: "center" }}>{new Date(g.createdAt).toLocaleDateString("es-CO")}</div>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center" }}>
+                    {draw && <div>Empate</div>}
+                    {new Date(g.createdAt).toLocaleDateString("es-CO")}
+                </div>
             }
         </div>
     </ListGroup.Item>
@@ -74,19 +86,21 @@ export default function GamesList({ show, onHide = a => a }) {
     const [error, setError] = useState(null)
     const [openGames, setOpenGames] = useState(null)
     const [closedGames, setClosedGames] = useState(null)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         if (show) {
             findGamesByStatus(user.id, user.api_key, "open")
                 .then(setOpenGames)
                 .then(() => setError())
+                .then(() => setLoading(false))
                 .then(() => { ref.current?.scrollIntoView({ block: "nearest", behavior: "auto" }) })
                 .catch(e => setError(e.message))
 
             findGamesByStatus(user.id, user.api_key, "closed")
                 .then(setClosedGames)
                 .then(() => setError())
+                .then(() => setLoading(false))
                 .then(() => { ref.current?.scrollIntoView({ block: "nearest", behavior: "auto" }) })
                 .catch(e => setError(e.message))
         }
@@ -111,7 +125,7 @@ export default function GamesList({ show, onHide = a => a }) {
             </div>
         </Modal.Header>
         <Modal.Body>
-            <Tabs defaultActiveKey="closed" className="mb-3">
+            <Tabs defaultActiveKey="open" className="mb-3">
                 <Tab eventKey="open" title="En curso">
                     {loading && <Loading style={{ height }} />}
                     {!loading && openGames?.length === 0 && <NoData style={{ height }} type="open" />}
