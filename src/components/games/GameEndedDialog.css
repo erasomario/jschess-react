@@ -1,0 +1,7 @@
+.EndedKing {
+    width: 3em;
+    height: 3em;
+    background-size: 3em 3em;
+    background-repeat: no-repeat;
+    flex-basis: 3em;
+}
