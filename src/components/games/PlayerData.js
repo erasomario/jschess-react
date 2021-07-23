@@ -71,18 +71,33 @@ export function PlayerData({ playerInfo, mode }) {
         </div>
     }
 
-    return <div>
-        <div style={{ overflow: "hidden", position: "relative" }}>
-            <img alt="" width='55' height='55' className='mr-2' src={url} style={{ borderRadius: '15%', float: "left" }} />
-            <div style={{ float: "left" }} >
-                <div style={{ fontWeight: (turn ? 'bold' : 'normal') }}>{playerName}</div>
-                <div style={{ overflow: 'hidden', height: '30px' }}>
-                    {captures.map(c =>
-                        <div key={c}
-                            style={{ width: "30px", height: '30px', backgroundSize: '30px 30px', float: 'left', backgroundImage: `url('/assets/${c.slice(0, -1)}.svg')` }}>
-                        </div>
-                    )}
+    return <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-end", fontSize: "2.1vh", gap: "0.5em"}}>
+        <img alt="" src={url} style={{ borderRadius: '15%', width: "3.5em", height: "3.5em" }} />
+        <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+                {turn && <div style={{ width: '0.75em', height: '0.75em', backgroundColor: '#4caf50', borderRadius: '50%', margin: "0.25em 0.5em 0 0" }}></div>}
+                <div style={{ fontSize: '1.2em', fontWeight: (turn ? 'bold' : 'normal') }}>
+                    {playerName}
                 </div>
+            </div>
+            <div style={{ display: "flex", height: '2.5em', fontSize: "0.7em", justifyItems: "flex-start" }}>
+                {Object.entries(captures).map(c => {
+                    return (c[1] > 0 ? <div key={c[0]}
+                        style={{
+                            color: '#747474', paddingLeft: "2.4em", marginRight: "0.9em",
+                            width: "2.5em", height: '2.5em', backgroundSize: '3em 3em',
+                            backgroundPosition: "center center",
+                            backgroundImage: `url('/assets/${invColor}${c[0]}.svg')`,
+                        }}>
+                        {c[1]}
+                    </div> : null)
+                })}
+            </div>
+        </div>
+        <div style={{ flexGrow: "2", textAlign: "end" }}>
+            <div style={{ fontSize: '0.9em' }}>{result}</div>
+            <div style={{ fontSize: "1.5em", color: (alert ? "red" : "") }}>
+                {secsToStr(playerInfo.remainingTime - elapsed)}
             </div>
         </div>
     </div>

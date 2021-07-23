@@ -1,5 +1,5 @@
 const getCounters = (pieces) => {
-    const cnts = { p: 0, r: 0, n: 0, b: 0, q: 0 }
+    const cnts = { p: 0, n: 0, b: 0, r: 0, q: 0 }
     pieces.forEach(p => {
         cnts[p[1]]++;
     })
