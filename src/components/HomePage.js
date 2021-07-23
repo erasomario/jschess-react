@@ -14,12 +14,12 @@ import CreateGame from './games/CreateGame';
 import { Button } from "react-bootstrap";
 import { FaPlus, FaClipboardList } from "react-icons/fa";
 import GamesList from './games/GamesList';
-import { Board } from './Board'
 import { useDimensions } from '../hooks/useDimensions';
 import { PlayerData } from './games/PlayerData';
 import { getPlayersData } from './games/PlayerDataUtils';
 import { useSocket } from '../providers/ProvideSocket';
-
+import { Board } from './games/Board';
+import GameEndedDialog from './games/GameEndedDialog';
 
 export default function HomePage() {
 
@@ -28,18 +28,35 @@ export default function HomePage() {
     const [showUserDialog, setShowUserDialog] = useState(false)
     const [showNewGameDialog, setShowNewGameDialog] = useState(false)
     const [showGamesDialog, setShowGamesDialog] = useState(false)
+    const [showEndDialog, setShowEndDialog] = useState(false)
     const [pictureUrl, setPictureUrl] = useState()
-    const { user, key, signOut } = useAuth()
+    const { user, signOut } = useAuth()
     const { game, updateGame } = useGame()
     const reversed = game ? user.id === game.blackId : false;
 
-    const gameSelected = useCallback(data => {
-        if (game.id === data.game.id) {
-            updateGame(data.game)
+    const gameSelected = useCallback(ng => {
+        if (game.id === ng.id) {
+            //this is the game in watching right now, messages will be shown only when the game ends
+            updateGame(ng)
+            if (ng.result) {
+                //show endgame message
+                showEndDialog(true)
+            }
         } else {
-            toast(data.msg)
+            const myColor = ng.whiteId === user.id ? "w" : "b"
+            //I'm not watching this game right now 
+            if (ng.result) {
+                //the game ended
+                toast(`El juego contra ${myColor === "w" ? ng.blackName : ng.whiteName} finalizó`)
+            } else {
+                const turn = ng.movs.length % 2 === 0 ? "w" : "b"
+                if (turn === myColor) {
+                    //if it's my turn to play it means my opponent made a move
+                    toast(`${myColor === "w" ? ng.blackName : ng.whiteName} hizo un movimiento`)
+                }
+            }
         }
-    }, [updateGame, game?.id]);
+    }, [updateGame, game?.id, user?.id]);
 
     useEffect(() => {
         user && getProfilePictureUrl(user.id, user.hasPicture, user.api_key).then(setPictureUrl)
@@ -50,8 +67,8 @@ export default function HomePage() {
         if (!user) {
             return
         }
-        addSocketListener('gameTurnChanged', data => {
-            console.log('gameTurnChanged', Date.now())
+        addSocketListener('gameChanged', data => {
+            console.log('gameChanged', Date.now())
             gameSelected(data)
         })
     }, [addSocketListener, gameSelected, user]);
@@ -61,25 +78,37 @@ export default function HomePage() {
         signOut(() => { })
     }
 
-    const onNewGame = (game) => {
-        setShowNewGameDialog(false)
-        updateGame(game)
-    }
-
     if (!user) {
         return <></>
     }
 
     const [topData, bottomData] = getPlayersData(game, user, reversed)
-    const size = (height * 0.8) - 20
+
+    const orient = width > height ? "h" : "v"
+    let size
+    if (orient === "h") {
+        let f;
+        if (width >= 1200) {
+            f = 0.8
+        } else if (width >= 992) {
+            f = 0.85
+        } else {
+            f = 0.95
+        }
+        size = (height * f) - 20
+    } else {
+        size = width - 30//30 is for 2em of padding, but it's wrong to asume it's 30
+    }
 
     return <>
         <div className='' style={{
             background: 'linear-gradient(0deg, #eef2f3 0%, #CED6DC 100%)', padding: "1em"
         }}>
             <EditUserDialog show={showUserDialog} onHide={() => { setShowUserDialog(false) }}></EditUserDialog>
-            <CreateGame show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }} onNewGame={onNewGame}></CreateGame>
+            <CreateGame show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }} onNewGame={updateGame}></CreateGame>
             <GamesList show={showGamesDialog} onHide={() => { setShowGamesDialog(false) }}></GamesList>
+            <GameEndedDialog show={showEndDialog} onHide={() => { setShowEndDialog(false) }} onNewGame={updateGame}></GameEndedDialog>
+
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
@@ -92,35 +121,49 @@ export default function HomePage() {
                 pauseOnHover
             />
 
-            <div style={{ position: "absolute", display: "flex", flexDirection: "column", gap: "0.5em" }}>
-                <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
-                <Button variant="primary" onClick={() => setShowGamesDialog(true)}><FaClipboardList style={{ marginTop: -4 }} ></FaClipboardList></Button>
-            </div>
-            <div style={{ userSelect: "none", display: "flex", justifyContent: "center", backgroundColor: "" }}>
-                <div style={{ flexDirection: "column", flexBasis: "33%", paddingRight: "1.5em", backgroundColor: "" }}>
-                    <div style={{
-                        display: "flex", height: '50%', flexDirection: "column",
-                        justifyContent: "flex-end", alignItems: 'flex-end'
-                    }}>
-                        <PlayerData mode='vt' playerInfo={topData} />
+            {orient === "v" && <>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5em" }}>
+                    <PlayerData mode='h' playerInfo={topData} />
+                    <Board reversed={reversed} turn={game?.turn} size={size}></Board>
+                    <PlayerData mode='h' playerInfo={bottomData} />
+                </div>
+                <div style={{ position: "absolute", display: "flex", flexDirection: "row", gap: "0.5em" }}>
+                    <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
+                    <Button variant="primary" onClick={() => setShowGamesDialog(true)}><FaClipboardList style={{ marginTop: -4 }} ></FaClipboardList></Button>
+                </div>
+            </>}
+
+            {orient === "h" && <>
+                <div style={{ position: "absolute", display: "flex", flexDirection: "column", gap: "0.5em" }}>
+                    <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
+                    <Button variant="primary" onClick={() => setShowGamesDialog(true)}><FaClipboardList style={{ marginTop: -4 }} ></FaClipboardList></Button>
+                </div>
+                <div style={{ userSelect: "none", display: "flex", justifyContent: "center", backgroundColor: "" }}>
+                    <div style={{ flexDirection: "column", flexBasis: "33%", paddingRight: "1.5em", backgroundColor: "" }}>
+                        <div style={{
+                            display: "flex", height: '50%', flexDirection: "column",
+                            justifyContent: "flex-end", alignItems: 'flex-end'
+                        }}>
+                            <PlayerData mode='vt' playerInfo={topData} />
+                        </div>
+                        <div style={{
+                            display: "flex", height: '50%', flexDirection: "column",
+                            justifyContent: "flex-start", alignItems: 'flex-end'
+                        }}>
+                            <PlayerData mode='vb' playerInfo={bottomData} />
+                        </div>
                     </div>
-                    <div style={{
-                        display: "flex", height: '50%', flexDirection: "column",
-                        justifyContent: "flex-start", alignItems: 'flex-end'
-                    }}>
-                        <PlayerData mode='vb' playerInfo={bottomData} />
+                    <Board reversed={reversed} turn={game?.turn} size={size}></Board>
+                    <div style={{ backgroundColor: '', flexBasis: "40%", paddingLeft: "1.5em" }}>
+                        {true && <DropdownButton as={ButtonGroup} title={user.username} variant="link">
+                            <Dropdown.Item onClick={() => setShowUserDialog(true)}>Editar Perfil</Dropdown.Item>
+                            <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
+                        </DropdownButton>}
+                        <img alt="" src={pictureUrl} style={{ borderRadius: '50%', width: "2em", height: "2em" }} />
+                        <Moves style={{ height: "22em" }}></Moves>
                     </div>
                 </div>
-                <Board reversed={reversed} turn={game?.turn} size={size}></Board>
-                <div style={{ backgroundColor: '', flexBasis: "40%", paddingLeft: "1.5em" }}>
-                    {true && <DropdownButton as={ButtonGroup} title={user.username} variant="link">
-                        <Dropdown.Item onClick={() => setShowUserDialog(true)}>Editar Perfil</Dropdown.Item>
-                        <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
-                    </DropdownButton>}
-                    <img alt="" src={pictureUrl} style={{ borderRadius: '50%', width: "2em", height: "2em" }} />
-                    <Moves style={{ height: "22em" }}></Moves>
-                </div>
-            </div>
+            </>}
         </div>
     </>
 }
