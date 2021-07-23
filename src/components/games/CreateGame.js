@@ -38,6 +38,7 @@ export default function CreateGame({ show, onHide = a => a, onNewGame = a => a }
         } else {
             createGame(user.api_key, player.id, time, additionTime, color)
                 .then(onNewGame)
+                .then(onHide)
                 .catch(e => setError(e.message))
         }
     }
