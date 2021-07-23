@@ -1,4 +1,4 @@
-import { mix } from "../utils/Colors";
+import { mix } from "../../utils/Colors";
 
 export function Tile({
     col,

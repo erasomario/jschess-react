@@ -1,19 +1,18 @@
 import { useLayoutEffect, useState } from "react"
-import { useAuth } from "../providers/ProvideAuth"
-import { useGame } from "../providers/ProvideGame"
-import { apiRequest } from "../utils/ApiClient"
+import { useAuth } from "../../providers/ProvideAuth"
+import { useGame } from "../../providers/ProvideGame"
 import { Tile } from "./Tile"
-import { getAttacked, getCastling, includes, getStartBoard } from '../utils/Chess'
+import { getAttacked, getCastling, includes, getStartBoard } from '../../utils/Chess'
 import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
-import { createMove } from "../controllers/game-client"
+import { createMove } from "../../controllers/game-client"
 
 const letters = { 1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h' }
 const startBoard = getStartBoard()
 
 export function Board({ reversed = false, size }) {
     console.log("board repaint")
-    const { game, updateGame } = useGame()
+    const { game } = useGame()
     const { user } = useAuth()
     const [src, setSrc] = useState(null)
     const [dest, setDest] = useState(null)
@@ -35,6 +34,9 @@ export function Board({ reversed = false, size }) {
     const cols = reversed ? [7, 6, 5, 4, 3, 2, 1, 0] : [0, 1, 2, 3, 4, 5, 6, 7]
 
     const onSelect = (c, r) => {
+        if (game.result || game.board.turn !== game.movs.length) {
+            return
+        }
 
         const castled = includes(castling, c, r)
         const highlighted = includes(high, c, r)
@@ -64,11 +66,9 @@ export function Board({ reversed = false, size }) {
     const promote = (p) => {
         setShowModal(false)
         const piece = game.board.inGameTiles[src[1]][src[0]]
-        apiRequest(`/v1/games/${game.id}/moves`, 'post', user.api_key, { piece, src, dest, prom: p }, (error, data) => {
-            if (!error && data) {
-                updateGame(data)
-            }
-        })
+        createMove(user.api_key, game.id, piece, src, dest, false, p)
+            .then(() => setError(null))
+            .catch(e => setError(e.message))
     }
 
     const coords = 'in'
@@ -93,7 +93,7 @@ export function Board({ reversed = false, size }) {
                                 piece={(game ? game.board.inGameTiles : startBoard)[r][c]}
                                 reversed={reversed}
                                 selected={src && (src[0] === c && src[1] === r)}
-                                myTurn={myTurn}
+                                myTurn={myTurn && !game.result}
                                 myColor={myColor}
                                 highlight={includes(high, c, r) || includes(castling, c, r)}
                                 lastMov={lm}
