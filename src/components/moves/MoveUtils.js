@@ -33,15 +33,22 @@ const getMoveData = (game, user) => {
     if (game?.result) {
         if (game.result === "w") {
             winLabel = "1-0"
+            winDetail = "Ganaron las blancas"
         } else if (game.result === "b") {
             winLabel = "0-1"
+            winDetail = "Ganaron las negras"
         } else {
             winLabel = "0-0"
+            winDetail = "Empate"
         }
-        winLabel = game.result === "w" ? "1-0" : "0-1"
-        winDetail = `Ganaron las ${game.result === "w" ? "blancas" : "negras"}`
+
         if (game?.endType === 'time') {
             winDetail += `. Las ${game.result === "w" ? "negras" : "blancas"} se quedaron sin tiempo`
+        } else if (game?.endType === 'check') {
+            winDetail += `. Las ${game.result === "w" ? "blancas" : "negras"} dieron jaque mate`
+        } else if (game?.endType === 'stale') {
+
+            winDetail += `. Las ${game.movs.length % 2 === 0 ? "blancas" : "negras"} se quedaron sin opciones`
         }
     }
 
