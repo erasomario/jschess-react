@@ -49,7 +49,7 @@ export default function Moves({ style }) {
         }
         {data.show === "noMovs" &&
             <div className="instructionsCard" style={{ height: style.height, }}>
-                <div><b>Juega con las {data.myColor === "w" ? "Blancas" : "Negras"}</b></div>
+                <div><b>Juegan las {data.myColor === "w" ? "Blancas" : "Negras"}</b></div>
                 <div>{data.myColor === "w" ? "Es su turno para iniciar" : "Es el turno de su oponente para iniciar"}</div>
             </div>
         }
