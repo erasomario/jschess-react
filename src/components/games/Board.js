@@ -49,7 +49,7 @@ export function Board({ reversed = false, size }) {
                 setShowModal(true)
                 return
             }
-            createMove(user.api_key, game.id, piece, src, [c, r], castled)
+            createMove(user.api_key, game.id, piece, src, [c, r])
                 .then(() => setError(null))
                 .catch(e => setError(e.message))
             return
@@ -63,10 +63,10 @@ export function Board({ reversed = false, size }) {
         setCastling(cast)
     }
 
-    const promote = (p) => {
+    const promote = p => {
         setShowModal(false)
         const piece = game.board.inGameTiles[src[1]][src[0]]
-        createMove(user.api_key, game.id, piece, src, dest, false, p)
+        createMove(user.api_key, game.id, piece, src, dest, p)
             .then(() => setError(null))
             .catch(e => setError(e.message))
     }
