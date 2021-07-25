@@ -9,15 +9,15 @@ const findGameById = async (gameId, apiKey) => {
     return g
 }
 
-const createMove = async (apiKey, gameId, piece, src, dest, cast, prom) => {
-    return await apiRequest(`/v1/games/${gameId}/moves`, 'POST', apiKey, { piece, src, dest, cast, prom })
+const createMove = async (apiKey, gameId, piece, src, dest, prom) => {
+    return await apiRequest(`/v1/games/${gameId}/moves`, 'POST', apiKey, { piece, src, dest, prom })
 }
 
 const timeout = async (apiKey, gameId) => {
     return await apiRequest(`/v1/games/${gameId}/timeout`, 'POST', apiKey)
 }
 
-module.exports = {
+export {
     createGame,
     findGameById,
     createMove,
