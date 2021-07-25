@@ -1,25 +1,25 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { useAuth } from '../providers/ProvideAuth';
-import { useGame } from '../providers/ProvideGame'
-import Moves from '../components/moves/Moves'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import './blablabla.css'
-import DropdownButton from 'react-bootstrap/DropdownButton'
-import ButtonGroup from 'react-bootstrap/ButtonGroup'
-import Dropdown from 'react-bootstrap/Dropdown'
-import EditUserDialog from '../components/users/EditUserDialog'
-import { getProfilePictureUrl } from '../controllers/user-client';
-import CreateGame from './games/CreateGame';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from "react-bootstrap";
-import { FaPlus, FaClipboardList } from "react-icons/fa";
-import GamesList from './games/GamesList';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import { FaClipboardList, FaPlus } from "react-icons/fa";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Moves from '../components/moves/Moves';
+import EditUserDialog from '../components/users/EditUserDialog';
+import { getProfilePictureUrl } from '../controllers/user-client';
 import { useDimensions } from '../hooks/useDimensions';
+import { useAuth } from '../providers/ProvideAuth';
+import { useGame } from '../providers/ProvideGame';
+import { useSocket } from '../providers/ProvideSocket';
+import './blablabla.css';
+import { Board } from './games/Board';
+import CreateGameDialog from './games/CreateGameDialog';
+import GameEndedDialog from './games/GameEndedDialog';
+import GamesList from './games/GamesList';
 import { PlayerData } from './games/PlayerData';
 import { getPlayersData } from './games/PlayerDataUtils';
-import { useSocket } from '../providers/ProvideSocket';
-import { Board } from './games/Board';
-import GameEndedDialog from './games/GameEndedDialog';
 
 export default function HomePage() {
 
@@ -40,7 +40,7 @@ export default function HomePage() {
             updateGame(ng)
             if (ng.result) {
                 //show endgame message
-                showEndDialog(true)
+                setShowEndDialog(true)
             }
         } else {
             const myColor = ng.whiteId === user.id ? "w" : "b"
@@ -105,7 +105,7 @@ export default function HomePage() {
             background: 'linear-gradient(0deg, #eef2f3 0%, #CED6DC 100%)', padding: "1em"
         }}>
             <EditUserDialog show={showUserDialog} onHide={() => { setShowUserDialog(false) }}></EditUserDialog>
-            <CreateGame show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }} onNewGame={updateGame}></CreateGame>
+            <CreateGameDialog show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }} onNewGame={updateGame}></CreateGameDialog>
             <GamesList show={showGamesDialog} onHide={() => { setShowGamesDialog(false) }}></GamesList>
             <GameEndedDialog show={showEndDialog} onHide={() => { setShowEndDialog(false) }} onNewGame={updateGame}></GameEndedDialog>
 
