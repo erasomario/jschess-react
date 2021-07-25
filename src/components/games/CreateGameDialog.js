@@ -8,10 +8,12 @@ import ToggleButton from 'react-bootstrap/ToggleButton'
 import Modal from 'react-bootstrap/Modal'
 import { FaArrowLeft, FaArrowRight, FaChessPawn } from 'react-icons/fa'
 import { createGame } from '../../controllers/game-client'
+import Tab from 'react-bootstrap/Tab'
+import Tabs from 'react-bootstrap/Tabs'
 
 const times = [5, 10, 15, 30, 60, 0]
 
-export default function CreateGame({ show, onHide = a => a, onNewGame = a => a }) {
+export default function CreateGameDialog({ show, onHide = a => a, onNewGame = a => a }) {
     const { user } = useAuth()
     const [error, setError] = useState(null)
     const [player, setPlayer] = useState(null)
@@ -19,6 +21,7 @@ export default function CreateGame({ show, onHide = a => a, onNewGame = a => a }
     const [additionTime, setAdditionTime] = useState(null)
     const [makeColorProps, color, setColor] = useRadio(null)
     const [page, setPage] = useState(null)
+    const [tab, setTab] = useState("friend");
 
     useEffect(() => {
         if (show) {
@@ -33,10 +36,10 @@ export default function CreateGame({ show, onHide = a => a, onNewGame = a => a }
 
     const create = (e) => {
         e.preventDefault()
-        if (!player) {
+        if (tab === "friend" && !player) {
             setError('Seleccione un oponente')
         } else {
-            createGame(user.api_key, player.id, time, additionTime, color)
+            createGame(user.api_key, player?.id, time, additionTime, color)
                 .then(onNewGame)
                 .then(onHide)
                 .catch(e => setError(e.message))
@@ -45,7 +48,7 @@ export default function CreateGame({ show, onHide = a => a, onNewGame = a => a }
 
     const nextPage = (e) => {
         e.preventDefault()
-        if (!player) {
+        if (tab === "friend" && !player) {
             setError('Seleccione un oponente')
         } else {
             setError()
@@ -67,12 +70,22 @@ export default function CreateGame({ show, onHide = a => a, onNewGame = a => a }
         </Modal.Header>
         <Modal.Body>
             {page === 'player' && <Form onSubmit={nextPage}>
+                <div style={{ marginBottom: "0.5em" }}>Seleccione un oponente</div>
                 <Form.Group>
-                    <Form.Label>Oponente</Form.Label>
-                    <UserList focus={show} style={{ height: '15rem' }} onSelect={(u) => { setPlayer(u); setError() }}></UserList>
+                    <Tabs className="mb-3" onSelect={() => { setTab(); setError() }}>
+                        <Tab eventKey="friend" title="Amigos">
+                            <UserList focus={show} style={{ height: '15rem' }} onSelect={(u) => { setPlayer(u); setError() }}>
+                            </UserList>
+                        </Tab>
+                        <Tab eventKey="pc" title="Autómata">
+
+                        </Tab>
+                    </Tabs>
                 </Form.Group>
                 {error && <Alert className='mt-3' variant="danger">{error}</Alert>}
-                <Button className='float-right' type="submit"><span className='align-baseline'>Continuar</span><FaArrowRight className='ml-2' /></Button>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button type="submit"><span>Continuar</span><FaArrowRight className='ml-2' /></Button>
+                </div>
             </Form>}
 
             {page === 'opts' && <Form onSubmit={create}>

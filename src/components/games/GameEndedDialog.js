@@ -8,7 +8,7 @@ import { Alert, Button } from 'react-bootstrap';
 import { createGame } from '../../controllers/game-client';
 
 const King = ({ style, result }) => {
-    const piece = (result === "r" ? "rand" : result + "k")
+    const piece = (result === "d" ? "rand" : result + "k")
     return <div className="EndedKing" style={{ backgroundImage: `url('/assets/${piece}.svg')`, ...style }} />
 }
 
