@@ -2,10 +2,14 @@ const { apiRequest } = require("../utils/ApiClient")
 
 const getProfilePictureUrl = async (userId, hasPicture, apiKey) => {
     console.log("getting profile picture for ", userId)
-    if (userId && hasPicture) {
-        const r = await apiRequest(`/v1/users/${userId}/picture`, 'GET', apiKey, null)
-        const blob = await r.blob()
-        return URL.createObjectURL(blob)
+    if (hasPicture) {
+        if (userId) {
+            const r = await apiRequest(`/v1/users/${userId}/picture`, 'GET', apiKey, null)
+            const blob = await r.blob()
+            return URL.createObjectURL(blob)
+        } else {
+            return `/assets/bot.svg`
+        }
     } else {
         return `/assets/nopp.svg`
     }

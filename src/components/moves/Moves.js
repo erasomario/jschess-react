@@ -42,18 +42,18 @@ export default function Moves({ style }) {
             <div className="headerPawn" style={{ backgroundImage: `url('/assets/bp.svg')` }} />
         </div>
         {data.show === "noGame" &&
-            <div className="instructionsCard" style={{ height: style.height, }}>
+            < div className="instructionsCard" style={{ height: style.height }}>
                 <div><b>Bienvenido</b></div>
                 <div>Puede iniciar un juego contra amigos o contra el computador en <FaPlus />, o consultar sus partidas en curso y pasadas en <FaClipboardList />.</div>
             </div>
         }
         {data.show === "noMovs" &&
-            <div className="instructionsCard" style={{ height: style.height, }}>
+            <div className="instructionsCard" style={{ height: style.height }}>
                 <div><b>Juegan las {data.myColor === "w" ? "Blancas" : "Negras"}</b></div>
                 <div>{data.myColor === "w" ? "Es su turno para iniciar" : "Es el turno de su oponente para iniciar"}</div>
             </div>
         }
-        {data.show === "movs" && <SimpleBar style={{ height: style.height }}>
+        {data.show === "movs" && <SimpleBar style={{ height: style.height, fontSize: "0.9em" }}>
             {data.matrix.map((r, i) => {
                 return <div
                     ref={(r[0].turn === game.board.turn || r[1]?.turn === game.board.turn) ? sc : null}
@@ -70,7 +70,8 @@ export default function Moves({ style }) {
                     <div style={{ fontWeight: "bold" }}>{data.winLabel}</div>
                     {data.winDetail && <div style={{ fontSize: "0.8em", textAlign: "center" }}>{data.winDetail}</div>}
                 </div>}
-        </SimpleBar>}
+        </SimpleBar>
+        }
 
         <div style={{ display: "flex", marginTop: "1em" }}>
             <button className="movBtn" onClick={beg} disabled={data.prevBtnDisabled} >

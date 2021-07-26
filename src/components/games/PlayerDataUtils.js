@@ -81,10 +81,10 @@ export const getPlayersData = (game, user, reversed) => {
     }
 
     if (game?.endType === "time") {
-        if (top.remainingTime < bottom.remainingTime) {
-            top.remainingTime = 0
-        } else {
+        if (top.color === game.result) {
             bottom.remainingTime = 0
+        } else {
+            top.remainingTime = 0
         }
     }
 

@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react'
-import ListGroup from 'react-bootstrap/ListGroup'
-import { useAuth } from '../../providers/ProvideAuth'
-import Modal from 'react-bootstrap/Modal'
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert } from 'react-bootstrap';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Modal from 'react-bootstrap/Modal';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import { FaMedal, FaPlus } from 'react-icons/fa';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
-import { findGamesByStatus } from '../../controllers/user-client';
-import { useGame } from '../../providers/ProvideGame';
 import { findGameById } from '../../controllers/game-client';
-import { Alert } from 'react-bootstrap';
-import Tab from 'react-bootstrap/Tab'
-import Tabs from 'react-bootstrap/Tabs'
-import "./GamesList.css"
-import { FaMedal, FaPlus } from 'react-icons/fa';
+import { findGamesByStatus } from '../../controllers/user-client';
+import { useAuth } from '../../providers/ProvideAuth';
+import { useGame } from '../../providers/ProvideGame';
+import "./GamesList.css";
 
 const Loading = ({ style }) => {
     return <div style={style}>Cargando</div>
@@ -20,7 +20,7 @@ const Loading = ({ style }) => {
 const NoData = ({ type, style }) => {
     return <div style={{ ...style, display: "flex", flexDirection: "column", justifyContent: "center", gap: "1em" }}>
         <b>{type === "open" ? "No tiene partidas en curso" : "Aun no tiene partidas finalizadas"}</b>
-        <div>Puede iniciar un juego contra amigos o contra el computador en <FaPlus /> del menú.</div>
+        <div>Puede iniciar un juego contra amigos o contra el computador en la opción <FaPlus /> del inicio.</div>
         <div style={{ height: "5em" }}></div>
     </div>
 }

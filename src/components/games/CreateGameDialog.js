@@ -27,6 +27,7 @@ export default function CreateGameDialog({ show, onHide = a => a, onNewGame = a 
         if (show) {
             setError()
             setPlayer()
+            setTab("friend")
             setAdditionTime(8)
             setPage('player')
             setColor('wb')
@@ -69,16 +70,24 @@ export default function CreateGameDialog({ show, onHide = a => a, onNewGame = a 
             </div>
         </Modal.Header>
         <Modal.Body>
+
             {page === 'player' && <Form onSubmit={nextPage}>
                 <div style={{ marginBottom: "0.5em" }}>Seleccione un oponente</div>
                 <Form.Group>
-                    <Tabs className="mb-3" onSelect={() => { setTab(); setError() }}>
+                    <Tabs className="mb-3" activeKey={tab} onSelect={t => { setTab(t); setError() }}>
                         <Tab eventKey="friend" title="Amigos">
                             <UserList focus={show} style={{ height: '15rem' }} onSelect={(u) => { setPlayer(u); setError() }}>
                             </UserList>
                         </Tab>
-                        <Tab eventKey="pc" title="Autómata">
-
+                        <Tab eventKey="pc" title="Robot">
+                            <div style={{ height: '10rem', display: "flex", flexDirection: "row", alignItems: "center", gap: "1em" }}>
+                                <div style={{ flexShrink: "0", borderRadius: '15%', backgroundImage: "url(/assets/bot.svg)", width: "7em", height: "7em", backgroundSize: "7em 7em" }}></div>
+                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                    <b>¡Hola Humano!</b>
+                                    <div>Soy un robot sencillo pero daré lo mejor de mí de para ofrecerte un juego entretenido.</div>
+                                </div>
+                            </div>
+                            <div style={{ height: "3em" }}></div>
                         </Tab>
                     </Tabs>
                 </Form.Group>
@@ -86,41 +95,44 @@ export default function CreateGameDialog({ show, onHide = a => a, onNewGame = a 
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Button type="submit"><span>Continuar</span><FaArrowRight className='ml-2' /></Button>
                 </div>
-            </Form>}
+            </Form>
+            }
 
-            {page === 'opts' && <Form onSubmit={create}>
-                <Form.Group>
-                    <Form.Label>Minutos por Cada Jugador</Form.Label>
-                    <ButtonGroup toggle >
-                        {times.map((t, i) => <ToggleButton
-                            key={i}
-                            name="time"
-                            {...makeTimeProps(t)}>
-                            {t !== 0 ? t : 'Ilimitado'}
-                        </ToggleButton>
-                        )}
-                    </ButtonGroup>
-                </Form.Group>
-                <Form.Group controlId="formBasicRange">
-                    <Form.Label>Segundos de Adición por Jugada: <b>{additionTime}</b></Form.Label>
-                    <Form.Control disabled={time === 0} type="range" custom min="0" max="180" defaultValue={additionTime} onChange={(e) => setAdditionTime(e.target.value)} />
-                </Form.Group>
-                <Form.Group>
-                    <ButtonGroup toggle>
-                        <ToggleButton  {...makeColorProps('w')} name="color" variant="primary">
-                            <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('/assets/wk.svg')` }} />
-                        </ToggleButton>
-                        <ToggleButton {...makeColorProps('wb')} name="color" variant="primary">
-                            <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('/assets/rand.svg')` }} />
-                        </ToggleButton>
-                        <ToggleButton {...makeColorProps('b')} name="color" variant="primary">
-                            <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('/assets/bk.svg')` }} />
-                        </ToggleButton>
-                    </ButtonGroup>
-                </Form.Group>
-                {error && <Alert className='mt-3' variant="danger">{error}</Alert>}
-                <Button className='float-right' type="submit"><span className='align-baseline'>Crear Partida</span><FaChessPawn className='ml-2' /></Button>
-            </Form>}
-        </Modal.Body>
-    </Modal>
+            {
+                page === 'opts' && <Form onSubmit={create}>
+                    <Form.Group>
+                        <Form.Label>Minutos por Cada Jugador</Form.Label>
+                        <ButtonGroup toggle >
+                            {times.map((t, i) => <ToggleButton
+                                key={i}
+                                name="time"
+                                {...makeTimeProps(t)}>
+                                {t !== 0 ? t : 'Ilimitado'}
+                            </ToggleButton>
+                            )}
+                        </ButtonGroup>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicRange">
+                        <Form.Label>Segundos de Adición por Jugada: <b>{additionTime}</b></Form.Label>
+                        <Form.Control disabled={time === 0} type="range" custom min="0" max="180" defaultValue={additionTime} onChange={(e) => setAdditionTime(e.target.value)} />
+                    </Form.Group>
+                    <Form.Group>
+                        <ButtonGroup toggle>
+                            <ToggleButton  {...makeColorProps('w')} name="color" variant="primary">
+                                <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('/assets/wk.svg')` }} />
+                            </ToggleButton>
+                            <ToggleButton {...makeColorProps('wb')} name="color" variant="primary">
+                                <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('/assets/rand.svg')` }} />
+                            </ToggleButton>
+                            <ToggleButton {...makeColorProps('b')} name="color" variant="primary">
+                                <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('/assets/bk.svg')` }} />
+                            </ToggleButton>
+                        </ButtonGroup>
+                    </Form.Group>
+                    {error && <Alert className='mt-3' variant="danger">{error}</Alert>}
+                    <Button className='float-right' type="submit"><span className='align-baseline'>Crear Partida</span><FaChessPawn className='ml-2' /></Button>
+                </Form>
+            }
+        </Modal.Body >
+    </Modal >
 }
