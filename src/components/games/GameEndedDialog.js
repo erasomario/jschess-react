@@ -5,7 +5,7 @@ import { useGame } from '../../providers/ProvideGame';
 import "./GameEndedDialog.css"
 import { FaRedo, FaTimes } from 'react-icons/fa';
 import { Alert, Button } from 'react-bootstrap';
-import { createGame } from '../../controllers/game-client';
+import { rematch } from '../../controllers/game-client';
 
 const King = ({ style, result }) => {
     const piece = (result === "d" ? "rand" : result + "k")
@@ -14,15 +14,14 @@ const King = ({ style, result }) => {
 
 const capital = str => str.slice(0, 1).toUpperCase() + str.slice(1)
 
-
 export default function GameEndedDialog({ show, onHide = a => a, onNewGame = a => a }) {
     const { user } = useAuth()
     const { game } = useGame()
     const [error, setError] = useState(null)
 
     const create = (e) => {
-        e.preventDefault()
-        createGame(user.api_key, game.whiteId === user.id ? game.blackId : game.whiteId, game.time, game.addition, game.whiteId === user.id ? "w" : "b")
+        e.preventDefault()        
+        rematch(user, game)
             .then(onNewGame)
             .then(onHide)
             .catch(e => setError(e.message))
@@ -46,6 +45,8 @@ export default function GameEndedDialog({ show, onHide = a => a, onNewGame = a =
         detail = `${capital(game.result === "w" ? game.whiteName : game.blackName)} dió jaque mate`
     } else if (game.endType === "stale") {
         detail = `${capital(game.movs.length % 2 === 0 ? game.whiteName : game.blackName)} se quedó sin opciones`
+    } else if (game.endType === "material") {
+        detail = "No hay piezas sufientes para llegar a un jaque mate"
     }
 
     return <Modal show={show} onHide={onHide}>
