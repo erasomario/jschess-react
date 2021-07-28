@@ -57,7 +57,7 @@ export function PlayerData({ playerInfo, mode }) {
                 })}
             </div>
             <div style={{ fontSize: "2em", color: (alert ? "red" : "") }}>
-                {secsToStr(playerInfo.remainingTime - elapsed)}
+                {secsToStr(playerInfo.remainingTime !== null ? playerInfo.remainingTime - elapsed : null)}
             </div>
             <div style={{ display: "flex", alignItems: 'center' }}>
                 {turn && <div className='mr-2' style={{ width: '1em', height: '1em', backgroundColor: '#4caf50', borderRadius: '50%' }}></div>}
@@ -71,7 +71,7 @@ export function PlayerData({ playerInfo, mode }) {
         </div>
     }
 
-    return <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-end", fontSize: "2.1vh", gap: "0.5em"}}>
+    return <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-end", fontSize: "2.1vh", gap: "0.5em" }}>
         <img alt="" src={url} style={{ borderRadius: '15%', width: "3.5em", height: "3.5em" }} />
         <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", alignItems: "center" }}>

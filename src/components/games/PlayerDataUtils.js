@@ -7,6 +7,9 @@ const getCounters = (pieces) => {
 }
 
 const getRemainingTime = (game, color) => {
+    if (!game.time) {
+        return null
+    }
     let secs = game.time * 60
     for (let i = 0; i < game.movs.length; i++) {
         if ((color === 'w' && i % 2 === 0) || (color === 'b' && i % 2 !== 0)) {
@@ -30,6 +33,9 @@ const getResultLabel = (game, color) => {
 }
 
 export const secsToStr = secs => {
+    if (secs === null) {
+        return "∞"
+    }
     const min = secs < 0
     const asecs = Math.abs(secs)
     const s = asecs % 60
@@ -48,7 +54,7 @@ export const getPlayersData = (game, user, reversed) => {
         top.hasPicture = reversed ? game.whiteHasPicture : game.blackHasPicture
         top.playerId = reversed ? game.whiteId : game.blackId
         top.remainingTime = getRemainingTime(game, top.color)
-        top.tick = top.turn && game.movs.length >= 2 && game.board.turn === game.movs.length && !game.result
+        top.tick = top.turn && game.movs.length >= 2 && game.board.turn === game.movs.length && !game.result && game.time
         top.result = getResultLabel(game, top.color)
 
         bottom.color = reversed ? 'b' : 'w'
@@ -58,7 +64,7 @@ export const getPlayersData = (game, user, reversed) => {
         bottom.hasPicture = reversed ? game.blackHasPicture : game.whiteHasPicture
         bottom.playerId = reversed ? game.blackId : game.whiteId
         bottom.remainingTime = getRemainingTime(game, bottom.color)
-        bottom.tick = bottom.turn && game.movs.length >= 2 && game.board.turn === game.movs.length && !game.result
+        bottom.tick = bottom.turn && game.movs.length >= 2 && game.board.turn === game.movs.length && !game.result && game.time
         bottom.result = getResultLabel(game, bottom.color)
     } else {
         top.captures = {}
