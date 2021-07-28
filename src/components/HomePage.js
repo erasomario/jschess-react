@@ -52,7 +52,7 @@ export default function HomePage() {
                 const turn = ng.movs.length % 2 === 0 ? "w" : "b"
                 if (turn === myColor) {
                     //if it's my turn to play it means my opponent made a move
-                    toast(`${myColor === "w" ? ng.blackName : ng.whiteName} hizo un movimiento`)
+                    toast(`${myColor === "w" ? ng.blackName : ng.whiteName} hizo un movimiento en otro juego`)
                 }
             }
         }
@@ -160,7 +160,7 @@ export default function HomePage() {
                             <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
                         </DropdownButton>}
                         <img alt="" src={pictureUrl} style={{ borderRadius: '50%', width: "2em", height: "2em" }} />
-                        <Moves style={{ height: "22em" }}></Moves>
+                        <Moves onNewGame={updateGame} style={{ height: "22em" }}></Moves>
                     </div>
                 </div>
             </>}

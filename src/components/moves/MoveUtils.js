@@ -47,8 +47,9 @@ const getMoveData = (game, user) => {
         } else if (game?.endType === 'check') {
             winDetail += `. Las ${game.result === "w" ? "blancas" : "negras"} dieron jaque mate`
         } else if (game?.endType === 'stale') {
-
             winDetail += `. Las ${game.movs.length % 2 === 0 ? "blancas" : "negras"} se quedaron sin opciones`
+        } else if (game.endType === "material") {
+            winDetail += "No hay piezas sufientes para llegar a un jaque mate"
         }
     }
 
@@ -59,7 +60,8 @@ const getMoveData = (game, user) => {
         prevBtnDisabled: !game?.board || game.board.turn <= 1,
         nextBtnDisabled: !game?.board || game.board.turn === game.movs.length,
         show: (!game ? "noGame" : (!game.movs || game.movs.length === 0 ? "noMovs" : "movs")),
-        myColor: game?.whiteId === user?.id ? "w" : "b"
+        myColor: game?.whiteId === user?.id ? "w" : "b",
+        selectedRow: Math.floor((game?.board?.turn - 1) / 2)
     }
 }
 
