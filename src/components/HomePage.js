@@ -23,7 +23,7 @@ import { getPlayersData } from './games/PlayerDataUtils';
 
 export default function HomePage() {
 
-    const { addSocketListener } = useSocket()
+    const { addSocketListener, isSocketOpen } = useSocket()
     const { width, height } = useDimensions()
     const [showUserDialog, setShowUserDialog] = useState(false)
     const [showNewGameDialog, setShowNewGameDialog] = useState(false)
@@ -34,7 +34,12 @@ export default function HomePage() {
     const { game, updateGame } = useGame()
     const reversed = game ? user.id === game.blackId : false;
 
-    const gameSelected = useCallback(ng => {
+    useEffect(() => {
+        user && getProfilePictureUrl(user.id, user.hasPicture, user.api_key).then(setPictureUrl)
+        document.body.style.backgroundColor = '#eef2f3'
+    }, [user])
+
+    const gameChanged = useCallback(ng => {
         if (game.id === ng.id) {
             //this is the game in watching right now, messages will be shown only when the game ends
             updateGame(ng)
@@ -58,20 +63,31 @@ export default function HomePage() {
         }
     }, [updateGame, game?.id, user?.id]);
 
-    useEffect(() => {
-        user && getProfilePictureUrl(user.id, user.hasPicture, user.api_key).then(setPictureUrl)
-        document.body.style.backgroundColor = '#eef2f3'
-    }, [user])
+    const invitedToGame = useCallback((ng, open) => {
+        toast(`${ng.whiteId === user.id ? ng.blackName : ng.whiteName} le invita a un nuevo juego`)
+        open && updateGame(ng)
+    }, [updateGame, user?.id]);
 
     useEffect(() => {
-        if (!user) {
+        if (!user || !isSocketOpen) {
             return
         }
         addSocketListener('gameChanged', data => {
-            console.log('gameChanged', Date.now())
-            gameSelected(data)
+            gameChanged(data)
         })
-    }, [addSocketListener, gameSelected, user]);
+    }, [addSocketListener, gameChanged, user, isSocketOpen]);
+
+    useEffect(() => {
+        if (!user || !isSocketOpen) {
+            return
+        }
+        addSocketListener('openNewGame', data => {
+            invitedToGame(data, true)
+        })
+        addSocketListener('invitedToGame', data => {
+            invitedToGame(data, false)
+        })
+    }, [addSocketListener, invitedToGame, user, isSocketOpen])
 
     const logout = (e) => {
         e.preventDefault()
