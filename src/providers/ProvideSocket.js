@@ -32,11 +32,12 @@ export function ProvideSocket({ children }) {
         if (!open) {
             return
         }        
+        console.log("listening for: ", event);
         socket.current.removeAllListeners(event)
         socket.current.on(event, cb)
     }, [open])
 
-    return <SocketContext.Provider value={{ addSocketListener, isSocketOpen: open }}>
+    return <SocketContext.Provider value={{ addSocketListener}}>
         {children}
     </SocketContext.Provider>
 }
