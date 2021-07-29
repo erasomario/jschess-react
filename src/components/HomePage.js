@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import { FaClipboardList, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Moves from '../components/moves/Moves';
@@ -17,17 +17,16 @@ import './blablabla.css';
 import { Board } from './games/Board';
 import CreateGameDialog from './games/CreateGameDialog';
 import GameEndedDialog from './games/GameEndedDialog';
-import GamesList from './games/GamesList';
 import { PlayerData } from './games/PlayerData';
 import { getPlayersData } from './games/PlayerDataUtils';
+import SelectGame from './games/SelectGame';
 
 export default function HomePage() {
 
-    const { addSocketListener, isSocketOpen } = useSocket()
+    const { addSocketListener } = useSocket()
     const { width, height } = useDimensions()
     const [showUserDialog, setShowUserDialog] = useState(false)
     const [showNewGameDialog, setShowNewGameDialog] = useState(false)
-    const [showGamesDialog, setShowGamesDialog] = useState(false)
     const [showEndDialog, setShowEndDialog] = useState(false)
     const [pictureUrl, setPictureUrl] = useState()
     const { user, signOut } = useAuth()
@@ -63,22 +62,22 @@ export default function HomePage() {
         }
     }, [updateGame, game?.id, user?.id]);
 
-    const invitedToGame = useCallback((ng, open) => {
+  /*  const invitedToGame = useCallback((ng, open) => {
         toast(`${ng.whiteId === user.id ? ng.blackName : ng.whiteName} le invita a un nuevo juego`)
         open && updateGame(ng)
-    }, [updateGame, user?.id]);
+    }, [updateGame, user?.id]);*/
 
     useEffect(() => {
-        if (!user || !isSocketOpen) {
+        if (!user) {
             return
         }
         addSocketListener('gameChanged', data => {
             gameChanged(data)
         })
-    }, [addSocketListener, gameChanged, user, isSocketOpen]);
+    }, [addSocketListener, gameChanged, user]);
 
-    useEffect(() => {
-        if (!user || !isSocketOpen) {
+    /*useEffect(() => {
+        if (!user) {
             return
         }
         addSocketListener('openNewGame', data => {
@@ -87,7 +86,7 @@ export default function HomePage() {
         addSocketListener('invitedToGame', data => {
             invitedToGame(data, false)
         })
-    }, [addSocketListener, invitedToGame, user, isSocketOpen])
+    }, [addSocketListener, invitedToGame, user])*/
 
     const logout = (e) => {
         e.preventDefault()
@@ -122,7 +121,7 @@ export default function HomePage() {
         }}>
             <EditUserDialog show={showUserDialog} onHide={() => { setShowUserDialog(false) }}></EditUserDialog>
             <CreateGameDialog show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }} onNewGame={updateGame}></CreateGameDialog>
-            <GamesList show={showGamesDialog} onHide={() => { setShowGamesDialog(false) }}></GamesList>
+
             <GameEndedDialog show={showEndDialog} onHide={() => { setShowEndDialog(false) }} onNewGame={updateGame}></GameEndedDialog>
 
             <ToastContainer
@@ -145,14 +144,14 @@ export default function HomePage() {
                 </div>
                 <div style={{ position: "absolute", display: "flex", flexDirection: "row", gap: "0.5em" }}>
                     <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
-                    <Button variant="primary" onClick={() => setShowGamesDialog(true)}><FaClipboardList style={{ marginTop: -4 }} ></FaClipboardList></Button>
+                    <SelectGame></SelectGame>
                 </div>
             </>}
 
             {orient === "h" && <>
                 <div style={{ position: "absolute", display: "flex", flexDirection: "column", gap: "0.5em" }}>
                     <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
-                    <Button variant="primary" onClick={() => setShowGamesDialog(true)}><FaClipboardList style={{ marginTop: -4 }} ></FaClipboardList></Button>
+                    <SelectGame></SelectGame>
                 </div>
                 <div style={{ userSelect: "none", display: "flex", justifyContent: "center", backgroundColor: "" }}>
                     <div style={{ flexDirection: "column", flexBasis: "33%", paddingRight: "1.5em", backgroundColor: "" }}>

@@ -5,7 +5,7 @@ const createGame = async (apiKey, opponentId, time, addition, color) => {
 }
 
 const rematch = async (user, game) => {
-    return createGame(user.api_key, game.whiteId === user.id ? game.blackId : game.whiteId, game.time, game.addition, game.whiteId === user.id ? "w" : "b")
+    return createGame(user.api_key, game.whiteId === user.id ? game.blackId : game.whiteId, game.time, game.addition, game.requestedColor)
 }
 
 const findGameById = async (gameId, apiKey) => {
@@ -21,10 +21,15 @@ const timeout = async (apiKey, gameId) => {
     return await apiRequest(`/v1/games/${gameId}/timeout`, 'POST', apiKey)
 }
 
+const setOpponentNotification = async (apiKey, gameId) => {
+    return await apiRequest(`/v1/games/${gameId}/opponentNotification`, 'POST', apiKey)
+}
+
 export {
     createGame,
     rematch,
     findGameById,
     createMove,
-    timeout
+    timeout,
+    setOpponentNotification
 }

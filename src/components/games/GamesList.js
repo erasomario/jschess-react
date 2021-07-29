@@ -7,10 +7,11 @@ import Tabs from 'react-bootstrap/Tabs';
 import { FaMedal, FaPlus } from 'react-icons/fa';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
-import { findGameById } from '../../controllers/game-client';
+import { findGameById, setOpponentNotification } from '../../controllers/game-client';
 import { findGamesByStatus } from '../../controllers/user-client';
 import { useAuth } from '../../providers/ProvideAuth';
 import { useGame } from '../../providers/ProvideGame';
+import { getAsGameList } from './GameListLogic';
 import "./GamesList.css";
 
 const Loading = ({ style }) => {
@@ -31,47 +32,30 @@ const Pawn = ({ color }) => {
 
 const GameItem = React.forwardRef((props, ref) => {
 
-    const { game: g, onSelect, selectedGame } = props
-
-    let whiteDot, blackDot, draw
-    if (g.result) {
-        if (g.result === "w") {
-            whiteDot = true
-        } else if (g.result === "b") {
-            blackDot = true
-        } else if (g.result === "d") {
-            draw = true;
-        }
-    } else {
-        if (g.turn % 2 === 0) {
-            whiteDot = true
-        } else {
-            blackDot = true
-        }
-    }
+    const { game: g, onSelect } = props
 
     return <ListGroup.Item
-        ref={selectedGame?.id === g.id ? ref : null}
-        className='m-0 p-2'
-        active={selectedGame?.id === g.id}
+        ref={g.selected ? ref : null}
+        active={g.selected}
         onClick={() => onSelect(g.id)}
-        style={{ cursor: 'pointer' }}>
+        style={{ cursor: 'pointer', margin: "0", padding: "0.4em" }}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div>
                 <div className="playerSubRow">
                     <Pawn color={'w'} />{g.whiteName}
-                    {(whiteDot && !g.result) && <div className="gameListDot" />}
-                    {(whiteDot && g.result) && <FaMedal style={{ marginLeft: "0.5em" }} />}
+                    {(g.whiteHighlight && !g.ended) && <div className="gameListDot" />}
+                    {(g.whiteHighlight && g.ended) && <FaMedal style={{ marginLeft: "0.5em" }} />}
                 </div>
                 <div className="playerSubRow">
                     <Pawn color={'b'} />{g.blackName}
-                    {(blackDot && !g.result) && <div className="gameListDot" />}
-                    {(blackDot && g.result) && <FaMedal style={{ marginLeft: "0.5em" }} />}
+                    {(g.blackHighlight && !g.ended) && <div className="gameListDot" />}
+                    {(g.blackHighlight && g.ended) && <FaMedal style={{ marginLeft: "0.5em" }} />}
                 </div>
             </div>
-            {g.result &&
+            {g.isNew && <div className="gameListNew">Nuevo</div> }
+            {g.ended &&
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center" }}>
-                    {draw && <div>Empate</div>}
+                    {g.draw && <div>Empate</div>}
                     {new Date(g.createdAt).toLocaleDateString("es-CO")}
                 </div>
             }
@@ -91,6 +75,7 @@ export default function GamesList({ show, onHide = a => a }) {
     useEffect(() => {
         if (show) {
             findGamesByStatus(user.id, user.api_key, "open")
+                .then(l => getAsGameList(l, game, user))
                 .then(setOpenGames)
                 .then(() => setError())
                 .then(() => setLoading(false))
@@ -98,17 +83,21 @@ export default function GamesList({ show, onHide = a => a }) {
                 .catch(e => setError(e.message))
 
             findGamesByStatus(user.id, user.api_key, "closed")
+                .then(l => getAsGameList(l, game, user))
                 .then(setClosedGames)
                 .then(() => setError())
                 .then(() => setLoading(false))
                 .then(() => { ref.current?.scrollIntoView({ block: "nearest", behavior: "auto" }) })
                 .catch(e => setError(e.message))
         }
-    }, [show, user])
+    }, [show, game, user])
 
     const select = async gameId => {
         try {
             const game = await findGameById(gameId, user.api_key)
+            if (!game.opponentNotified) {
+                setOpponentNotification(user.api_key, gameId)
+            }
             updateGame(game)
             onHide()
         } catch (e) {
@@ -135,7 +124,7 @@ export default function GamesList({ show, onHide = a => a }) {
                                 {openGames.map(g => <GameItem
                                     key={g.id} game={g}
                                     onSelect={select}
-                                    selectedGame={game} ref={ref} />)}
+                                    ref={ref} />)}
                             </ListGroup>
                         </SimpleBar>
                     }
@@ -149,7 +138,7 @@ export default function GamesList({ show, onHide = a => a }) {
                                 {closedGames.map(g => <GameItem
                                     key={g.id} game={g}
                                     onSelect={select}
-                                    selectedGame={game} ref={ref} />)}
+                                    ref={ref} />)}
                             </ListGroup>
                         </SimpleBar>
                     }

@@ -65,6 +65,11 @@ const findUserById = async (userId, apiKey) => {
     return apiRequest(`/v1/users/${userId}`, 'GET', apiKey, null)
 }
 
+const findNotNotifiedGamesCount = async (userId, apiKey) => {
+    return apiRequest(`/v1/users/${userId}/notNotifiedGamesCount`, 'GET', apiKey, null)
+}
+
+
 export {
     addUser,
     getProfilePictureUrl,
@@ -78,4 +83,5 @@ export {
     findUsersLike,
     findGamesByStatus,
     findUserById,
+    findNotNotifiedGamesCount,
 }
