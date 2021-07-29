@@ -19,7 +19,7 @@ import CreateGameDialog from './games/CreateGameDialog';
 import GameEndedDialog from './games/GameEndedDialog';
 import { PlayerData } from './games/PlayerData';
 import { getPlayersData } from './games/PlayerDataUtils';
-import SelectGame from './games/SelectGame';
+import OpenGameButton from './games/OpenGameButton';
 
 export default function HomePage() {
 
@@ -144,14 +144,14 @@ export default function HomePage() {
                 </div>
                 <div style={{ position: "absolute", display: "flex", flexDirection: "row", gap: "0.5em" }}>
                     <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
-                    <SelectGame></SelectGame>
+                    <OpenGameButton></OpenGameButton>
                 </div>
             </>}
 
             {orient === "h" && <>
                 <div style={{ position: "absolute", display: "flex", flexDirection: "column", gap: "0.5em" }}>
                     <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
-                    <SelectGame></SelectGame>
+                    <OpenGameButton></OpenGameButton>
                 </div>
                 <div style={{ userSelect: "none", display: "flex", justifyContent: "center", backgroundColor: "" }}>
                     <div style={{ flexDirection: "column", flexBasis: "33%", paddingRight: "1.5em", backgroundColor: "" }}>

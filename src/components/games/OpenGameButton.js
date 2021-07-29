@@ -6,8 +6,9 @@ import { useAuth } from "../../providers/ProvideAuth"
 import { useSocket } from "../../providers/ProvideSocket"
 import GamesList from "./GamesList"
 import { toast } from 'react-toastify';
+import "./OpenGameButton.css"
 
-function SelectGame() {
+function OpenGameButton() {
     const { user } = useAuth()
     const [notNotifiedCount, setNotNotifiedCount] = useState([])
     const [dot, setDot] = useState()
@@ -28,10 +29,10 @@ function SelectGame() {
 
     useEffect(() => {
         if (notNotifiedCount > 0) {
-            toast.info("La han invitado a nuevas partidas")
+            toast.info("Le han invitado a nuevas partidas")
             const timer = setInterval(() => {
                 setDot(b => !b)
-            }, 750)
+            }, 1000)
             return () => { clearInterval(timer) }
         } else {
             setDot(false)
@@ -42,9 +43,9 @@ function SelectGame() {
         <GamesList show={showGamesDialog} onHide={() => { setShowGamesDialog(false) }}></GamesList>
         <Button style={{ position: "relative" }} variant="primary" onClick={() => setShowGamesDialog(true)}>
             <FaFolderOpen style={{ marginTop: -4 }} ></FaFolderOpen>
-            <div style={{ display: (dot ? "block" : "none"), top: "-9%", right: "-9%", position: "absolute", backgroundColor: "red", borderRadius: "50%", width: "30%", height: "30%" }}></div>
+            <div className={"OpenGameButtonRedDot " + (dot ? "shown" : "hidden")}></div>
         </Button>
     </>
 }
 
-export default SelectGame
+export default OpenGameButton

@@ -11,7 +11,7 @@ import { findGameById, setOpponentNotification } from '../../controllers/game-cl
 import { findGamesByStatus } from '../../controllers/user-client';
 import { useAuth } from '../../providers/ProvideAuth';
 import { useGame } from '../../providers/ProvideGame';
-import { getAsGameList } from './GameListLogic';
+import { getAsGameList } from './GamesListLogic';
 import "./GamesList.css";
 
 const Loading = ({ style }) => {
@@ -52,7 +52,7 @@ const GameItem = React.forwardRef((props, ref) => {
                     {(g.blackHighlight && g.ended) && <FaMedal style={{ marginLeft: "0.5em" }} />}
                 </div>
             </div>
-            {g.isNew && <div className="gameListNew">Nuevo</div> }
+            {g.isNew && <div className="gameListNew">Nueva</div>}
             {g.ended &&
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center" }}>
                     {g.draw && <div>Empate</div>}

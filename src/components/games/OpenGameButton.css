@@ -1,0 +1,19 @@
+.OpenGameButtonRedDot {
+    top: -0.3em;
+    right: -0.3em;
+    position: absolute;
+    background-color: red;
+    border-radius: 50%;
+    width: 0.75em;
+    height: 0.75em
+}
+
+.shown {
+    opacity: 100;
+    transition: opacity 0.05s linear;
+}
+
+.hidden {
+    opacity: 0;
+    transition: opacity 0.05s linear;
+}
