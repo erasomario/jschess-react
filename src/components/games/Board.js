@@ -1,17 +1,19 @@
-import { useLayoutEffect, useState } from "react"
+import { useLayoutEffect, useRef, useState } from "react"
 import { useAuth } from "../../providers/ProvideAuth"
 import { useGame } from "../../providers/ProvideGame"
 import { Tile } from "./Tile"
 import { getAttacked, getCastling, includes, getStartBoard } from '../../utils/Chess'
 import Modal from 'react-bootstrap/Modal'
-import Alert from 'react-bootstrap/Alert'
 import { createMove } from "../../controllers/game-client"
+import { animate } from "./PieceAnimation"
+import { toast } from "react-toastify"
 
 const letters = { 1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h' }
 const startBoard = getStartBoard()
 
 export function Board({ reversed = false, size }) {
     console.log("board repaint")
+    const animPiece = useRef()
     const { game } = useGame()
     const { user } = useAuth()
     const [src, setSrc] = useState(null)
@@ -19,13 +21,25 @@ export function Board({ reversed = false, size }) {
     const [high, setHigh] = useState([])
     const [castling, setCastling] = useState([])
     const [showModal, setShowModal] = useState(false)
-    const [error, setError] = useState(null)
+    const [animating, setAnimating] = useState(false)
+
+    const coords = 'in'
+    const th = size / 8
+    const blackColor = '#ADC5CF'
+    const whiteColor = '#F5F8F9'
 
     useLayoutEffect(() => {
         setSrc()
         setHigh()
         setCastling()
-    }, [game?.board?.turn])
+        setAnimating(true)
+        if (game?.board?.turn > 0) {
+            animate(animPiece.current, game, reversed, th, () => {
+                setAnimating(false)
+            })
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [game?.board?.turn, reversed])
 
     const myColor = game ? (user.id === game.whiteId ? 'w' : 'b') : ''
     const myTurn = game ? (myColor === 'w' ? game.movs.length % 2 === 0 : game.movs.length % 2 !== 0) : false
@@ -50,8 +64,7 @@ export function Board({ reversed = false, size }) {
                 return
             }
             createMove(user.api_key, game.id, piece, src, [c, r])
-                .then(() => setError(null))
-                .catch(e => setError(e.message))
+                .catch(e => toast.error(e.message))
             return
         }
         setSrc([c, r])
@@ -67,17 +80,11 @@ export function Board({ reversed = false, size }) {
         setShowModal(false)
         const piece = game.board.inGameTiles[src[1]][src[0]]
         createMove(user.api_key, game.id, piece, src, dest, p)
-            .then(() => setError(null))
-            .catch(e => setError(e.message))
+            .catch(e => toast.error(e.message))
     }
 
-    const coords = 'in'
-    const th = size / 8
-    const blackColor = '#ADC5CF'
-    const whiteColor = '#F5F8F9'
-
     const innerBoard = () => {
-        return <>
+        return <>            
             {rows.map((r) =>
                 <div key={r} style={{
                     display: 'flex',
@@ -85,12 +92,16 @@ export function Board({ reversed = false, size }) {
                 }}>{
                         cols.map((c) => {
                             const lm = (game && game.board.turn > 0) && ((game.movs[game.board.turn - 1].sCol === c && game.movs[game.board.turn - 1].sRow === r) || (game.movs[game.board.turn - 1].dCol === c && game.movs[game.board.turn - 1].dRow === r))
+                            let piece = (game ? game.board.inGameTiles : startBoard)[r][c]
+                            if (lm && animating) {
+                                piece = null
+                            }
                             return <Tile
                                 key={c}
                                 blackColor={blackColor}
                                 whiteColor={whiteColor}
                                 col={c} row={r}
-                                piece={(game ? game.board.inGameTiles : startBoard)[r][c]}
+                                piece={piece}
                                 reversed={reversed}
                                 selected={src && (src[0] === c && src[1] === r)}
                                 myTurn={myTurn && !game.result}
@@ -105,7 +116,12 @@ export function Board({ reversed = false, size }) {
                         )}
                 </div>
             )}
-            {(error && <Alert variant='danger'>{error}</Alert>)}
+            <div ref={animPiece}
+                style={{
+                    position: "absolute", width: `${th}px`, height: `${th}px`,
+                    backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: "100% 100%"
+                }}>
+            </div>
         </>
     }
 
@@ -134,7 +150,7 @@ export function Board({ reversed = false, size }) {
                 <div style={{ position: 'absolute', top: `${30 + (th * 0.3)}px`, right: '0px' }}>{rows.map(r => <div key={`r${r}`} style={{ height: `${th}px`, width: '26px' }}>{r + 1}</div>)}</div>
                 <div style={{ position: 'absolute', top: `${30 + (th * 0.3)}px`, left: '0px' }}>{rows.map(r => <div key={`l${r}`} style={{ height: `${th}px`, width: '26px' }}>{r + 1}</div>)}</div>
                 <div style={{ position: 'absolute', left: '26px', top: '26px', backgroundColor: blackColor, width: `${(th * 8) + 8}px`, height: `${(th * 8) + 8}px` }}>
-                    <div style={{ width: `${th * 8}px`, height: `${th * 8}px`, padding: '4px' }}>
+                    <div style={{ position: "relative", width: `${th * 8}px`, height: `${th * 8}px`, padding: '4px' }}>
                         {innerBoard()}
                     </div>
                 </div>
@@ -143,7 +159,8 @@ export function Board({ reversed = false, size }) {
             <div style={{
                 userSelect: 'none',
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                position: "relative"
             }}>
                 {innerBoard()}
             </div>

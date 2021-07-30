@@ -21,7 +21,7 @@ export default function Moves({ style, onNewGame = a => a }) {
     useLayoutEffect(() => {
         if (scrollRef.current) {
             setTimeout(function () {
-                scrollRef.current.scrollIntoView({ block: "nearest", behavior: "auto" })
+                scrollRef?.current?.scrollIntoView({ block: "nearest", behavior: "auto" })
             }, 0)
         }
     }, [data])
