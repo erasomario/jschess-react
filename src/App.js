@@ -8,6 +8,7 @@ import RecoverPage from './components/users/RecoverPage'
 import LoginPage from './components/users/LoginPage'
 import RegisterPage from './components/users/RegisterPage'
 import { ProvideSocket } from './providers/ProvideSocket';
+import { YesNoDialog } from './components/games/YesNoDialog';
 
 function App() {
 
@@ -24,12 +25,12 @@ function App() {
           <Route path="/register">
             <RegisterPage />
           </Route>
-          <PrivateRoute path="/">
-            <ProvideSocket>
-              <ProvideGame>
-                <HomePage />
-              </ProvideGame>
-            </ProvideSocket>
+          <PrivateRoute path="/">            
+              <ProvideSocket>
+                <ProvideGame>
+                  <HomePage />
+                </ProvideGame>
+              </ProvideSocket>            
           </PrivateRoute>
         </Switch>
       </Router>

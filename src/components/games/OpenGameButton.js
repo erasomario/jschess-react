@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Button } from "react-bootstrap"
 import { FaFolderOpen } from "react-icons/fa"
-import { findNotNotifiedGamesCount } from "../../controllers/user-client"
+import { findNotNotifiedGamesCount } from "../../clients/user-client"
 import { useAuth } from "../../providers/ProvideAuth"
 import { useSocket } from "../../providers/ProvideSocket"
 import GamesList from "./GamesList"
@@ -29,7 +29,7 @@ function OpenGameButton() {
 
     useEffect(() => {
         if (notNotifiedCount > 0) {
-            toast.info("Le han invitado a nuevas partidas")
+            toast.info("Tiene nuevas partidas por revisar")
             const timer = setInterval(() => {
                 setDot(b => !b)
             }, 1000)

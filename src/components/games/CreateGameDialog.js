@@ -7,7 +7,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
 import Modal from 'react-bootstrap/Modal'
 import { FaArrowLeft, FaArrowRight, FaChessPawn } from 'react-icons/fa'
-import { createGame } from '../../controllers/game-client'
+import { createGame } from '../../clients/game-client'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
 

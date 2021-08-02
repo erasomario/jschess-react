@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
-import { generateRecoveryKey, recoverPassword } from '../../controllers/user-client'
+import { generateRecoveryKey, recoverPassword } from '../../clients/user-client'
 import { FaUser, FaLock, FaCopy, FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 import Input from '../Input'
 

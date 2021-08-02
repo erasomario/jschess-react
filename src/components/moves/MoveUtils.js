@@ -50,6 +50,10 @@ const getMoveData = (game, user) => {
             winDetail += `. Las ${game.movs.length % 2 === 0 ? "blancas" : "negras"} se quedaron sin opciones`
         } else if (game.endType === "material") {
             winDetail += "No hay piezas sufientes para llegar a un jaque mate"
+        } else if (game.endType === "agreed") {
+            winDetail = "Los jugadores acordaron un empate"
+        } else if (game.endType === "surrender") {
+            winDetail = `${game.result === "b" ? "Las blancas" : "Las negras"} se rindió`
         }
     }
 

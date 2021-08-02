@@ -25,11 +25,31 @@ const setOpponentNotification = async (apiKey, gameId) => {
     return await apiRequest(`/v1/games/${gameId}/opponentNotification`, 'POST', apiKey)
 }
 
+const offerDraw = async (apiKey, gameId) => {
+    return await apiRequest(`/v1/games/${gameId}/drawOffering`, 'POST', apiKey)
+}
+
+const acceptDraw = async (apiKey, gameId) => {
+    return await apiRequest(`/v1/games/${gameId}/drawOffering`, 'PUT', apiKey, { result: "accept" })
+}
+
+const rejectDraw = async (apiKey, gameId) => {
+    return await apiRequest(`/v1/games/${gameId}/drawOffering`, 'PUT', apiKey, { result: "reject" })
+}
+
+const surrender = async (apiKey, gameId) => {
+    return await apiRequest(`/v1/games/${gameId}/surrender`, 'POST', apiKey)
+}
+
 export {
     createGame,
     rematch,
     findGameById,
     createMove,
     timeout,
-    setOpponentNotification
+    setOpponentNotification,
+    offerDraw,
+    acceptDraw,
+    rejectDraw,
+    surrender
 }

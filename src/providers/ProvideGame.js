@@ -1,7 +1,7 @@
 import React, { useContext, createContext, useState, useCallback, useEffect } from "react"
 import { getBoard } from '../utils/Chess'
 import { useAuth } from "./ProvideAuth";
-import { findGameById } from "../controllers/game-client"
+import { findGameById } from "../clients/game-client"
 
 const gameContext = createContext();
 

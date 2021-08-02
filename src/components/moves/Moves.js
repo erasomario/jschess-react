@@ -8,7 +8,7 @@ import getMoveData from "./MoveUtils"
 import { FaPlus, FaClipboardList } from "react-icons/fa";
 import { useAuth } from "../../providers/ProvideAuth"
 import { Alert, Button } from "react-bootstrap"
-import { rematch } from "../../controllers/game-client"
+import { rematch } from "../../clients/game-client"
 
 export default function Moves({ style, onNewGame = a => a }) {
     const { user } = useAuth()

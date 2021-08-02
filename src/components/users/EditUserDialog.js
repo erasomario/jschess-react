@@ -16,7 +16,7 @@ import {
     removeProfilePicture,
     updateProfilePicture,
     editEmail
-} from '../../controllers/user-client'
+} from '../../clients/user-client'
 import Input from '../Input'
 
 export default function EditPage({ show, onHide = a => a }) {

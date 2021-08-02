@@ -3,12 +3,12 @@ import { Button } from "react-bootstrap";
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import { FaPlus } from "react-icons/fa";
+import { FaFlag, FaPlus, FaRegFlag, FaStarHalf, FaStarHalfAlt } from "react-icons/fa";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Moves from '../components/moves/Moves';
 import EditUserDialog from '../components/users/EditUserDialog';
-import { getProfilePictureUrl } from '../controllers/user-client';
+import { getProfilePictureUrl } from '../clients/user-client';
 import { useDimensions } from '../hooks/useDimensions';
 import { useAuth } from '../providers/ProvideAuth';
 import { useGame } from '../providers/ProvideGame';
@@ -20,9 +20,19 @@ import GameEndedDialog from './games/GameEndedDialog';
 import { PlayerData } from './games/PlayerData';
 import { getPlayersData } from './games/PlayerDataUtils';
 import OpenGameButton from './games/OpenGameButton';
+import { makeYesNoDialog, YesNoDialog } from './games/YesNoDialog';
+import { acceptDraw, offerDraw, rejectDraw, surrender } from '../clients/game-client';
+
+const SurrenderButton = ({ onSurrender, game }) => {
+    return <Button disabled={!(game && (game.movs.length >= 2 && !game.result))} variant="primary" onClick={onSurrender}><FaFlag style={{ marginTop: -4 }} ></FaFlag></Button>
+}
+
+const OfferDrawButton = ({ onDrawOffer, game }) => {
+    return <Button disabled={!(game && (game.movs.length >= 2 && !game.result))} variant="primary" onClick={onDrawOffer}><FaStarHalfAlt style={{ marginTop: -4 }} ></FaStarHalfAlt></Button>
+}
 
 export default function HomePage() {
-
+    const [yesNoData, setYesNoData] = useState()
     const { addSocketListener } = useSocket()
     const { width, height } = useDimensions()
     const [showUserDialog, setShowUserDialog] = useState(false)
@@ -31,7 +41,7 @@ export default function HomePage() {
     const [pictureUrl, setPictureUrl] = useState()
     const { user, signOut } = useAuth()
     const { game, updateGame } = useGame()
-    const reversed = game ? user.id === game.blackId : false;
+    const reversed = game ? user.id === game.blackId : false
 
     useEffect(() => {
         user && getProfilePictureUrl(user.id, user.hasPicture, user.api_key).then(setPictureUrl)
@@ -62,10 +72,10 @@ export default function HomePage() {
         }
     }, [updateGame, game?.id, user?.id]);
 
-  /*  const invitedToGame = useCallback((ng, open) => {
-        toast(`${ng.whiteId === user.id ? ng.blackName : ng.whiteName} le invita a un nuevo juego`)
-        open && updateGame(ng)
-    }, [updateGame, user?.id]);*/
+    /*  const invitedToGame = useCallback((ng, open) => {
+          toast(`${ng.whiteId === user.id ? ng.blackName : ng.whiteName} le invita a un nuevo juego`)
+          open && updateGame(ng)
+      }, [updateGame, user?.id]);*/
 
     useEffect(() => {
         if (!user) {
@@ -75,6 +85,36 @@ export default function HomePage() {
             gameChanged(data)
         })
     }, [addSocketListener, gameChanged, user]);
+
+    useEffect(() => {
+        if (!user) {
+            return
+        }
+        addSocketListener('drawOffered', gameId => {
+            if (gameId === game?.id) {
+                const opponentName = (user.id === game.whiteId ? game.whiteName : game.blackName)
+                setYesNoData(makeYesNoDialog("Confirmación", `${opponentName} le ofrece un empate`, "Aceptar", "Rechazar", () => {
+                    acceptDraw(user?.api_key, game?.id)
+                        .catch(e => toast.error(e.message))
+                }, () => {
+                    rejectDraw(user?.api_key, game?.id)
+                        .catch(e => toast.error(e.message))
+                }))
+            }
+        })
+    }, [addSocketListener, game?.id, game?.whiteId, game?.blackName, game?.whiteName, user]);
+
+    useEffect(() => {
+        if (!user) {
+            return
+        }
+        addSocketListener('drawRejected', gameId => {
+            if (gameId === game?.id) {
+                const opponentName = (user.id === game.whiteId ? game.blackName : game.whiteName)
+                toast.error(`${opponentName} rechazó su ofrecimiento de empate`)
+            }
+        })
+    }, [addSocketListener, game?.id, game?.whiteId, game?.blackName, game?.whiteName, user]);
 
     /*useEffect(() => {
         if (!user) {
@@ -97,6 +137,23 @@ export default function HomePage() {
         return <></>
     }
 
+    const onDrawOfferClicked = () => {
+        setYesNoData(makeYesNoDialog("Confirmación", "¿Desea ofrecer un empate?", "Si", "No", () => {
+            offerDraw(user?.api_key, game?.id)
+                .then(() => {
+                    toast.info(`Su ofrecimiento de empate se envió a ${game.whiteId !== user.id ? game.whiteName : game.blackName}`)
+                })
+                .catch(e => toast.error(e.message))
+        }))
+    }
+
+    const onSurrender = () => {
+        setYesNoData(makeYesNoDialog("Confirmación", "¿Realmente desea rendirse?", "Si", "No", () => {
+            surrender(user?.api_key, game?.id)
+                .catch(e => toast.error(e.message))
+        }))
+    }
+
     const [topData, bottomData] = getPlayersData(game, user, reversed)
 
     const orient = width > height ? "h" : "v"
@@ -116,6 +173,7 @@ export default function HomePage() {
     }
 
     return <>
+        <YesNoDialog dialog={yesNoData} />
         <div className='' style={{
             background: 'linear-gradient(0deg, #eef2f3 0%, #CED6DC 100%)', padding: "1em"
         }}>
@@ -152,6 +210,9 @@ export default function HomePage() {
                 <div style={{ position: "absolute", display: "flex", flexDirection: "column", gap: "0.5em" }}>
                     <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
                     <OpenGameButton></OpenGameButton>
+                    <OfferDrawButton game={game} onDrawOffer={onDrawOfferClicked} />
+                    <SurrenderButton game={game} onSurrender={onSurrender} />
+
                 </div>
                 <div style={{ userSelect: "none", display: "flex", justifyContent: "center", backgroundColor: "" }}>
                     <div style={{ flexDirection: "column", flexBasis: "33%", paddingRight: "1.5em", backgroundColor: "" }}>

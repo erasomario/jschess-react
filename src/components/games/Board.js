@@ -4,7 +4,7 @@ import { useGame } from "../../providers/ProvideGame"
 import { Tile } from "./Tile"
 import { getAttacked, getCastling, includes, getStartBoard } from '../../utils/Chess'
 import Modal from 'react-bootstrap/Modal'
-import { createMove } from "../../controllers/game-client"
+import { createMove } from "../../clients/game-client"
 import { animate } from "./PieceAnimation"
 import { toast } from "react-toastify"
 

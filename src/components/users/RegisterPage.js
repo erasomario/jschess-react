@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
-import { addUser } from '../../controllers/user-client'
+import { addUser } from '../../clients/user-client'
 
 export default function RegisterPage() {
     const [file, setFile] = useState(null)

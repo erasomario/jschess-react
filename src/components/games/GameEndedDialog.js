@@ -5,7 +5,7 @@ import { useGame } from '../../providers/ProvideGame';
 import "./GameEndedDialog.css"
 import { FaRedo, FaTimes } from 'react-icons/fa';
 import { Alert, Button } from 'react-bootstrap';
-import { rematch } from '../../controllers/game-client';
+import { rematch } from '../../clients/game-client';
 
 const King = ({ style, result }) => {
     const piece = (result === "d" ? "rand" : result + "k")
@@ -20,7 +20,7 @@ export default function GameEndedDialog({ show, onHide = a => a, onNewGame = a =
     const [error, setError] = useState(null)
 
     const create = (e) => {
-        e.preventDefault()        
+        e.preventDefault()
         rematch(user, game)
             .then(onNewGame)
             .then(onHide)
@@ -47,7 +47,12 @@ export default function GameEndedDialog({ show, onHide = a => a, onNewGame = a =
         detail = `${capital(game.movs.length % 2 === 0 ? game.whiteName : game.blackName)} se quedó sin opciones`
     } else if (game.endType === "material") {
         detail = "No hay piezas sufientes para llegar a un jaque mate"
+    } else if (game.endType === "agreed") {
+        detail = "Los jugadores acordaron a un acuerdo"
+    } else if (game.endType === "surrender") {
+        detail = `${capital(game.result === "b" ? game.whiteName : game.blackName)} se rindió`
     }
+
 
     return <Modal show={show} onHide={onHide}>
         <Modal.Body>

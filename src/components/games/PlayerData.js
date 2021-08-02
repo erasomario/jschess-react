@@ -1,9 +1,10 @@
 import { useAuth } from "../../providers/ProvideAuth"
-import { getProfilePictureUrl } from '../../controllers/user-client'
+import { getProfilePictureUrl } from '../../clients/user-client'
 import { useCallback, useEffect, useState } from "react"
 import { secsToStr } from "./PlayerDataUtils"
 import { useGame } from "../../providers/ProvideGame"
-import { timeout } from "../../controllers/game-client"
+import { timeout } from "../../clients/game-client"
+import { toast } from "react-toastify"
 
 export function PlayerData({ playerInfo, mode }) {
     const { key } = useAuth()
@@ -21,7 +22,8 @@ export function PlayerData({ playerInfo, mode }) {
     const calcElapsed = useCallback(() => {
         const e = parseInt((new Date() - new Date(game.lastMovAt)) / 1000)
         if (playerInfo.remainingTime - e <= 0) {
-            timeout(key, game.id).catch(e => e)
+            timeout(key, game.id)
+            .catch(e => toast.error(e.message))
         }
         return e
     }, [game?.id, game?.lastMovAt, key, playerInfo.remainingTime])
@@ -63,7 +65,7 @@ export function PlayerData({ playerInfo, mode }) {
                 {turn && <div className='mr-2' style={{ width: '1em', height: '1em', backgroundColor: '#4caf50', borderRadius: '50%' }}></div>}
                 <img alt="" src={url} style={{ borderRadius: '15%', width: "5em", height: "5em" }} />
             </div>
-            <div style={{ fontSize: '1.2em', fontWeight: (turn ? 'bold' : 'normal') }}>
+            <div style={{ fontSize: '1.2em', fontWeight: (turn ? '500' : 'normal') }}>
                 {playerName}
             </div>
             <div style={{ fontSize: '0.9em', margin: "-0.8em  0 -0.8em 0" }}>{result}</div>
