@@ -1,4 +1,3 @@
-
 export function animate(fake, game, reversed, size, cb) {
     const m = game.movs[game.board.turn - 1]
     let begX, begY, endX, endY
