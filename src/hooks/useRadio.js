@@ -5,14 +5,15 @@ export const useRadio = (init = null) => {
     return [
         value => {
             const myVal = value
-            return {                
+            return {
+                id: myVal,
                 value: myVal,
                 checked: myVal === selected,
-                onChange: ()=>{setSelected(myVal)},
-                type: 'radio'
+                onChange: () => setSelected(myVal),
+                type: "radio"
             }
         },
-        selected, 
+        selected,
         setSelected
     ]
 }
