@@ -58,7 +58,7 @@ export function Tile({
 
     const highStyle = high ? (piece ? circle: dot): null    
     if (selected || lastMov) {
-        bgColor = "#" + mix(bgColor.slice(1), '2196F3', 0.25)
+        bgColor = mix(bgColor, '#2196F3', 0.25)
     }
 
     return <>
