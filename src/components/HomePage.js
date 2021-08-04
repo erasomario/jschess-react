@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import { FaFlag, FaPlus, FaRegFlag, FaStarHalf, FaStarHalfAlt } from "react-icons/fa";
+import { FaFlag, FaPlus, FaStarHalfAlt } from "react-icons/fa";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Moves from '../components/moves/Moves';

@@ -35,6 +35,10 @@ const editEmail = (user, password, newEmail) => {
     return apiRequest(`/v1/users/${user.id}/email`, 'PUT', user.api_key, { password, newEmail })
 }
 
+const editBoardOpts = (user, options) => {
+    return apiRequest(`/v1/users/${user.id}/boardOptions`, 'PUT', user.api_key, options)
+}
+
 const addUser = async (username, email, password, file) => {
     const usr = await apiRequest(`/v1/users/`, 'POST', null, { username, email, password })
     if (file) {
@@ -78,6 +82,7 @@ export {
     editUsername,
     editPassword,
     editEmail,
+    editBoardOpts,
     generateRecoveryKey,
     recoverPassword,
     findUsersLike,

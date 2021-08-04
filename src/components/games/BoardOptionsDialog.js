@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Col, Container, Form, Row } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
+import { toast } from 'react-toastify'
+import { editBoardOpts } from '../../clients/user-client'
 import { useRadio } from '../../hooks/useRadio'
+import { useAuth } from '../../providers/ProvideAuth'
 import { mix } from '../../utils/Colors'
 
 const colors = {
@@ -18,19 +21,51 @@ const colors = {
 export { colors }
 export function BoardOptionsDialog({ show, onHide, onChange, options }) {
 
-    const [getCoordProps, coords] = useRadio(options?.coords)
+    const { user } = useAuth()
     const [color, setColor] = useState(options?.colors)
+    const [sounds, setSounds] = useState(options?.sounds)
 
-    useEffect(() => {
-        onChange({ coords: coords, colors: color })
-    }, [color, coords, onChange])
+    const saveCoords = useCallback(coords => {
+        if (user) {
+            const opts = { coords: coords, colors: color, sounds }
+            editBoardOpts(user, opts).then(e => toast.error(e.message))
+            onChange(opts)
+        }
+    }, [color, onChange, sounds, user])
 
-    return <Modal show={show} onHide={onHide}>
+    const [getCoordProps, coords] = useRadio(options?.coords, saveCoords)
+
+    const saveColor = useCallback(color => {
+        if (user) {
+            setColor(color)
+            const opts = { coords: coords, colors: color, sounds }
+            editBoardOpts(user, opts).then(e => toast.error(e.message))
+            onChange(opts)
+        }
+    }, [coords, onChange, sounds, user])
+
+    const saveSound = useCallback(sounds => {
+        if (user) {
+            setSounds(sounds)
+            const opts = { coords: coords, colors: color, sounds }
+            editBoardOpts(user, opts).then(e => toast.error(e.message))
+            onChange(opts)
+        }
+    }, [color, coords, onChange, user])
+
+    return <Modal style={{ userSelect: "none" }} show={show} onHide={onHide}>
         <Modal.Header closeButton>
             <Modal.Title>Opciones del Tablero</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Form>
+                <Form.Check
+                    checked={sounds}
+                    onChange={e => saveSound(e.target.checked)}
+                    type="switch"
+                    id="custom-switch"
+                    label="Sonidos al mover las piezas"
+                />
                 <b>Coordenadas</b>
                 <Form.Check {...getCoordProps("out_opaque")} custom label="Borde Opaco" />
                 <Form.Check {...getCoordProps("out_trans")} custom label="Borde Transparente" />
@@ -42,9 +77,9 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
                     <Container>
                         <Row>
                             {Object.keys(colors).map(k => {
-                                return <Col style={{ textAlign: "right" }}>
+                                return <Col key={k} style={{ textAlign: "right" }}>
                                     <div
-                                        onClick={() => setColor(k)}
+                                        onClick={() => saveColor(k)}
                                         style={{ cursor: "pointer", display: "flex", width: "4em", margin: "0.5em", boxShadow: color === k ? "0 0 0 0.2em rgba(0, 123, 255, 0.75)" : "0px 0px 3px #78909C" }}>
                                         <div style={{ width: "2em", height: "2em", backgroundColor: colors[k].primary }}></div>
                                         <div style={{ width: "2em", height: "2em", backgroundColor: colors[k].secondary }}></div>

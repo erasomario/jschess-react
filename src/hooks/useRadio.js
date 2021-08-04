@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
-export const useRadio = (init = null) => {
+export const useRadio = (init = null, cb) => {
     const [selected, setSelected] = useState(init)
+    const changed = useCallback((v) => { setSelected(v); if (cb) { cb(v) } }, [cb])
     return [
         value => {
             const myVal = value
@@ -9,7 +10,7 @@ export const useRadio = (init = null) => {
                 id: myVal,
                 value: myVal,
                 checked: myVal === selected,
-                onChange: () => setSelected(myVal),
+                onChange: () => changed(myVal),
                 type: "radio"
             }
         },

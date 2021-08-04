@@ -26,7 +26,7 @@ export function Board({ reversed = false, size, style }) {
     const [showModal, setShowModal] = useState(false)
     const [animating, setAnimating] = useState(false)
     const [showBoardOpts, setshowBoardOpts] = useState(false)
-    const [options, setOptions] = useState({ coords: "out_opaque", colors: "light_blue" })
+    const [options, setOptions] = useState(user.boardOpts ? JSON.parse(user.boardOpts) : { coords: "out_opaque", colors: "light_blue", sounds: true })
     const onOptsChange = useCallback((opts) => { setOptions(opts); setshowBoardOpts(false) }, [])
     const th = (options.coords === "out_opaque" || options.coords === "out_trans") ? (size * 0.92) / 8 : size / 8
     const color = useMemo(() => colors[options.colors], [options?.colors])
@@ -40,13 +40,14 @@ export function Board({ reversed = false, size, style }) {
         if (game?.board?.turn > 0) {
             animate(animPiece.current, game, reversed, th, () => {
                 setAnimating(false)
-                let newNum
-                do {
-                    newNum = Math.floor(Math.random() * 4)
-                }while(newNum === lastSound.current)
-                lastSound.current = newNum
-                console.log("pieceSound" + newNum)
-                document.getElementById("pieceSound" + newNum).play()
+                if (options.sounds) {
+                    let newNum
+                    do {
+                        newNum = Math.floor(Math.random() * 4)
+                    } while (newNum === lastSound.current)
+                    lastSound.current = newNum
+                    document.getElementById("pieceSound" + newNum).play().catch(e => e)
+                }
             })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -112,7 +113,7 @@ export function Board({ reversed = false, size, style }) {
             <div onClick={() => setshowBoardOpts(true)} style={{ position: "absolute", color: mix(color.primary, "#7F8C8D", 0.8), width: "2em", height: "2em", right: "-2.3em", top: "0.3em", cursor: "pointer" }}>
                 <FaCog style={{ width: "2em", height: "2em" }} />
             </div>
-            <div style={{ boxShadow: `0px 0px 5px ${mix(color.primary, "#000000", 0.3)}`, position: "relative", display: "flex", flexDirection: "column", gridColumn: "2/3", gridRow: "2/3" }}>
+            <div style={{ boxShadow: `0px 0px 7px ${mix(color.primary, "#000000", 0.3)}`, position: "relative", display: "flex", flexDirection: "column", gridColumn: "2/3", gridRow: "2/3" }}>
                 {rows.map((r) =>
                     <div key={r} style={{ display: 'flex', flexDirection: 'row' }}>{
                         cols.map((c) => {
@@ -198,7 +199,7 @@ export function Board({ reversed = false, size, style }) {
                 </div>
             </Modal.Body>
         </Modal>
-        {[...new Array(5)].map((s, i) => <audio id={"pieceSound" + i}>
+        {options.sounds && [...new Array(4)].map((s, i) => <audio key={i} id={"pieceSound" + i}>
             <source src={`/assets/sounds/piece${i}.ogg`} type="audio/ogg" />
             <source src={`/assets/sounds/piece${i}.mp3`} type="audio/mp3" />
         </audio>)}
