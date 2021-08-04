@@ -156,7 +156,7 @@ export default function HomePage() {
 
     const [topData, bottomData] = getPlayersData(game, user, reversed)
 
-    const orient = width > height ? "h" : "v"
+    const orient = width / height > 1.6 ? "h" : "v"
     let size
     if (orient === "h") {
         let f;
@@ -193,11 +193,10 @@ export default function HomePage() {
                 draggable
                 pauseOnHover
             />
-
             {orient === "v" && <>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.5em" }}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
                     <PlayerData mode='h' playerInfo={topData} />
-                    <Board reversed={reversed} turn={game?.turn} size={size}></Board>
+                    <Board style={{margin: "0.75em 0 0.75em 0"}} reversed={reversed} turn={game?.turn} size={size}></Board>
                     <PlayerData mode='h' playerInfo={bottomData} />
                 </div>
                 <div style={{ position: "absolute", display: "flex", flexDirection: "row", gap: "0.5em" }}>
@@ -212,10 +211,9 @@ export default function HomePage() {
                     <OpenGameButton></OpenGameButton>
                     <OfferDrawButton game={game} onDrawOffer={onDrawOfferClicked} />
                     <SurrenderButton game={game} onSurrender={onSurrender} />
-
                 </div>
-                <div style={{ userSelect: "none", display: "flex", justifyContent: "center", backgroundColor: "" }}>
-                    <div style={{ flexDirection: "column", flexBasis: "33%", paddingRight: "1.5em", backgroundColor: "" }}>
+                <div style={{ userSelect: "none", display: "flex", justifyContent: "center" }}>
+                    <div style={{ flexDirection: "column", flexBasis: "33%", paddingRight: "2em" }}>
                         <div style={{
                             display: "flex", height: '50%', flexDirection: "column",
                             justifyContent: "flex-end", alignItems: 'flex-end'
@@ -230,13 +228,13 @@ export default function HomePage() {
                         </div>
                     </div>
                     <Board reversed={reversed} turn={game?.turn} size={size}></Board>
-                    <div style={{ backgroundColor: '', flexBasis: "40%", paddingLeft: "1.5em" }}>
+                    <div style={{ backgroundColor: '', flexBasis: "40%", paddingLeft: "2em" }}>
                         {true && <DropdownButton as={ButtonGroup} title={user.username} variant="link">
                             <Dropdown.Item onClick={() => setShowUserDialog(true)}>Editar Perfil</Dropdown.Item>
                             <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
                         </DropdownButton>}
                         <img alt="" src={pictureUrl} style={{ borderRadius: '50%', width: "2em", height: "2em" }} />
-                        <Moves onNewGame={updateGame} style={{ height: "22em" }}></Moves>
+                        <Moves onNewGame={updateGame} style={{ height: "28em" }}></Moves>
                     </div>
                 </div>
             </>}
