@@ -8,10 +8,10 @@ const getProfilePictureUrl = async (userId, hasPicture, apiKey) => {
             const blob = await r.blob()
             return URL.createObjectURL(blob)
         } else {
-            return `/assets/bot.svg`
+            return `${process.env.PUBLIC_URL}/assets/bot.svg`
         }
     } else {
-        return `/assets/nopp.svg`
+        return `${process.env.PUBLIC_URL}/assets/nopp.svg`
     }
 }
 

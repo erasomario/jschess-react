@@ -52,7 +52,7 @@ export function PlayerData({ playerInfo, mode }) {
                         style={{
                             color: '#747474', paddingLeft: "2.2em", marginLeft: "0.5em",
                             width: "2.5em", height: '2.5em', backgroundSize: '2.5em 2.5em',
-                            backgroundImage: `url('/assets/${invColor}${c[0]}.svg')`
+                            backgroundImage: `url('${process.env.PUBLIC_URL}/assets/${invColor}${c[0]}.svg')`
                         }}>
                         {c[1]}
                     </div> : null)
@@ -89,7 +89,7 @@ export function PlayerData({ playerInfo, mode }) {
                             color: '#747474', paddingLeft: "2.4em", marginRight: "0.9em",
                             width: "2.5em", height: '2.5em', backgroundSize: '3em 3em',
                             backgroundPosition: "center center",
-                            backgroundImage: `url('/assets/${invColor}${c[0]}.svg')`,
+                            backgroundImage: `url('${process.env.PUBLIC_URL}/assets/${invColor}${c[0]}.svg')`,
                         }}>
                         {c[1]}
                     </div> : null)

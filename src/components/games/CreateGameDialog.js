@@ -81,7 +81,7 @@ export default function CreateGameDialog({ show, onHide = a => a, onNewGame = a 
                         </Tab>
                         <Tab eventKey="pc" title="Robot">
                             <div style={{ height: '10rem', display: "flex", flexDirection: "row", alignItems: "center", gap: "1em" }}>
-                                <div style={{ flexShrink: "0", borderRadius: '15%', backgroundImage: "url(/assets/bot.svg)", width: "7em", height: "7em", backgroundSize: "7em 7em" }}></div>
+                                <div style={{ flexShrink: "0", borderRadius: '15%', backgroundImage: `url(${process.env.PUBLIC_URL}/assets/bot.svg)`, width: "7em", height: "7em", backgroundSize: "7em 7em" }}></div>
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <b>¡Hola Humano!</b>
                                     <div>Soy un robot sencillo pero daré lo mejor de mí de para ofrecerte un juego entretenido.</div>
@@ -119,13 +119,13 @@ export default function CreateGameDialog({ show, onHide = a => a, onNewGame = a 
                     <Form.Group>
                         <ButtonGroup toggle>
                             <ToggleButton  {...makeColorProps('w')} name="color" variant="primary">
-                                <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('/assets/wk.svg')` }} />
+                                <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('${process.env.PUBLIC_URL}/assets/wk.svg')` }} />
                             </ToggleButton>
                             <ToggleButton {...makeColorProps('wb')} name="color" variant="primary">
-                                <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('/assets/rand.svg')` }} />
+                                <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('${process.env.PUBLIC_URL}/assets/rand.svg')` }} />
                             </ToggleButton>
                             <ToggleButton {...makeColorProps('b')} name="color" variant="primary">
-                                <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('/assets/bk.svg')` }} />
+                                <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('${process.env.PUBLIC_URL}/assets/bk.svg')` }} />
                             </ToggleButton>
                         </ButtonGroup>
                     </Form.Group>

@@ -68,7 +68,7 @@ export function Tile({
             {showCoords && row === (reversed ? 7 : 0) ? <div style={{ ...br, color: black ? whiteColor : blackColor }}>{letters[col + 1]}</div> : ''}
             {high && <div style={highStyle} />}
             {piece &&
-                <div style={{ position: "absolute", width: "100%", height: "100%", backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", backgroundImage: `url('/assets/${piece.slice(0, -1)}.svg')` }}>
+                <div style={{ position: "absolute", width: "100%", height: "100%", backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: "100% 100%", backgroundImage: `url('${process.env.PUBLIC_URL}/assets/${piece.slice(0, -1)}.svg')` }}>
                 </div>
             }
             {false && <div style={{ position: "absolute", left: '20px', color: '#FF0000' }}>{tile}</div>}

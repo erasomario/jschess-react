@@ -9,7 +9,7 @@ import { rematch } from '../../clients/game-client';
 
 const King = ({ style, result }) => {
     const piece = (result === "d" ? "rand" : result + "k")
-    return <div className="EndedKing" style={{ backgroundImage: `url('/assets/${piece}.svg')`, ...style }} />
+    return <div className="EndedKing" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/${piece}.svg')`, ...style }} />
 }
 
 const capital = str => str.slice(0, 1).toUpperCase() + str.slice(1)

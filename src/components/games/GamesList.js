@@ -27,7 +27,7 @@ const NoData = ({ type, style }) => {
 }
 
 const Pawn = ({ color }) => {
-    return <div className="pawn" style={{ backgroundImage: `url('/assets/${color}p.svg')` }} />
+    return <div className="pawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/${color}p.svg')` }} />
 }
 
 const GameItem = React.forwardRef((props, ref) => {

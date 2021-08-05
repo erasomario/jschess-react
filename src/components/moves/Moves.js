@@ -53,8 +53,8 @@ export default function Moves({ style, onNewGame = a => a }) {
     return <div style={{ width: '17em', fontSize: '2.1vh' }}>
         <div className="movRow">
             <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>#</div>
-            <div className="headerPawn" style={{ backgroundImage: `url('/assets/wp.svg')` }} />
-            <div className="headerPawn" style={{ backgroundImage: `url('/assets/bp.svg')` }} />
+            <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/wp.svg')` }} />
+            <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/bp.svg')` }} />
         </div>
         {data.show === "noGame" &&
             <div className="instructionsCard" style={{ height: style.height }}>

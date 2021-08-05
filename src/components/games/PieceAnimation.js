@@ -14,7 +14,7 @@ export function animate(fake, game, reversed, size, cb) {
     }
 
     const piece = game.board.inGameTiles[m.dRow][m.dCol]
-    fake.style.backgroundImage = `url('/assets/${piece.slice(0, -1)}.svg')`
+    fake.style.backgroundImage = `url('${process.env.PUBLIC_URL}/assets/${piece.slice(0, -1)}.svg')`
     fake.style.left = `${begX}px`
     fake.style.top = `${begY}px`
     fake.style.display = "block"

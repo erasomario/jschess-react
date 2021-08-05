@@ -193,15 +193,15 @@ export function Board({ reversed = false, size, style }) {
         <Modal size='sm' show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Body>
                 <div style={{ cursor: 'pointer', position: 'relative', width: '245px', margin: 'auto' }}>
-                    {['q', 'r', 'b', 'n'].map(p => <div key={p} style={{ width: '60px', height: '60px', float: 'left', backgroundSize: '60px 60px', backgroundImage: `url('/assets/${myColor}${p}.svg')` }}
+                    {['q', 'r', 'b', 'n'].map(p => <div key={p} style={{ width: '60px', height: '60px', float: 'left', backgroundSize: '60px 60px', backgroundImage: `url('${process.env.PUBLIC_URL}/assets/${myColor}${p}.svg')` }}
                         onClick={() => promote(p)} />
                     )}
                 </div>
             </Modal.Body>
         </Modal>
         {options.sounds && [...new Array(4)].map((s, i) => <audio key={i} id={"pieceSound" + i}>
-            <source src={`/assets/sounds/piece${i}.ogg`} type="audio/ogg" />
-            <source src={`/assets/sounds/piece${i}.mp3`} type="audio/mp3" />
+            <source src={`${process.env.PUBLIC_URL}/assets/sounds/piece${i}.ogg`} type="audio/ogg" />
+            <source src={`${process.env.PUBLIC_URL}/assets/sounds/piece${i}.mp3`} type="audio/mp3" />
         </audio>)}
 
         <div style={borderStyle}>
