@@ -13,23 +13,23 @@ function App() {
 
   return (
     <ProvideAuth>
-      <Router>
+      <Router basename="/chess">
         <Switch>
-          <Route path={`${process.env.PUBLIC_URL}/recover`}>
+          <Route path="/recover">
             <RecoverPage />
           </Route>
-          <Route path={`${process.env.PUBLIC_URL}/login`}>
+          <Route path="/login">
             <LoginPage />
           </Route>
-          <Route path={`${process.env.PUBLIC_URL}/register`}>
+          <Route path="/register" >
             <RegisterPage />
           </Route>
-          <PrivateRoute path={`${process.env.PUBLIC_URL}/`}>            
-              <ProvideSocket>
-                <ProvideGame>
-                  <HomePage />
-                </ProvideGame>
-              </ProvideSocket>            
+          <PrivateRoute path="/">
+            <ProvideSocket>
+              <ProvideGame>
+                <HomePage />
+              </ProvideGame>
+            </ProvideSocket>
           </PrivateRoute>
         </Switch>
       </Router>

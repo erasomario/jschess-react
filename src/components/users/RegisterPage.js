@@ -54,7 +54,7 @@ export default function RegisterPage() {
             <Card className="mx-auto dialog">
                 <Card.Body>
                     <Card.Title>
-                        <Link to={`${process.env.PUBLIC_URL}/login`}><FaArrowLeft className='mr-2' /></Link>
+                        <Link to="/login"><FaArrowLeft className='mr-2' /></Link>
                         <span className='align-middle'>
                             Registrarse
                         </span>
@@ -105,7 +105,7 @@ export default function RegisterPage() {
                             <Card.Text>
                                 <b>{usernameProps.value}</b> su cuenta se creó con éxito, ahora puede iniciar sesión con los datos que suministró
                             </Card.Text>
-                            <Link to={`${process.env.PUBLIC_URL}/login`} ><Button variant="primary">Ir al Inicio de Sesión</Button></Link>
+                            <Link to="/login" ><Button variant="primary">Ir al Inicio de Sesión</Button></Link>
                         </>
                     }
                 </Card.Body>
