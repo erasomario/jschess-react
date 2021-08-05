@@ -15,16 +15,16 @@ function App() {
     <ProvideAuth>
       <Router>
         <Switch>
-          <Route path="/recover">
+          <Route path={`${process.env.PUBLIC_URL}/recover`}>
             <RecoverPage />
           </Route>
-          <Route path="/login">
+          <Route path={`${process.env.PUBLIC_URL}/login`}>
             <LoginPage />
           </Route>
-          <Route path="/register">
+          <Route path={`${process.env.PUBLIC_URL}/register`}>
             <RegisterPage />
           </Route>
-          <PrivateRoute path="/">            
+          <PrivateRoute path={`${process.env.PUBLIC_URL}/`}>            
               <ProvideSocket>
                 <ProvideGame>
                   <HomePage />

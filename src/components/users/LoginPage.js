@@ -56,7 +56,7 @@ export default function LoginPage() {
       <Card className="mx-auto dialog">
         <Card.Body>
           <Card.Title><FaChessKnight className='mr-2 text-primary' /><span style={{ verticalAlign: 'middle' }}>Iniciar Sesión</span></Card.Title>
-          <Card.Text>Si aún no tiene una cuenta <Link to="/register">puede crearla aquí</Link>, es gratis y no toma más de un minuto.
+          <Card.Text>Si aún no tiene una cuenta <Link to={`${process.env.PUBLIC_URL}/register`}>puede crearla aquí</Link>, es gratis y no toma más de un minuto.
           </Card.Text>
           <Form onSubmit={login}>
             <Input id="login" label='Nombre de Usuario o Email' {...loginProps} type="text" ><FaUser /></Input>
@@ -65,7 +65,7 @@ export default function LoginPage() {
               <Form.Check type="checkbox" {...remembersProps} custom label="Recordarme en este equipo" />
             </Form.Group>
             {error && <Alert variant="danger">{error}</Alert>}
-            <p><Link to="/recover">Olvidé mi usuario o contraseña</Link></p>
+            <p><Link to={`${process.env.PUBLIC_URL}/recover`}>Olvidé mi usuario o contraseña</Link></p>
             <Button className='float-right' variant="primary" type="submit">
               <span className='align-middle'>
                 Continuar</span>

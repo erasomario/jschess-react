@@ -63,7 +63,7 @@ export default function RecoverPage() {
       <Card className="mx-auto dialog">
         <Card.Body>
           <Card.Title>
-            {(page === 'login' || page === 'end') && <Link to="/login"><FaArrowLeft className='mr-2' /></Link>}
+            {(page === 'login' || page === 'end') && <Link to={`${process.env.PUBLIC_URL}/login`}><FaArrowLeft className='mr-2' /></Link>}
             {page === 'key' && <FaArrowLeft className='mr-2 text-primary' style={{ cursor: "pointer" }} onClick={() => setPage('login')} />}
             <span className='align-middle'>
               Recuperar Contraseña
@@ -122,7 +122,7 @@ export default function RecoverPage() {
               <Card.Text>
                 Su contraseña se cambió con éxito, ahora puede usarla para iniciar sesión
               </Card.Text>
-              <Link to="/login"><Button variant="primary">Volver al Inicio de Sesión</Button></Link>
+              <Link to={`${process.env.PUBLIC_URL}/login`}><Button variant="primary">Volver al Inicio de Sesión</Button></Link>
             </>
           }
         </Card.Body>
