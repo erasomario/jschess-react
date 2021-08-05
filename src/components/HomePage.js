@@ -179,24 +179,14 @@ export default function HomePage() {
         }}>
             <EditUserDialog show={showUserDialog} onHide={() => { setShowUserDialog(false) }}></EditUserDialog>
             <CreateGameDialog show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }} onNewGame={updateGame}></CreateGameDialog>
-
             <GameEndedDialog show={showEndDialog} onHide={() => { setShowEndDialog(false) }} onNewGame={updateGame}></GameEndedDialog>
 
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
+            <ToastContainer position="top-right" autoClose={5000}
+                hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss pauseOnHover />
             {orient === "v" && <>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <PlayerData mode='h' playerInfo={topData} />
-                    <Board style={{margin: "0.75em 0 0.75em 0"}} reversed={reversed} turn={game?.turn} size={size}></Board>
+                    <Board style={{ margin: "0.75em 0 0.75em 0" }} reversed={reversed} turn={game?.turn} size={size}></Board>
                     <PlayerData mode='h' playerInfo={bottomData} />
                 </div>
                 <div style={{ position: "absolute", display: "flex", flexDirection: "row", gap: "0.5em" }}>
