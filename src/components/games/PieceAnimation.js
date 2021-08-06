@@ -18,9 +18,9 @@ export function animate(fake, game, reversed, size, cb) {
     fake.style.left = `${begX}px`
     fake.style.top = `${begY}px`
     fake.style.display = "block"
-
     let start = null
-    const time = 200
+    //animation will take longer according to the distance
+    const time = 150 + (350 * (Math.sqrt(Math.pow(endX - begX, 2) + Math.pow(endY - begY, 2)) / (Math.sqrt(Math.pow(size, 2) * 2) * 8)))
     const step = t => {
         if (!start) {
             start = t
