@@ -4,7 +4,7 @@ import { FaFolderOpen } from "react-icons/fa"
 import { findNotNotifiedGamesCount } from "../../clients/user-client"
 import { useAuth } from "../../providers/ProvideAuth"
 import { useSocket } from "../../providers/ProvideSocket"
-import GamesList from "./GamesList"
+import PlayerGamesList from "./PlayerGamesList"
 import { toast } from 'react-toastify';
 import "./OpenGameButton.css"
 
@@ -40,7 +40,7 @@ function OpenGameButton() {
     }, [notNotifiedCount])
 
     return <>
-        <GamesList show={showGamesDialog} onHide={() => { setShowGamesDialog(false) }}></GamesList>
+        <PlayerGamesList show={showGamesDialog} onHide={() => { setShowGamesDialog(false) }}></PlayerGamesList>
         <Button style={{ position: "relative" }} variant="primary" onClick={() => setShowGamesDialog(true)}>
             <FaFolderOpen style={{ marginTop: -4 }} ></FaFolderOpen>
             <div className={"OpenGameButtonRedDot " + (dot ? "shown" : "hidden")}></div>

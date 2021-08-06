@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Modal from 'react-bootstrap/Modal';
@@ -12,7 +12,7 @@ import { findGamesByStatus } from '../../clients/user-client';
 import { useAuth } from '../../providers/ProvideAuth';
 import { useGame } from '../../providers/ProvideGame';
 import { getAsGameList } from './GamesListLogic';
-import "./GamesList.css";
+import "./PlayerGamesList.css";
 
 const Loading = ({ style }) => {
     return <div style={style}>Cargando</div>
@@ -63,7 +63,7 @@ const GameItem = React.forwardRef((props, ref) => {
     </ListGroup.Item>
 })
 
-export default function GamesList({ show, onHide = a => a }) {
+export default function PlayerGamesList({ show, onHide = a => a }) {
     const ref = useRef()
     const { user } = useAuth()
     const { game, updateGame } = useGame()
@@ -72,6 +72,8 @@ export default function GamesList({ show, onHide = a => a }) {
     const [closedGames, setClosedGames] = useState(null)
     const [loading, setLoading] = useState(true)
 
+    const scroll = useCallback(() => { ref.current?.scrollIntoView({ block: "nearest", behavior: "auto" }) }, [])
+
     useEffect(() => {
         if (show) {
             findGamesByStatus(user.id, user.api_key, "open")
@@ -79,18 +81,18 @@ export default function GamesList({ show, onHide = a => a }) {
                 .then(setOpenGames)
                 .then(() => setError())
                 .then(() => setLoading(false))
-                .then(() => { ref.current?.scrollIntoView({ block: "nearest", behavior: "auto" }) })
                 .catch(e => setError(e.message))
+                .finally(scroll)
 
             findGamesByStatus(user.id, user.api_key, "closed")
                 .then(l => getAsGameList(l, game, user))
                 .then(setClosedGames)
                 .then(() => setError())
                 .then(() => setLoading(false))
-                .then(() => { ref.current?.scrollIntoView({ block: "nearest", behavior: "auto" }) })
                 .catch(e => setError(e.message))
+                .finally(scroll)
         }
-    }, [show, game, user])
+    }, [show, game, user, scroll])
 
     const select = async gameId => {
         try {
