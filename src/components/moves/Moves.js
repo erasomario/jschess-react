@@ -20,11 +20,9 @@ export default function Moves({ style, onNewGame = a => a }) {
 
     useLayoutEffect(() => {
         if (scrollRef.current) {
-            setTimeout(function () {
-                scrollRef?.current?.scrollIntoView({ block: "nearest", behavior: "auto" })
-            }, 0)
+            scrollRef?.current?.scrollIntoView({ block: "nearest", behavior: "auto" })
         }
-    }, [data])
+    })
 
     const prev = () => updateTurn(board.turn - 1)
     const next = () => updateTurn(board.turn + 1)
