@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { FaCamera, FaUser, FaLock, FaEnvelope, FaCopy, FaCheck, FaWindowClose } from 'react-icons/fa'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import Alert from 'react-bootstrap/Alert'
 import { useAuth } from '../../providers/ProvideAuth'
 import { useEffect } from 'react'
 import Modal from 'react-bootstrap/Modal'
@@ -18,6 +17,8 @@ import {
     editEmail
 } from '../../clients/user-client'
 import Input from '../Input'
+import { toast } from 'react-toastify'
+import { Alert, Spinner } from 'react-bootstrap'
 
 export default function EditPage({ show, onHide = a => a }) {
     const { user, key, refreshKey } = useAuth()
@@ -27,8 +28,9 @@ export default function EditPage({ show, onHide = a => a }) {
     const [emailProps, , emailFocus] = useInput()
     const [passProps, , passFocus] = useInput()
     const [passConfProps, , passConfFocus] = useInput()
-    const [msg, setMsg] = useState(null)
+    const [error, setError] = useState()
     const [page, setPage] = useState(null)
+    const [uploading, setUploading] = useState(false)
 
     useEffect(() => {
         setError()
@@ -39,32 +41,26 @@ export default function EditPage({ show, onHide = a => a }) {
             setPage()
             setError()
         } else {
-            console.log("klfjlakjfas;lkfj;laskfjas;klfjasl;kfjas;lkfjas;lkfjas;lkfjslkfjaslkfjaslkfjasl");
-            getProfilePictureUrl(user.id, user.hasPicture, user.api_key).then(setPictureUrl).catch(e => setMsg(e.message))
+            getProfilePictureUrl(user.id, user.hasPicture, user.api_key).then(setPictureUrl)
+                .catch(e => toast.error(e.message))
             setUsername(user.username)
         }
     }, [show, user, setUsername])
 
-    const setError = (msg) => {
-        setMsg(msg ? { msg, type: "danger" } : null)
-    }
-
-    const setSuccess = (msg) => {
-        setMsg(msg ? { msg, type: "success" } : null)
-    }
-
     const removePp = () => {
-        setError()
         removeProfilePicture(user)
-            .then(() => { refreshKey(key) })
-            .catch(setError)
+            .then(() => refreshKey(key))
+            .catch(e => toast.error(e.message))
     }
 
-    const updatePp = (file) => {
-        setError()
-        file && updateProfilePicture(user, file)
-            .then(() => { refreshKey(key) })
-            .catch(setError)
+    const updatePp = file => {
+        if (file) {
+            setUploading(true)
+            updateProfilePicture(user, file)
+                .then(() => refreshKey(key))
+                .catch(e => toast.error(e.message))
+                .finally(() => setUploading(false))
+        }
     }
 
     const save = async (e) => {
@@ -80,7 +76,7 @@ export default function EditPage({ show, onHide = a => a }) {
                     throw Error('Debe escribir un nuevo nombre de usuario')
                 }
                 await editUsername(user, origPassProps.value, usernameProps.value)
-                setSuccess("El nombre de usuario se cambió con éxito")
+                toast.success("El nombre de usuario se cambió con éxito")
             } else if (page === 'password') {
                 if (!passProps.value) {
                     passFocus()
@@ -93,14 +89,14 @@ export default function EditPage({ show, onHide = a => a }) {
                     throw Error('La nueva contraseña y su confirmación no coinciden')
                 }
                 await editPassword(user, origPassProps.value, passProps.value)
-                setSuccess("La contraseña se cambió con éxito")
+                toast.success("La contraseña se cambió con éxito")
             } else if (page === 'email') {
                 if (!emailProps.value) {
                     emailFocus()
                     throw Error('Debe escribir un nuevo email')
                 }
                 await editEmail(user, origPassProps.value, emailProps.value)
-                setSuccess("El email se cambió con éxito")
+                toast.success("El email se cambió con éxito")
             }
             setOrigPass('')
             await refreshKey(user.api_key)
@@ -116,41 +112,30 @@ export default function EditPage({ show, onHide = a => a }) {
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={save}>
-                    {user && <div style={{ position: 'relative', overflow: 'hidden' }} className='mb-3'>
-                        <div style={{ position: 'relative', float: 'left' }} className='mr-3'>
-                            {user.hasPicture && <FaWindowClose onClick={removePp} style={{ position: 'absolute', right: '0px', cursor: 'pointer' }} />}
-                            <img alt="profile_picture" src={pictureUrl} style={{ borderRadius: '50%' }} className='pp' />
-                            <div className='pb'>
-                                <label htmlFor="file-input" style={{ cursor: 'pointer' }}>
-                                    <div variant="light"><FaCamera className='mr-2 camera' /><span style={{ verticalAlign: 'middle' }}>{user.hasPicture ? 'Cambiar' : 'Agregar'}</span></div>
-                                </label>
+                    {user &&
+                        <div style={{ display: "flex", flexDirection: "row" }} className='mb-3'>
+                            <div style={{ position: "relative" }} className='mr-3'>
+                                {user.hasPicture && <FaWindowClose onClick={removePp} style={{ position: 'absolute', right: '0px', cursor: 'pointer' }} />}
+                                {!uploading && <img alt="profile_picture" src={pictureUrl} className='pp' />}
+                                {uploading && <div className='pp' style={{ backgroundColor: "#1976D2", display: "flex", justifyContent: "center", alignItems: "center" }} >
+                                    <Spinner animation="border" variant="light" />
+                                </div>}
+                                <div className='pb'>
+                                    <label htmlFor="file-input" style={{ cursor: 'pointer' }}>
+                                        <div variant="light"><FaCamera className='mr-2 camera' /><span style={{ verticalAlign: 'middle' }}>{user.hasPicture ? 'Cambiar' : 'Agregar'}</span></div>
+                                    </label>
+                                </div>
+                                <input type="file" id="file-input" accept="image/png, image/gif, image/jpeg" style={{ display: 'none' }}
+                                    onChange={event => {
+                                        updatePp(event.target.files[0])
+                                    }} />
                             </div>
-                            <input type="file" id="file-input" accept="image/png, image/gif, image/jpeg" style={{ display: 'none' }}
-                                onChange={event => {
-                                    updatePp(event.target.files[0])
-                                }} />
-                        </div>
-                        <div style={{ position: 'relative', float: 'left' }}>
-                            <div>
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                                 <Button variant="link" onClick={() => setPage('password')}>Cambiar Contraseña</Button>
-                            </div>
-                            <div>
                                 <Button variant="link" onClick={() => setPage('email')}>Cambiar Correo</Button>
                             </div>
                         </div>
-                    </div>}
-
-                    {!user && <div style={{ position: 'relative', overflow: 'hidden' }} className='mb-3'>
-                        <div style={{ position: 'relative', float: 'left' }} className='mr-3'>
-                            <img alt="profile_picture" src={pictureUrl} style={{ borderRadius: '50%' }} className='pp' />
-                            <div>
-                                <div className='pb' variant="light"><span style={{ verticalAlign: 'middle' }}>Agregar</span></div>
-                            </div>
-                        </div>
-                        <div style={{ position: 'relative', float: 'left' }}>
-                            <h4>Usuario</h4>
-                        </div>
-                    </div>}
+                    }
 
                     {page &&
                         <>
@@ -177,7 +162,7 @@ export default function EditPage({ show, onHide = a => a }) {
                             </>}
                         </>
                     }
-                    {msg && <Alert variant={msg.type} className='mt-3'>{msg.msg}</Alert>}
+                    {error && <Alert variant="danger" className='mt-3'>{error}</Alert>}
                     <Button className="float-right" variant="primary" disabled={!page} type="submit">Guardar
                         <FaCheck className='ml-2' />
                     </Button>

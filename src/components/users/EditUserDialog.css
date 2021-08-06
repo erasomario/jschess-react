@@ -6,6 +6,7 @@
     .pp {
         width: 5em;
         height: 5em;
+        border-radius: 50%
     }
     .pb {
         width: 5em;
@@ -19,6 +20,7 @@
     .pp {
         width: 7em;
         height: 7em;
+        border-radius: 50%
     }
     .pb {
         width: 7em;
@@ -32,6 +34,7 @@
     .pp {
         width: 8em;
         height: 8em;
+        border-radius: 50%
     }
     .pb {
         width: 8em;
