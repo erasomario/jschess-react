@@ -31,13 +31,21 @@ export function ProvideSocket({ children }) {
     const addSocketListener = useCallback((event, cb) => {
         if (!open) {
             return
-        }        
+        }
         console.log("listening for: ", event);
         socket.current.removeAllListeners(event)
         socket.current.on(event, cb)
     }, [open])
 
-    return <SocketContext.Provider value={{ addSocketListener}}>
+    const emit = useCallback((event, payload) => {
+        if (!open) {
+            return
+        }
+        console.log("trying to emit ", event);
+        socket.current.emit(event, payload)
+    }, [open])
+
+    return <SocketContext.Provider value={{ addSocketListener, emit }}>
         {children}
     </SocketContext.Provider>
 }

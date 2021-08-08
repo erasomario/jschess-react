@@ -17,6 +17,10 @@ const createMove = async (apiKey, gameId, piece, src, dest, prom) => {
     return await apiRequest(`/v1/games/${gameId}/moves`, 'POST', apiKey, { piece, src, dest, prom })
 }
 
+const createMoveSocket = async (emitterFx, gameId, piece, src, dest, prom) => {
+    emitterFx("createMove",{gameId, piece, src, dest, prom })
+}
+
 const timeout = async (apiKey, gameId) => {
     return await apiRequest(`/v1/games/${gameId}/timeout`, 'POST', apiKey)
 }
@@ -46,6 +50,7 @@ export {
     rematch,
     findGameById,
     createMove,
+    createMoveSocket,
     timeout,
     setOpponentNotification,
     offerDraw,
