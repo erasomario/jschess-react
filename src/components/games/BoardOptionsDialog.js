@@ -7,14 +7,15 @@ import { useRadio } from '../../hooks/useRadio'
 import { useAuth } from '../../providers/ProvideAuth'
 import { mix } from '../../utils/Colors'
 
+
 const colors = {
-    "green_cream": { primary: "#64B2B4", secondary: "#FAF9F4" },
-    "brown_cream": { primary: "#B58863", secondary: "#F0D9B5" },
+    "green_cream": { primary: "#64B2B4", secondary: "#FAF9F4", dot: "rgba(55, 112, 114, 0.4)", selection: "rgba(33, 150, 243, 0.4)" },
+    "brown_cream": { primary: "#B58863", secondary: "#F0D9B5", dot: "rgba(60, 45, 33, 0.3)", },
     "light_blue": { primary: "#ADC5CF", secondary: mix("#ADC5CF", '#FFFFFF', 0.75) },
-    "blue_cream": { primary: "#70C1E1", secondary: "#FAF9F4" },
-    "blue_blue": { primary: "#70C1E1", secondary: mix("#70C1E1", '#FFFFFF', 0.7) },
+    "blue_cream": { primary: "#70C1E1", secondary: "#FAF9F4", selection: "rgba(55, 161, 22, 0.4)" },
+    "blue_blue": { primary: "#70C1E1", secondary: mix("#70C1E1", '#FFFFFF', 0.7), selection: "rgba(55, 161, 22, 0.4)" },
     "red_blue": { primary: "#E17077", secondary: mix("#E17077", '#FFFFFF', 0.7) },
-    "parrot": { primary: "#86A666", secondary: "#FFFFDD" },
+    "parrot": { primary: "#86A666", secondary: "#FFFFDD", dot: "rgba(55, 112, 114, 0.4)", },
     "dark": { primary: "#ABABAB", secondary: "#DCDCDC" },
 }
 

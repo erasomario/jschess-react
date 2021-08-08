@@ -4,18 +4,20 @@ import { useGame } from "../../providers/ProvideGame"
 import { Tile } from "./Tile"
 import { getAttacked, getCastling, includes, getStartBoard } from '../../utils/Chess'
 import Modal from 'react-bootstrap/Modal'
-import { createMove } from "../../clients/game-client"
+import { createMove, createMoveSocket } from "../../clients/game-client"
 import { animate } from "./PieceAnimation"
 import { toast } from "react-toastify"
 import { mix } from "../../utils/Colors"
 import { FaCog } from "react-icons/fa"
 import { BoardOptionsDialog, colors } from "./BoardOptionsDialog"
+import { useSocket } from "../../providers/ProvideSocket"
 
 const letters = { 1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h' }
 const startBoard = getStartBoard()
 
 export function Board({ reversed = false, size, style }) {
     console.log("board repaint")
+    const {emit} = useSocket()
     const animPiece = useRef()
     const { game } = useGame()
     const { user } = useAuth()
@@ -29,7 +31,7 @@ export function Board({ reversed = false, size, style }) {
     const [options, setOptions] = useState(user.boardOpts ? JSON.parse(user.boardOpts) : { coords: "out_opaque", colors: "light_blue", sounds: true })
     const onOptsChange = useCallback((opts) => { setOptions(opts); setshowBoardOpts(false) }, [])
     const th = (options.coords === "out_opaque" || options.coords === "out_trans") ? (size * 0.92) / 8 : size / 8
-    const color = useMemo(() => colors[options.colors], [options?.colors])
+    const colorTheme = useMemo(() => colors[options.colors], [options?.colors])
     const lastSound = useRef(0)
 
     useLayoutEffect(() => {
@@ -38,6 +40,7 @@ export function Board({ reversed = false, size, style }) {
         setCastling()
         setAnimating(true)
         if (game?.board?.turn > 0) {
+            console.log("Animation Starting", Date.now())
             animate(animPiece.current, game, reversed, th, () => {
                 setAnimating(false)
                 if (options.sounds) {
@@ -46,7 +49,12 @@ export function Board({ reversed = false, size, style }) {
                         newNum = Math.floor(Math.random() * 4)
                     } while (newNum === lastSound.current)
                     lastSound.current = newNum
-                    document.getElementById("pieceSound" + newNum).play().catch(e => e)
+                    console.log("pieceSound" + newNum, Date.now())
+                    const snd = document.getElementById("pieceSound" + newNum)
+                    if (snd) {
+                        snd.volume = 1
+                        snd.play().catch(e => e)
+                    }
                 }
             })
         }
@@ -75,8 +83,10 @@ export function Board({ reversed = false, size, style }) {
                 setShowModal(true)
                 return
             }
-            createMove(user.api_key, game.id, piece, src, [c, r])
-                .catch(e => toast.error(e.message))
+            console.log("Mov Creation", Date.now());
+            createMoveSocket(emit, game.id, piece, src, [c, r])
+                //.then(g => updateGame(g))
+                //.catch(e => toast.error(e.message))
             return
         }
         setSrc([c, r])
@@ -110,10 +120,10 @@ export function Board({ reversed = false, size, style }) {
 
     const InnerBoard = () => {
         return <>
-            <div onClick={() => setshowBoardOpts(true)} style={{ position: "absolute", color: mix(color.primary, "#7F8C8D", 0.8), width: "2em", height: "2em", right: "-2.3em", top: "0.3em", cursor: "pointer" }}>
+            <div onClick={() => setshowBoardOpts(true)} style={{ position: "absolute", color: mix(colorTheme.primary, "#7F8C8D", 0.8), width: "2em", height: "2em", right: "-2.3em", top: "0.3em", cursor: "pointer" }}>
                 <FaCog style={{ width: "2em", height: "2em" }} />
             </div>
-            <div style={{ boxShadow: `0px 0px 7px ${mix(color.primary, "#000000", 0.3)}`, position: "relative", display: "flex", flexDirection: "column", gridColumn: "2/3", gridRow: "2/3" }}>
+            <div style={{ boxShadow: `0px 0px 7px ${mix(colorTheme.primary, "#000000", 0.3)}`, position: "relative", display: "flex", flexDirection: "column", gridColumn: "2/3", gridRow: "2/3" }}>
                 {rows.map((r) =>
                     <div key={r} style={{ display: 'flex', flexDirection: 'row' }}>{
                         cols.map((c) => {
@@ -124,8 +134,7 @@ export function Board({ reversed = false, size, style }) {
                             }
                             return <Tile
                                 key={c}
-                                blackColor={color.primary}
-                                whiteColor={color.secondary}
+                                colors={colorTheme}                                
                                 col={c} row={r}
                                 piece={piece}
                                 reversed={reversed}
@@ -169,15 +178,15 @@ export function Board({ reversed = false, size, style }) {
     switch (options.coords) {
         case "out_opaque":
             borderStyle = {
-                color: mix(color.primary, "#FFFFFF", 0.7),
-                backgroundColor: mix(color.primary, "#000000", 0.1),
+                color: mix(colorTheme.primary, "#FFFFFF", 0.7),
+                backgroundColor: mix(colorTheme.primary, "#000000", 0.1),
                 borderRadius: "1.5%",
                 ...baseStyle
             }
             break;
         case "out_trans":
             borderStyle = {
-                color: mix(color.primary, "#000000", 0.2),
+                color: mix(colorTheme.primary, "#000000", 0.2),
                 ...baseStyle
             }
             break;
