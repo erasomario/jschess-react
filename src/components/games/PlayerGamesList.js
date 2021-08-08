@@ -41,9 +41,9 @@ export default function PlayerGamesList({ show, onHide = a => a }) {
     }, [show, game, user])
 
     useEffect(() => {
-        if (openGames && (openGames.filter(e => e.id === game.id).length > 0)) {
+        if (openGames && (openGames.filter(e => e.id === game?.id).length > 0)) {
             setTab("open")
-        } else if (closedGames && (closedGames.filter(e => e.id === game.id).length > 0)) {
+        } else if (closedGames && (closedGames.filter(e => e.id === game?.id).length > 0)) {
             setTab("closed")
         }
     }, [game?.id, openGames, closedGames])
