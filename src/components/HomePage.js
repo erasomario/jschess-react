@@ -22,13 +22,14 @@ import { getPlayersData } from './games/PlayerDataUtils';
 import OpenGameButton from './games/OpenGameButton';
 import { makeYesNoDialog, YesNoDialog } from './games/YesNoDialog';
 import { acceptDraw, offerDraw, rejectDraw, surrender } from '../clients/game-client';
+import OpenCurrentGamesButton from './games/OpenCurrentGamesButton';
 
-const SurrenderButton = ({ onSurrender, game }) => {
-    return <Button disabled={!(game && (game.movs.length >= 2 && !game.result))} variant="primary" onClick={onSurrender}><FaFlag style={{ marginTop: -4 }} ></FaFlag></Button>
+const SurrenderButton = ({ onSurrender, game, user }) => {
+    return <Button disabled={!(game && (game.movs.length >= 2 && !game.result && (user?.id === game?.whiteId || user?.id === game?.blackId)))} variant="primary" onClick={onSurrender}><FaFlag style={{ marginTop: -4 }} ></FaFlag></Button>
 }
 
-const OfferDrawButton = ({ onDrawOffer, game }) => {
-    return <Button disabled={!(game && (game.movs.length >= 2 && !game.result))} variant="primary" onClick={onDrawOffer}><FaStarHalfAlt style={{ marginTop: -4 }} ></FaStarHalfAlt></Button>
+const OfferDrawButton = ({ onDrawOffer, game, user }) => {
+    return <Button disabled={!(game && (game.movs.length >= 2 && !game.result && (user?.id === game?.whiteId || user?.id === game?.blackId)))} variant="primary" onClick={onDrawOffer}><FaStarHalfAlt style={{ marginTop: -4 }} ></FaStarHalfAlt></Button>
 }
 
 export default function HomePage() {
@@ -57,16 +58,18 @@ export default function HomePage() {
                 setShowEndDialog(true)
             }
         } else {
-            const myColor = ng.whiteId === user.id ? "w" : "b"
             //I'm not watching this game right now 
-            if (ng.result) {
-                //the game ended
-                toast(`El juego contra ${myColor === "w" ? ng.blackName : ng.whiteName} finalizó`)
-            } else {
-                const turn = ng.movs.length % 2 === 0 ? "w" : "b"
-                if (turn === myColor) {
-                    //if it's my turn to play it means my opponent made a move
-                    toast(`${myColor === "w" ? ng.blackName : ng.whiteName} hizo un movimiento en otro juego`)
+            const myColor = ng.whiteId === user.id ? "w" : (ng.blackId === user.id ? "b" : null)
+            if (myColor) {
+                if (ng.result) {
+                    //the game ended and I'm one of the players
+                    toast(`El juego contra ${myColor === "w" ? ng.blackName : ng.whiteName} finalizó`)
+                } else {
+                    const turn = ng.movs.length % 2 === 0 ? "w" : "b"
+                    if (turn === myColor) {
+                        //if it's my turn to play it means my opponent made a move
+                        toast(`${myColor === "w" ? ng.blackName : ng.whiteName} hizo un movimiento en otro juego`)
+                    }
                 }
             }
         }
@@ -141,7 +144,10 @@ export default function HomePage() {
         setYesNoData(makeYesNoDialog("Confirmación", "¿Desea ofrecer un empate?", "Si", "No", () => {
             offerDraw(user?.api_key, game?.id)
                 .then(() => {
-                    toast.info(`Su ofrecimiento de empate se envió a ${game.whiteId !== user.id ? game.whiteName : game.blackName}`)
+                    if (game.whiteId === user.id ? game.blackId : game.whiteId) {
+                        //if you offer draw to bot you'll get an inmediate answer, so this toast is not needed
+                        toast.info(`Su ofrecimiento de empate se envió a ${game.whiteId !== user.id ? game.whiteName : game.blackName}`)
+                    }
                 })
                 .catch(e => toast.error(e.message))
         }))
@@ -199,8 +205,9 @@ export default function HomePage() {
                 <div style={{ position: "absolute", display: "flex", flexDirection: "column", gap: "0.5em" }}>
                     <Button variant="primary" onClick={() => setShowNewGameDialog(true)}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
                     <OpenGameButton></OpenGameButton>
-                    <OfferDrawButton game={game} onDrawOffer={onDrawOfferClicked} />
-                    <SurrenderButton game={game} onSurrender={onSurrender} />
+                    <OfferDrawButton game={game} onDrawOffer={onDrawOfferClicked} user={user} />
+                    <SurrenderButton game={game} onSurrender={onSurrender} user={user} />
+                    <OpenCurrentGamesButton></OpenCurrentGamesButton>
                 </div>
                 <div style={{ userSelect: "none", display: "flex", justifyContent: "center" }}>
                     <div style={{ flexDirection: "column", flexBasis: "33%", paddingRight: "2em" }}>

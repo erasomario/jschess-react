@@ -18,7 +18,11 @@ const createMove = async (apiKey, gameId, piece, src, dest, prom) => {
 }
 
 const createMoveSocket = async (emitterFx, gameId, piece, src, dest, prom) => {
-    emitterFx("createMove",{gameId, piece, src, dest, prom })
+    emitterFx("createMove", { gameId, piece, src, dest, prom })
+}
+
+const createSubcriber = async (apiKey, gameId) => {
+    return await apiRequest(`/v1/games/${gameId}/subscribers`, 'POST', apiKey)
 }
 
 const timeout = async (apiKey, gameId) => {
@@ -45,16 +49,22 @@ const surrender = async (apiKey, gameId) => {
     return await apiRequest(`/v1/games/${gameId}/surrender`, 'POST', apiKey)
 }
 
+const findCurrentGames = async (apiKey) => {
+    return apiRequest(`/v1/games/current/`, 'GET', apiKey, null)
+}
+
 export {
     createGame,
     rematch,
     findGameById,
     createMove,
     createMoveSocket,
+    createSubcriber,
     timeout,
     setOpponentNotification,
     offerDraw,
     acceptDraw,
     rejectDraw,
-    surrender
+    surrender,
+    findCurrentGames
 }

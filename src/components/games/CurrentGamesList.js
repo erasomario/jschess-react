@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Alert } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
-import { findCurrentGames, findGameById } from '../../clients/game-client'
+import { createSubcriber, findCurrentGames, findGameById } from '../../clients/game-client'
 import { useAuth } from '../../providers/ProvideAuth'
 import { useGame } from '../../providers/ProvideGame'
 import { GamesList } from './GamesList'
@@ -16,7 +16,7 @@ export default function CurrentGamesList({ show, onHide = a => a }) {
 
     useEffect(() => {
         if (show) {
-        findCurrentGames(user.api_key)
+            findCurrentGames(user.api_key)
                 .then(l => getAsGameList(l, game, user))
                 .then(setGames)
                 .then(() => setError())
@@ -24,10 +24,10 @@ export default function CurrentGamesList({ show, onHide = a => a }) {
                 .catch(e => setError(e.message))
         }
     }, [show, game, user])
-   
+
     const select = async gameId => {
         try {
-            const game = await findGameById(gameId, user.api_key)
+            const game = await createSubcriber(user.api_key, gameId)
             updateGame(game)
             onHide()
         } catch (e) {
@@ -39,7 +39,7 @@ export default function CurrentGamesList({ show, onHide = a => a }) {
     return <Modal show={show} onHide={() => onHide()}>
         <Modal.Header closeButton>
             <div style={{ overflow: 'hidden' }} >
-                <h4 style={{ display: "inline" }} className='align-top'>Partidas</h4>
+                <h4 style={{ display: "inline" }} className='align-top'>Partidas en Curso</h4>
             </div>
         </Modal.Header>
         <Modal.Body>
