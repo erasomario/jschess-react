@@ -53,7 +53,7 @@ const getMoveData = (game, user) => {
         } else if (game.endType === "agreed") {
             winDetail = "Los jugadores acordaron un empate"
         } else if (game.endType === "surrender") {
-            winDetail = `${game.result === "b" ? "Las blancas" : "Las negras"} se rindió`
+            winDetail = `${game.result === "b" ? "Las blancas" : "Las negras"} se rindieron`
         }
     }
 
