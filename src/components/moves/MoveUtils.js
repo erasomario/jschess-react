@@ -6,7 +6,7 @@ const getMatElement = (movs, i) => {
     }
     let lbl = movs[i].label;
     const firstL = lbl.slice(0, 1)
-    if (['K', 'Q', 'R', 'B', 'N'].includes(firstL)) {
+    if (['K', 'Q', 'R', "b", 'N'].includes(firstL)) {
         lbl = unicode[firstL][i % 2 === 0 ? 0 : 1] + lbl.slice(1)
     }
     return { turn: i + 1, label: lbl }
@@ -64,7 +64,7 @@ const getMoveData = (game, user) => {
         prevBtnDisabled: !game?.board || game.board.turn <= 1,
         nextBtnDisabled: !game?.board || game.board.turn === game.movs.length,
         show: (!game ? "noGame" : (!game.movs || game.movs.length === 0 ? "noMovs" : "movs")),
-        myColor: game?.whiteId === user?.id ? "w" : "b",
+        myColor: game ? (game.whiteId === user?.id ? "w" : (game.blackId === user?.id ? "b" : null)) : null,
         selectedRow: Math.floor((game?.board?.turn - 1) / 2)
     }
 }

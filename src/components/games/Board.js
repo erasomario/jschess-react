@@ -2,8 +2,8 @@ import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { useAuth } from "../../providers/ProvideAuth"
 import { useGame } from "../../providers/ProvideGame"
 import { Tile } from "./Tile"
-import { getAttacked, getCastling, includes, getStartBoard } from '../../utils/Chess'
-import Modal from 'react-bootstrap/Modal'
+import { getAttacked, getCastling, includes, getStartBoard } from "../../utils/Chess"
+import Modal from "react-bootstrap/Modal"
 import { createMove, createMoveSocket } from "../../clients/game-client"
 import { animate } from "./PieceAnimation"
 import { toast } from "react-toastify"
@@ -12,7 +12,7 @@ import { FaCog } from "react-icons/fa"
 import { BoardOptionsDialog, colors } from "./BoardOptionsDialog"
 import { useSocket } from "../../providers/ProvideSocket"
 
-const letters = { 1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h' }
+const letters = { 1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f", 7: "g", 8: "h" }
 const startBoard = getStartBoard()
 
 export function Board({ reversed = false, size, style }) {
@@ -61,8 +61,8 @@ export function Board({ reversed = false, size, style }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [game?.board?.turn, reversed])
 
-    const myColor = game ? (user.id === game.whiteId ? 'w' : 'b') : ''
-    const myTurn = game ? (myColor === 'w' ? game.movs.length % 2 === 0 : game.movs.length % 2 !== 0) : false
+    const myColor = game ? (user.id === game.whiteId ? "w" : (user.id === game.blackId ? "b" : null)) : null
+    const myTurn = game && myColor ? (myColor === "w" ? game.movs.length % 2 === 0 : game.movs.length % 2 !== 0) : false
 
     const rows = reversed ? [0, 1, 2, 3, 4, 5, 6, 7] : [7, 6, 5, 4, 3, 2, 1, 0]
     const cols = reversed ? [7, 6, 5, 4, 3, 2, 1, 0] : [0, 1, 2, 3, 4, 5, 6, 7]
@@ -78,7 +78,7 @@ export function Board({ reversed = false, size, style }) {
 
         if (highlighted || castled) {
             const piece = board.inGameTiles[src[1]][src[0]]
-            if (piece && (piece[1] === 'p' && ((piece[0] === 'w' && r === 7) || (piece[0] === 'b' && r === 0)))) {
+            if (piece && (piece[1] === "p" && ((piece[0] === "w" && r === 7) || (piece[0] === "b" && r === 0)))) {
                 setDest([c, r])
                 setShowModal(true)
                 return
@@ -107,7 +107,7 @@ export function Board({ reversed = false, size, style }) {
 
     const TitlesRow = ({ style }) => {
         return <div style={{ display: "flex", flexDirection: "row", ...style }}>
-            {cols.map(c => <div key={`b${c}`} style={{ textAlign: 'center', width: `${th}px` }}>{letters[c + 1].toUpperCase()}</div>)}
+            {cols.map(c => <div key={`b${c}`} style={{ textAlign: "center", width: `${th}px` }}>{letters[c + 1].toUpperCase()}</div>)}
         </div>
     }
 
@@ -125,7 +125,7 @@ export function Board({ reversed = false, size, style }) {
             </div>
             <div style={{ boxShadow: `0px 0px 7px ${mix(colorTheme.primary, "#000000", 0.3)}`, position: "relative", display: "flex", flexDirection: "column", gridColumn: "2/3", gridRow: "2/3" }}>
                 {rows.map((r) =>
-                    <div key={r} style={{ display: 'flex', flexDirection: 'row' }}>{
+                    <div key={r} style={{ display: "flex", flexDirection: "row" }}>{
                         cols.map((c) => {
                             const lm = (game && game.board.turn > 0) && ((game.movs[game.board.turn - 1].sCol === c && game.movs[game.board.turn - 1].sRow === r) || (game.movs[game.board.turn - 1].dCol === c && game.movs[game.board.turn - 1].dRow === r))
                             let piece = (game ? game.board.inGameTiles : startBoard)[r][c]
@@ -139,13 +139,13 @@ export function Board({ reversed = false, size, style }) {
                                 piece={piece}
                                 reversed={reversed}
                                 selected={src && (src[0] === c && src[1] === r)}
-                                myTurn={myTurn && !game.result}
+                                myTurn={myTurn && !game.result && game.board.turn === game.movs.length}
                                 myColor={myColor}
                                 highlight={includes(high, c, r) || includes(castling, c, r)}
                                 lastMov={lm}
                                 onSelect={() => onSelect(c, r)}
                                 size={th}
-                                showCoords={options.coords === 'in'}
+                                showCoords={options.coords === "in"}
                             ></Tile>
                         }
                         )}
@@ -154,7 +154,7 @@ export function Board({ reversed = false, size, style }) {
                 <div ref={animPiece}
                     style={{
                         position: "absolute", width: `${th}px`, height: `${th}px`,
-                        backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: "100% 100%"
+                        backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundSize: "100% 100%"
                     }}>
                 </div>
             </div>
@@ -164,14 +164,14 @@ export function Board({ reversed = false, size, style }) {
     let borderStyle
     const baseStyle = {
         fontSize: `${(size * 0.04) / 2}px`,
-        userSelect: 'none',
+        userSelect: "none",
         display: "grid",
         gridTemplateColumns: "1fr 1fr 1fr",
         gridTemplateRows: "1fr 1fr 1fr",
         width: `${size}px`,
         height: `${size}px`,
         flexShrink: "0",
-        position: 'relative',
+        position: "relative",
         ...style
     }
 
@@ -199,10 +199,10 @@ export function Board({ reversed = false, size, style }) {
 
     return <>
         <BoardOptionsDialog show={showBoardOpts} onHide={() => setshowBoardOpts(false)} options={options} onChange={onOptsChange}></BoardOptionsDialog>
-        <Modal size='sm' show={showModal} onHide={() => setShowModal(false)}>
+        <Modal size="sm" show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Body>
-                <div style={{ cursor: 'pointer', position: 'relative', width: '245px', margin: 'auto' }}>
-                    {['q', 'r', 'b', 'n'].map(p => <div key={p} style={{ width: '60px', height: '60px', float: 'left', backgroundSize: '60px 60px', backgroundImage: `url('${process.env.PUBLIC_URL}/assets/${myColor}${p}.svg')` }}
+                <div style={{ cursor: "pointer", position: "relative", width: "245px", margin: "auto" }}>
+                    {["q", "r", "b", "n"].map(p => <div key={p} style={{ width: "60px", height: "60px", float: "left", backgroundSize: "60px 60px", backgroundImage: `url("${process.env.PUBLIC_URL}/assets/${myColor}${p}.svg")` }}
                         onClick={() => promote(p)} />
                     )}
                 </div>
@@ -215,7 +215,7 @@ export function Board({ reversed = false, size, style }) {
 
         <div style={borderStyle}>
             {InnerBoard()}
-            {(options.coords === 'out_opaque' || options.coords === 'out_trans') && <>
+            {(options.coords === "out_opaque" || options.coords === "out_trans") && <>
                 <TitlesRow style={{ gridColumn: "2/3", gridRow: "1/2", alignItems: "flex-end", marginBottom: "0.2em" }}></TitlesRow>
                 <TitlesRow style={{ gridColumn: "2/3", gridRow: "3/4", alignItems: "flex-start", marginTop: "0.2em" }}></TitlesRow>
                 <TitlesCol style={{ gridColumn: "1/2", gridRow: "2/3", alignItems: "flex-end", marginRight: "0.5em" }}></TitlesCol>

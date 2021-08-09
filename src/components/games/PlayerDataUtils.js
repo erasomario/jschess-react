@@ -12,7 +12,7 @@ const getRemainingTime = (game, color) => {
     }
     let secs = game.time * 60
     for (let i = 0; i < game.movs.length; i++) {
-        if ((color === 'w' && i % 2 === 0) || (color === 'b' && i % 2 !== 0)) {
+        if ((color === "w" && i % 2 === 0) || (color === "b" && i % 2 !== 0)) {
             if (game.movs[i].time) {
                 secs -= game.movs[i].time
                 secs += game.addition
@@ -46,10 +46,10 @@ export const secsToStr = secs => {
 export const getPlayersData = (game, user, reversed) => {
     const top = {}, bottom = {}
     if (game) {
-        const turn = game.board.turn % 2 === 0 ? 'w' : 'b'
-        top.color = reversed ? 'w' : 'b'
+        const turn = game.board.turn % 2 === 0 ? "w" : "b"
+        top.color = reversed ? "w" : "b"
         top.turn = top.color === turn
-        top.captures = getCounters(top.color === 'w' ? game.board.blackCaptured : game.board.whiteCaptured)
+        top.captures = getCounters(top.color === "w" ? game.board.blackCaptured : game.board.whiteCaptured)
         top.playerName = reversed ? game.whiteName : game.blackName
         top.hasPicture = reversed ? game.whiteHasPicture : game.blackHasPicture
         top.playerId = reversed ? game.whiteId : game.blackId
@@ -57,9 +57,9 @@ export const getPlayersData = (game, user, reversed) => {
         top.tick = top.turn && game.movs.length >= 2 && game.board.turn === game.movs.length && !game.result && game.time
         top.result = getResultLabel(game, top.color)
 
-        bottom.color = reversed ? 'b' : 'w'
+        bottom.color = reversed ? "b" : "w"
         bottom.turn = bottom.color === turn
-        bottom.captures = getCounters(bottom.color === 'w' ? game.board.blackCaptured : game.board.whiteCaptured)
+        bottom.captures = getCounters(bottom.color === "w" ? game.board.blackCaptured : game.board.whiteCaptured)
         bottom.playerName = reversed ? game.blackName : game.whiteName
         bottom.hasPicture = reversed ? game.blackHasPicture : game.whiteHasPicture
         bottom.playerId = reversed ? game.blackId : game.whiteId
@@ -71,7 +71,7 @@ export const getPlayersData = (game, user, reversed) => {
         top.playerName = "Oponente"
         top.hasPicture = false
         top.playerId = null
-        top.color = 'b'
+        top.color = "b"
         top.remainingTime = 300
         top.tick = false
         top.result = null
@@ -80,7 +80,7 @@ export const getPlayersData = (game, user, reversed) => {
         bottom.playerName = user.username
         bottom.hasPicture = user.hasPicture
         bottom.playerId = user.id
-        bottom.color = 'w'
+        bottom.color = "w"
         bottom.remainingTime = 300
         bottom.tick = false
         bottom.result = null

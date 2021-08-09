@@ -33,12 +33,12 @@ const GameItem = React.forwardRef((props, ref) => {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
             <div>
                 <div className="playerSubRow">
-                    <Pawn color={'w'} />{g.whiteName}
+                    <Pawn color={"w"} />{g.whiteName}
                     {(g.whiteHighlight && !g.ended) && <div className="gameListDot" />}
                     {(g.whiteHighlight && g.ended) && <FaMedal style={{ marginLeft: "0.5em" }} />}
                 </div>
                 <div className="playerSubRow">
-                    <Pawn color={'b'} />{g.blackName}
+                    <Pawn color={"b"} />{g.blackName}
                     {(g.blackHighlight && !g.ended) && <div className="gameListDot" />}
                     {(g.blackHighlight && g.ended) && <FaMedal style={{ marginLeft: "0.5em" }} />}
                 </div>

@@ -31,7 +31,7 @@ const getBoard = (movs, turn) => {
         const srcPiece = board[m.sRow][m.sCol]
         const destPiece = board[m.dRow][m.dCol]
         if (destPiece) {
-            (destPiece.slice(0, 1) === 'w' ? whiteCaptured : blackCaptured).push(destPiece)
+            (destPiece.slice(0, 1) === "w" ? whiteCaptured : blackCaptured).push(destPiece)
         }
 
         if (!touched.includes(srcPiece)) {
@@ -41,7 +41,7 @@ const getBoard = (movs, turn) => {
         if (srcPiece.slice(1, 2) === 'p' && m.sCol !== m.dCol && !destPiece) {
             const capt = board[m.sRow][m.dCol];
             board[m.sRow][m.dCol] = null;
-            (capt.slice(0, 1) === 'w' ? whiteCaptured : blackCaptured).push(capt)
+            (capt.slice(0, 1) === "w" ? whiteCaptured : blackCaptured).push(capt)
         }
 
         board[m.dRow][m.dCol] = srcPiece
@@ -170,7 +170,7 @@ const getAllAttackedByEnemy = (board, touched, myColor) => {
     board.forEach((r, i) => r.forEach((c, j) => {
         if (c && c.slice(0, 1) !== myColor) {
             //if it's my turn to play, it means the enemy king is not under attack, no there's no need to check
-            attacked = attacked.concat(getAttacked(board, touched, myColor === 'w' ? 'b' : 'w', j, i, false))
+            attacked = attacked.concat(getAttacked(board, touched, myColor === "w" ? "b" : "w", j, i, false))
         }
     }))
     return attacked
@@ -220,7 +220,7 @@ const getAttacked = (board, touched, myColor, c, r, checkForKingAttacks = true) 
         scanRow(arr, board, myColor, c, r, -1, 0)
     } else if (type === 'n') {
         getKnightSquares(c, r).forEach(s => scanTileN(arr, board, myColor, s[0], s[1]))
-    } else if (type === 'b') {
+    } else if (type === "b") {
         scanRow(arr, board, myColor, c, r, 1, 1)
         scanRow(arr, board, myColor, c, r, 1, -1)
         scanRow(arr, board, myColor, c, r, -1, 1)
@@ -235,7 +235,7 @@ const getAttacked = (board, touched, myColor, c, r, checkForKingAttacks = true) 
         scanRow(arr, board, myColor, c, r, 1, 0)
         scanRow(arr, board, myColor, c, r, -1, 0)
     } else if (type === 'p') {
-        const delta = color === 'w' ? 1 : -1
+        const delta = color === "w" ? 1 : -1
         //first square
         if (onBoard(c, r + delta) && !board[r + delta][c]) {
             arr.push([c, r + delta])
@@ -257,11 +257,11 @@ const getAttacked = (board, touched, myColor, c, r, checkForKingAttacks = true) 
         }
         //passing
         const pass1 = board[r][c - 1]
-        if (pass1 && ((pass1[0] !== myColor && pass1[1] === 'p') && ((myColor === 'w' && r === 4) || (myColor === 'b' && r === 3)) && touched[touched.length - 1] === pass1)) {
+        if (pass1 && ((pass1[0] !== myColor && pass1[1] === 'p') && ((myColor === "w" && r === 4) || (myColor === "b" && r === 3)) && touched[touched.length - 1] === pass1)) {
             arr.push([c - 1, r + delta])
         }
         const pass2 = board[r][c + 1]
-        if (pass2 && ((pass2[0] !== myColor && pass2[1] === 'p') && ((myColor === 'w' && r === 4) || (myColor === 'b' && r === 3)) && touched[touched.length - 1] === pass2)) {
+        if (pass2 && ((pass2[0] !== myColor && pass2[1] === 'p') && ((myColor === "w" && r === 4) || (myColor === "b" && r === 3)) && touched[touched.length - 1] === pass2)) {
             arr.push([c + 1, r + delta])
         }
     }

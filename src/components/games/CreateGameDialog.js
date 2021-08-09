@@ -118,13 +118,13 @@ export default function CreateGameDialog({ show, onHide = a => a, onNewGame = a 
                     </Form.Group>
                     <Form.Group>
                         <ButtonGroup toggle>
-                            <ToggleButton  {...makeColorProps('w')} name="color" variant="primary">
+                            <ToggleButton  {...makeColorProps("w")} name="color" variant="primary">
                                 <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('${process.env.PUBLIC_URL}/assets/wk.svg')` }} />
                             </ToggleButton>
-                            <ToggleButton {...makeColorProps('wb')} name="color" variant="primary">
+                            <ToggleButton {...makeColorProps("wb")} name="color" variant="primary">
                                 <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('${process.env.PUBLIC_URL}/assets/rand.svg')` }} />
                             </ToggleButton>
-                            <ToggleButton {...makeColorProps('b')} name="color" variant="primary">
+                            <ToggleButton {...makeColorProps("b")} name="color" variant="primary">
                                 <div style={{ width: `30px`, height: `30px`, backgroundPosition: 'center', backgroundRepeat: "no-repeat", backgroundSize: `35px 35px`, backgroundImage: `url('${process.env.PUBLIC_URL}/assets/bk.svg')` }} />
                             </ToggleButton>
                         </ButtonGroup>
