@@ -3,7 +3,6 @@ import { Button } from "react-bootstrap"
 import { FaGlasses } from "react-icons/fa"
 import CurrentGamesList from "./CurrentGamesList"
 
-
 function OpenCurrentGamesButton() {
     const [showDialog, setShowDialog] = useState(false)
     return <>

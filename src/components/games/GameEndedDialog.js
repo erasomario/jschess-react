@@ -71,11 +71,12 @@ export default function GameEndedDialog({ show, onHide = a => a, onNewGame = a =
                     </div>
                 </div>
             </div>
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1em" }}>
-                <Button onClick={create}>
-                    <span>Revancha</span><FaRedo className='ml-2' />
-                </Button>
-            </div>
+            {([game?.whiteId, game?.blackId].includes(user?.id)) &&
+                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1em" }}>
+                    <Button onClick={create}>
+                        <span>Revancha</span><FaRedo className='ml-2' />
+                    </Button>
+                </div>}
             {error && <Alert className='mt-3' variant="danger">{error}</Alert>}
         </Modal.Body>
     </Modal>

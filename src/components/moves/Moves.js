@@ -62,8 +62,8 @@ export default function Moves({ style, onNewGame = a => a }) {
         }
         {data.show === "noMovs" &&
             <div className="instructionsCard" style={{ height: style.height }}>
-                <div><b>Juegan las {data.myColor === "w" ? "Blancas" : "Negras"}</b></div>
-                <div>{data.myColor === "w" ? "Es su turno para iniciar" : "Es el turno de su oponente para iniciar"}</div>
+                <div><b>Juegan las Blancas</b></div>
+                <div>{data.myColor === "w" ? "Es su turno para iniciar" : `Es el turno de ${game?.whiteName} para iniciar`}</div>
             </div>
         }
         {data.show === "movs" && <SimpleBar style={{ height: style.height, fontSize: "0.9em" }}>
@@ -83,7 +83,8 @@ export default function Moves({ style, onNewGame = a => a }) {
                     style={{ padding: "0.75em", display: "flex", flexDirection: "column", alignItems: "center", height: "auto", backgroundColor: (data.matrix.length % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : "") }} >
                     <div style={{ fontWeight: "bold" }}>{data.winLabel}</div>
                     {data.winDetail && <div style={{ fontSize: "0.8em", textAlign: "center" }}>{data.winDetail}</div>}
-                    <Button onClick={callRematch} style={{ fontSize: "1em", textAlign: "center", margin: "0", padding: "0" }} variant="link">Revancha</Button>
+                    {([game?.whiteId, game?.blackId].includes(user?.id)) &&
+                        <Button onClick={callRematch} style={{ fontSize: "1em", textAlign: "center", margin: "0", padding: "0" }} variant="link">Revancha</Button>}
                 </div>}
         </SimpleBar>
         }
