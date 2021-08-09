@@ -18,16 +18,20 @@ export const getAsGameList = (dtoList, selectedGame, user) => {
         }
 
         let isNew
-        if (!g.opponentNotified) {
-            if (g.whiteId === user.id) {
-                isNew = g.createdBy === "b"
-            } else if (g.blackId === user.id) {
-                isNew = g.createdBy === "w"
+        if (g.result) {
+            isNew = false
+        } else {
+            if (!g.opponentNotified) {
+                if (g.whiteId === user.id) {
+                    isNew = g.createdBy === "b"
+                } else if (g.blackId === user.id) {
+                    isNew = g.createdBy === "w"
+                } else {
+                    isNew = false
+                }
             } else {
                 isNew = false
             }
-        } else {
-            isNew = false
         }
 
         return {
