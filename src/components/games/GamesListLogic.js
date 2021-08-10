@@ -1,5 +1,5 @@
 export const getAsGameList = (dtoList, selectedGame, user) => {
-    return dtoList.map(g => {
+    return dtoList?.map(g => {
         let whiteHighlight, blackHighlight, draw
         if (g.result) {
             if (g.result === "w") {

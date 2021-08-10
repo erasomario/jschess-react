@@ -22,7 +22,7 @@ import { getPlayersData } from './games/PlayerDataUtils';
 import OpenGameButton from './games/OpenGameButton';
 import { makeYesNoDialog, YesNoDialog } from './games/YesNoDialog';
 import { acceptDraw, offerDraw, rejectDraw, surrender } from '../clients/game-client';
-import OpenCurrentGamesButton from './games/OpenCurrentGamesButton';
+import OpenWatchGamesButton from './games/OpenWatchGamesButton';
 
 const SurrenderButton = ({ onSurrender, game, user }) => {
     return <Button disabled={!(game && (game.movs.length >= 2 && !game.result && (user?.id === game?.whiteId || user?.id === game?.blackId)))} variant="primary" onClick={onSurrender}><FaFlag style={{ marginTop: -4 }} ></FaFlag></Button>
@@ -207,7 +207,7 @@ export default function HomePage() {
                     <OpenGameButton></OpenGameButton>
                     <OfferDrawButton game={game} onDrawOffer={onDrawOfferClicked} user={user} />
                     <SurrenderButton game={game} onSurrender={onSurrender} user={user} />
-                    <OpenCurrentGamesButton></OpenCurrentGamesButton>
+                    <OpenWatchGamesButton></OpenWatchGamesButton>
                 </div>
                 <div style={{ userSelect: "none", display: "flex", justifyContent: "center" }}>
                     <div style={{ flexDirection: "column", flexBasis: "33%", paddingRight: "2em" }}>
