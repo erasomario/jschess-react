@@ -47,11 +47,12 @@ export default function HomePage() {
     const [notNotifiedCount, setNotNotifiedCount] = useState([])
     const reversed = game ? user.id === game.blackId : false
 
-    const [options, setOptions] = useState(user?.boardOpts ? JSON.parse(user.boardOpts) : { coords: "out_opaque", colors: "light_blue", sounds: true })
+    const [options, setOptions] = useState()
 
     const onOptsChange = useCallback((opts) => { setOptions(opts); setshowBoardOpts(false) }, [])
 
     useEffect(() => {
+        setOptions(user?.boardOpts ? JSON.parse(user.boardOpts) : { coords: "out_opaque", colors: "light_blue", sounds: true })        
         document.body.style.backgroundColor = '#eef2f3'
     }, [user])
 
