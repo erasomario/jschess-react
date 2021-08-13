@@ -191,12 +191,12 @@ export default function HomePage() {
             <div style={{ position: "absolute", zIndex: "1000" }}>{ratio}</div>
             {layout === "v" &&
                 <div style={{ gridColumn: "2/3", gridRow: "1/2", justifySelf: "end", alignSelf: "end" }}>
-                    <MenuButton                        
+                    <MenuButton
                         onClick={() => setShowSidePanel(true)} />
                 </div>
             }
             <div style={{ padding: "1em", position: "absolute", display: "flex", flexDirection: "column", gap: "0.5em" }}>
-                {layout === "hv" &&
+                {layout === "hc" &&
                     <MenuButton onClick={() => setShowSidePanel(true)} />
                 }
                 {layout === "h" && <>
@@ -226,13 +226,13 @@ export default function HomePage() {
                     mode={layout[0] === "h" ? "vt" : "h"} playerInfo={topData} />
             </div>
             <div style={(layout === "v" ?
-                { gridColumn: "1/3", gridRow: "4/5" , padding: "0.5em 0 0em 0" } :
+                { gridColumn: "1/3", gridRow: "4/5", padding: "0.5em 0 0em 0" } :
                 { gridColumn: "1/2", gridRow: "2/3" })}>
                 <PlayerData
                     mode={layout[0] === "h" ? "vb" : "h"} playerInfo={bottomData} />
             </div>
         </div>
-        {layout !== "h" && <Drawer width="15em" show={showSidePanel} onHide={() => setShowSidePanel(false)}>
+        {layout !== "h" && <Drawer position={layout === "hc" ? "left" : "right"} width="15em" show={showSidePanel} onHide={() => setShowSidePanel(false)}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "start", marginTop: "2em" }}>
                 <NewGameButton compact={false}
                     onClick={() => {
