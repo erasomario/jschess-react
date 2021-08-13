@@ -12,6 +12,7 @@ import { useSocket } from '../providers/ProvideSocket'
 import Drawer from '../utils/Drawer'
 import './blablabla.css'
 import { Board } from './games/Board'
+import { BoardOptionsDialog } from './games/BoardOptionsDialog'
 import CreateGameDialog from './games/CreateGameDialog'
 import GameEndedDialog from './games/GameEndedDialog'
 import { PlayerData } from './games/PlayerData'
@@ -36,6 +37,8 @@ export default function HomePage() {
     const [showSidePanel, setShowSidePanel] = useState(false)
     const [showEndDialog, setShowEndDialog] = useState(false)
     const [showUserDialog, setShowUserDialog] = useState(false)
+    const [showBoardOpts, setshowBoardOpts] = useState(false)
+
     const [yesNoData, setYesNoData] = useState()
     const { addSocketListener } = useSocket()
     const { width, height } = useDimensions()
@@ -43,6 +46,10 @@ export default function HomePage() {
     const { game, updateGame } = useGame()
     const [notNotifiedCount, setNotNotifiedCount] = useState([])
     const reversed = game ? user.id === game.blackId : false
+
+    const [options, setOptions] = useState(user?.boardOpts ? JSON.parse(user.boardOpts) : { coords: "out_opaque", colors: "light_blue", sounds: true })
+
+    const onOptsChange = useCallback((opts) => { setOptions(opts); setshowBoardOpts(false) }, [])
 
     useEffect(() => {
         document.body.style.backgroundColor = '#eef2f3'
@@ -165,7 +172,7 @@ export default function HomePage() {
         templateRows = `${boardSize / 2}px ${boardSize / 2}px`
     } else if (layout === "v") {
         templateCols = `1fr 1fr`
-        templateRows = `1fr 1fr ${boardSize}px 1fr`
+        templateRows = `0.5fr 1fr ${boardSize}px 1fr`
     }
 
     return <>
@@ -174,6 +181,7 @@ export default function HomePage() {
         <WatchGamesList show={showWatchDialog} onHide={() => { setShowWatchDialog(false) }}></WatchGamesList>
         <EditUserDialog show={showUserDialog} onHide={() => { setShowUserDialog(false) }}></EditUserDialog>
         <YesNoDialog dialog={yesNoData} />
+        <BoardOptionsDialog show={showBoardOpts} onHide={() => setshowBoardOpts(false)} options={options} onChange={onOptsChange}></BoardOptionsDialog>
 
         <GameEndedDialog show={showEndDialog} onHide={() => { setShowEndDialog(false) }} onNewGame={updateGame}></GameEndedDialog>
         <ToastContainer position="top-right" autoClose={5000}
@@ -182,22 +190,23 @@ export default function HomePage() {
         <div style={{
             background: 'linear-gradient(0deg, #eef2f3 0%, #CED6DC 100%)',
             padding: "1em",
-            display: "grid", backgroundColor: "orange",
+            display: "grid",
             gridTemplateColumns: templateCols,
             gridTemplateRows: templateRows,
             columnGap: "1.5em",
             position: "relative"
         }}>
-            <div style={{ position: "absolute", zIndex: "1000" }}>{ratio}</div>
             {layout === "v" &&
-                <div style={{ gridColumn: "2/3", gridRow: "1/2", justifySelf: "end", alignSelf: "end" }}>
-                    <MenuButton
-                        onClick={() => setShowSidePanel(true)} />
+                <div style={{ gridColumn: "2/3", gridRow: "1/2", justifySelf: "end", alignSelf: "start" }}>
+                    <MenuButton showCfgBtn={true}
+                        onMenuClick={() => setShowSidePanel(true)}
+                        onCfgClick={() => setshowBoardOpts(true)}
+                    />
                 </div>
             }
             <div style={{ padding: "1em", position: "absolute", display: "flex", flexDirection: "column", gap: "0.5em" }}>
                 {layout === "hc" &&
-                    <MenuButton onClick={() => setShowSidePanel(true)} />
+                    <MenuButton showCfgBtn={false} onMenuClick={() => setShowSidePanel(true)} />
                 }
                 {layout === "h" && <>
                     <NewGameButton compact={true} onClick={() => setShowNewGameDialog(true)} />
@@ -209,7 +218,8 @@ export default function HomePage() {
             </div>
 
             <div style={(layout !== "v" ? { gridColumn: "2/3", gridRow: "1/3" } : { gridColumn: "1/3", gridRow: "3/4" })}>
-                <Board reversed={reversed} turn={game?.turn} size={boardSize} showCfgButton={layout !== "v"} ></Board>
+                <Board reversed={reversed} turn={game?.turn} size={boardSize} showCfgButton={layout !== "v"}
+                    options={options} onOptionsClicked={() => setshowBoardOpts(true)} ></Board>
             </div>
             <div style={
                 (layout === "h" ? { gridColumn: "3/4", gridRow: "1/3" } :
@@ -220,7 +230,7 @@ export default function HomePage() {
                 <Moves compact={layout !== "h"} onNewGame={updateGame} style={{ height: "28em" }} />
             </div>
             <div style={(layout === "v" ?
-                { gridColumn: "1/3", gridRow: "2/3", padding: "0 0 0.5em 0" } :
+                { gridColumn: "1/3", gridRow: "2/3", padding: "0.5em 0 0.5em 0" } :
                 { gridColumn: "1/2", gridRow: "1/2", alignSelf: "end" })}>
                 <PlayerData
                     mode={layout[0] === "h" ? "vt" : "h"} playerInfo={topData} />
@@ -233,7 +243,7 @@ export default function HomePage() {
             </div>
         </div>
         {layout !== "h" && <Drawer position={layout === "hc" ? "left" : "right"} width="15em" show={showSidePanel} onHide={() => setShowSidePanel(false)}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "start", marginTop: "2em" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "start", marginTop: "1em" }}>
                 <NewGameButton compact={false}
                     onClick={() => {
                         setShowSidePanel(false)

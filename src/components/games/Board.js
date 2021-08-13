@@ -9,13 +9,13 @@ import { animate } from "./PieceAnimation"
 import { toast } from "react-toastify"
 import { mix } from "../../utils/Colors"
 import { FaCog } from "react-icons/fa"
-import { BoardOptionsDialog, colors } from "./BoardOptionsDialog"
+import { colors } from "./BoardOptionsDialog"
 import { useSocket } from "../../providers/ProvideSocket"
 
 const letters = { 1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f", 7: "g", 8: "h" }
 const startBoard = getStartBoard()
 
-export function Board({ reversed = false, size, style, showCfgButton }) {
+export function Board({ reversed = false, size, style, showCfgButton, options, onOptionsClicked }) {
     console.log("board repaint")
     const {emit} = useSocket()
     const animPiece = useRef()
@@ -26,10 +26,7 @@ export function Board({ reversed = false, size, style, showCfgButton }) {
     const [high, setHigh] = useState([])
     const [castling, setCastling] = useState([])
     const [showModal, setShowModal] = useState(false)
-    const [animating, setAnimating] = useState(false)
-    const [showBoardOpts, setshowBoardOpts] = useState(false)
-    const [options, setOptions] = useState(user.boardOpts ? JSON.parse(user.boardOpts) : { coords: "out_opaque", colors: "light_blue", sounds: true })
-    const onOptsChange = useCallback((opts) => { setOptions(opts); setshowBoardOpts(false) }, [])
+    const [animating, setAnimating] = useState(false)    
     const th = (options.coords === "out_opaque" || options.coords === "out_trans") ? (size * 0.92) / 8 : size / 8
     const colorTheme = useMemo(() => colors[options.colors], [options?.colors])
     const lastSound = useRef(0)
@@ -120,7 +117,7 @@ export function Board({ reversed = false, size, style, showCfgButton }) {
 
     const InnerBoard = () => {
         return <>
-            {showCfgButton && <div onClick={() => setshowBoardOpts(true)} style={{ position: "absolute", color: mix(colorTheme.primary, "#7F8C8D", 0.8), width: "2em", height: "2em", right: "-2.3em", top: "0.3em", cursor: "pointer" }}>
+            {showCfgButton && <div onClick={onOptionsClicked} style={{ position: "absolute", color: mix(colorTheme.primary, "#7F8C8D", 0.8), width: "2em", height: "2em", right: "-2.3em", top: "0.3em", cursor: "pointer" }}>
                 <FaCog style={{ width: "2em", height: "2em" }} />
             </div>}
             <div style={{ boxShadow: `0px 0px 7px ${mix(colorTheme.primary, "#000000", 0.3)}`, position: "relative", display: "flex", flexDirection: "column", gridColumn: "2/3", gridRow: "2/3" }}>
@@ -198,7 +195,7 @@ export function Board({ reversed = false, size, style, showCfgButton }) {
     }
 
     return <>
-        <BoardOptionsDialog show={showBoardOpts} onHide={() => setshowBoardOpts(false)} options={options} onChange={onOptsChange}></BoardOptionsDialog>
+        
         <Modal size="sm" show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Body>
                 <div style={{ cursor: "pointer", position: "relative", width: "245px", margin: "auto" }}>

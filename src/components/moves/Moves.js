@@ -90,7 +90,7 @@ export default function Moves({ style, onNewGame = a => a, compact = false }) {
             </SimpleBar>
             }
         </>}
-        <div style={{ display: "flex", marginTop: "1em" }}>
+        <div style={(compact ? { display: "flex" } : { display: "flex", marginTop: "1em" })}>
             {!compact && <button className="movBtn" onClick={beg} disabled={data.prevBtnDisabled} >
                 <FaAngleDoubleLeft className="movBtnIcon" />
             </button>}
