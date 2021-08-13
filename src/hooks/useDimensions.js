@@ -3,9 +3,14 @@ import { useEffect, useState } from "react";
 export const useDimensions = () => {
     function getWindowDimensions() {
 
-        
-        
-        const { clientWidth: width, clientHeight: height } = document.documentElement;
+        const width = window.innerWidth
+            || document.documentElement.clientWidth
+            || document.body.clientWidth;
+
+        const height = window.innerHeight
+            || document.documentElement.clientHeight
+            || document.body.clientHeight;
+
         return {
             width,
             height
