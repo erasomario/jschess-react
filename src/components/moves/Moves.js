@@ -10,7 +10,7 @@ import { useAuth } from "../../providers/ProvideAuth"
 import { Alert, Button } from "react-bootstrap"
 import { rematch } from "../../clients/game-client"
 
-export default function Moves({ style, onNewGame = a => a }) {
+export default function Moves({ style, onNewGame = a => a, compact = false }) {
     const { user } = useAuth()
     const scrollRef = useRef()
     const { game, updateTurn } = useGame()
@@ -48,59 +48,66 @@ export default function Moves({ style, onNewGame = a => a }) {
             .catch(e => setError(e.message))
     }
 
-    return <div style={{ width: '17em', fontSize: '2.1vh' }}>
-        <div className="movRow">
-            <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>#</div>
-            <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/wp.svg')` }} />
-            <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/bp.svg')` }} />
-        </div>
-        {data.show === "noGame" &&
-            <div className="instructionsCard" style={{ height: style.height }}>
-                <div><b>Bienvenido</b></div>
-                <div>Puede iniciar un juego contra amigos o contra el computador en <FaPlus />, o consultar sus partidas en curso y pasadas en <FaClipboardList />.</div>
+    return <div style={{ width: (compact ? "100%" : "17em"), fontSize: '2.1vh' }}>
+        {!compact && <>
+            <div className="movRow">
+                <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>#</div>
+                <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/wp.svg')` }} />
+                <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/bp.svg')` }} />
             </div>
-        }
-        {data.show === "noMovs" &&
-            <div className="instructionsCard" style={{ height: style.height }}>
-                <div><b>Juegan las Blancas</b></div>
-                <div>{data.myColor === "w" ? "Es su turno para iniciar" : `Es el turno de ${game?.whiteName} para iniciar`}</div>
-            </div>
-        }
-        {data.show === "movs" && <SimpleBar style={{ height: style.height, fontSize: "0.9em" }}>
-            {data.matrix.map((r, i) => {
-                return <div
-                    ref={data.selectedRow === i ? scrollRef : null}
-                    className="movRow"
-                    style={{ backgroundColor: (i % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : "") }} key={i}>
-                    <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>{i + 1}</div>
-                    <MoveCell mov={r[0]} />
-                    <MoveCell mov={r[1]} />
+            {data.show === "noGame" &&
+                <div className="instructionsCard" style={{ height: style.height }}>
+                    <div><b>Bienvenido</b></div>
+                    <div>Puede iniciar un juego contra amigos o contra el computador en <FaPlus />, o consultar sus partidas en curso y pasadas en <FaClipboardList />.</div>
                 </div>
-            })}
-            {data.winLabel &&
-                <div className="movRow"
-                    ref={data.selectedRow === data.matrix.length - 1 && game?.result ? scrollRef : null}
-                    style={{ padding: "0.75em", display: "flex", flexDirection: "column", alignItems: "center", height: "auto", backgroundColor: (data.matrix.length % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : "") }} >
-                    <div style={{ fontWeight: "bold" }}>{data.winLabel}</div>
-                    {data.winDetail && <div style={{ fontSize: "0.8em", textAlign: "center" }}>{data.winDetail}</div>}
-                    {([game?.whiteId, game?.blackId].includes(user?.id)) &&
-                        <Button onClick={callRematch} style={{ fontSize: "1em", textAlign: "center", margin: "0", padding: "0" }} variant="link">Revancha</Button>}
-                </div>}
-        </SimpleBar>
-        }
+            }
+            {data.show === "noMovs" &&
+                <div className="instructionsCard" style={{ height: style.height }}>
+                    <div><b>Juegan las Blancas</b></div>
+                    <div>{data.myColor === "w" ? "Es su turno para iniciar" : `Es el turno de ${game?.whiteName} para iniciar`}</div>
+                </div>
+            }
+            {data.show === "movs" && <SimpleBar style={{ height: style.height, fontSize: "0.9em" }}>
+                {data.matrix.map((r, i) => {
+                    return <div
+                        ref={data.selectedRow === i ? scrollRef : null}
+                        className="movRow"
+                        style={{ backgroundColor: (i % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : "") }} key={i}>
+                        <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>{i + 1}</div>
+                        <MoveCell mov={r[0]} />
+                        <MoveCell mov={r[1]} />
+                    </div>
+                })}
+                {data.winLabel &&
+                    <div className="movRow"
+                        ref={data.selectedRow === data.matrix.length - 1 && game?.result ? scrollRef : null}
+                        style={{ padding: "0.75em", display: "flex", flexDirection: "column", alignItems: "center", height: "auto", backgroundColor: (data.matrix.length % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : "") }} >
+                        <div style={{ fontWeight: "bold" }}>{data.winLabel}</div>
+                        {data.winDetail && <div style={{ fontSize: "0.8em", textAlign: "center" }}>{data.winDetail}</div>}
+                        {([game?.whiteId, game?.blackId].includes(user?.id)) &&
+                            <Button onClick={callRematch} style={{ fontSize: "1em", textAlign: "center", margin: "0", padding: "0" }} variant="link">Revancha</Button>}
+                    </div>}
+            </SimpleBar>
+            }
+        </>}
         <div style={{ display: "flex", marginTop: "1em" }}>
-            <button className="movBtn" onClick={beg} disabled={data.prevBtnDisabled} >
+            {!compact && <button className="movBtn" onClick={beg} disabled={data.prevBtnDisabled} >
                 <FaAngleDoubleLeft className="movBtnIcon" />
-            </button>
+            </button>}
             <button className="movBtn" onClick={prev} disabled={data.prevBtnDisabled}  >
                 <FaAngleLeft className="movBtnIcon" />
             </button>
+            {compact && <button
+                style={{ color: "white", width: "4em", paddingTop: "0.4em" }}
+                className="movBtn" disabled={!data.lastMovLabel}  >
+                {data.lastMovLabel}
+            </button>}
             <button className="movBtn" onClick={next} disabled={data.nextBtnDisabled}  >
                 <FaAngleRight className="movBtnIcon" />
             </button>
-            <button className="movBtn" onClick={end} disabled={data.nextBtnDisabled}  >
+            {!compact && <button className="movBtn" onClick={end} disabled={data.nextBtnDisabled}  >
                 <FaAngleDoubleRight className="movBtnIcon" />
-            </button>
+            </button>}
         </div>
         {error && <Alert className='mt-3' variant="danger">{error}</Alert>}
     </div >

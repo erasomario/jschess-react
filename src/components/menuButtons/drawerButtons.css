@@ -1,0 +1,14 @@
+.DrawerButton {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 3em;
+    color: black
+}
+
+.DrawerButton[disabled] {
+    cursor: default;
+    color: lightgray;
+}

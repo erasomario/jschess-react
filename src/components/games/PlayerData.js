@@ -6,7 +6,7 @@ import { useGame } from "../../providers/ProvideGame"
 import { timeout } from "../../clients/game-client"
 import { toast } from "react-toastify"
 
-export function PlayerData({ playerInfo, mode }) {
+export function PlayerData({ playerInfo, mode, style }) {
     const { key } = useAuth()
     const [url, setUrl] = useState()
     const { captures, turn, playerId, playerName, hasPicture, color, tick, result } = playerInfo
@@ -23,7 +23,7 @@ export function PlayerData({ playerInfo, mode }) {
         const e = parseInt((new Date() - new Date(game.lastMovAt)) / 1000)
         if (playerInfo.remainingTime - e <= 0) {
             timeout(key, game.id)
-            .catch(e => toast.error(e.message))
+                .catch(e => toast.error(e.message))
         }
         return e
     }, [game?.id, game?.lastMovAt, key, playerInfo.remainingTime])
@@ -41,10 +41,10 @@ export function PlayerData({ playerInfo, mode }) {
     }, [tick, game?.lastMovAt, calcElapsed])
 
     const alert = playerInfo.remainingTime - elapsed < (game?.time * 60) * 0.2
-
+    
     if (mode[0] === 'v') {
         const flexDirection = mode[1] !== 't' ? "column" : "column-reverse"
-        return <div style={{ display: "flex", flexDirection, alignItems: "flex-end", fontSize: "2.1vh", gap: "0.5em", backgroundColor: "" }}>
+        return <div style={{ ...style, display: "flex", flexDirection, alignItems: "flex-end", fontSize: "2.1vh", gap: "0.5em", backgroundColor: "" }}>
             <div style={{ height: "1.8em" }}></div>
             <div style={{ display: "flex", height: '2.5em', fontSize: "0.7em", justifyItems: "flex-end" }}>
                 {Object.entries(captures).map(c => {
@@ -65,7 +65,7 @@ export function PlayerData({ playerInfo, mode }) {
                 {turn && <div className='mr-2' style={{ width: '1em', height: '1em', backgroundColor: '#4caf50', borderRadius: '50%' }}></div>}
                 <img alt="" src={url} style={{ borderRadius: '15%', width: "5em", height: "5em" }} />
             </div>
-            <div style={{ fontSize: '1.2em', fontWeight: (turn ? '500' : 'normal') }}>
+            <div style={{ fontSize: '1.2em', fontWeight: (turn ? '600' : 'normal') }}>
                 {playerName}
             </div>
             <div style={{ fontSize: '0.9em', margin: "-0.8em  0 -0.8em 0" }}>{result}</div>
@@ -73,7 +73,7 @@ export function PlayerData({ playerInfo, mode }) {
         </div>
     }
 
-    return <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-end", fontSize: "2.1vh", gap: "0.5em" }}>
+    return <div style={{ ...style, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-end", fontSize: "2.1vh", gap: "0.5em" }}>
         <img alt="" src={url} style={{ borderRadius: '15%', width: "3.5em", height: "3.5em" }} />
         <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", alignItems: "center" }}>

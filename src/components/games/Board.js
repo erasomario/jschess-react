@@ -15,7 +15,7 @@ import { useSocket } from "../../providers/ProvideSocket"
 const letters = { 1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f", 7: "g", 8: "h" }
 const startBoard = getStartBoard()
 
-export function Board({ reversed = false, size, style }) {
+export function Board({ reversed = false, size, style, showCfgButton }) {
     console.log("board repaint")
     const {emit} = useSocket()
     const animPiece = useRef()
@@ -120,9 +120,9 @@ export function Board({ reversed = false, size, style }) {
 
     const InnerBoard = () => {
         return <>
-            <div onClick={() => setshowBoardOpts(true)} style={{ position: "absolute", color: mix(colorTheme.primary, "#7F8C8D", 0.8), width: "2em", height: "2em", right: "-2.3em", top: "0.3em", cursor: "pointer" }}>
+            {showCfgButton && <div onClick={() => setshowBoardOpts(true)} style={{ position: "absolute", color: mix(colorTheme.primary, "#7F8C8D", 0.8), width: "2em", height: "2em", right: "-2.3em", top: "0.3em", cursor: "pointer" }}>
                 <FaCog style={{ width: "2em", height: "2em" }} />
-            </div>
+            </div>}
             <div style={{ boxShadow: `0px 0px 7px ${mix(colorTheme.primary, "#000000", 0.3)}`, position: "relative", display: "flex", flexDirection: "column", gridColumn: "2/3", gridRow: "2/3" }}>
                 {rows.map((r) =>
                     <div key={r} style={{ display: "flex", flexDirection: "row" }}>{

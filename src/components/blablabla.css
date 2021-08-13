@@ -1,3 +1,49 @@
 .Toastify__progress-bar--default {
     background: #007bff;
 }
+
+@keyframes slideIn {
+    0% {
+        visibility: hidden;
+        opacity: 0;
+        left: -100%
+    }
+    100% {
+        visibility: visible;
+        opacity: 1;
+        left: 0%
+    }
+}
+
+@keyframes slideOut {
+    0% {
+        visibility: visible;
+        left: 0%
+    }
+    100% {
+        visibility: hidden;
+        left: -100%
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        visibility: hidden;
+        opacity: 0;
+    }
+    100% {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        visibility: visible;
+        opacity: 1;
+    }
+    100% {
+        visibility: hidden;
+        opacity: 0;
+    }
+}

@@ -66,11 +66,11 @@ export default function UserList({ onSelect = (a) => a, style, focus }) {
                     No se encontraron jugadores similares a "{text}"
                 </div>
             </div>}
-        {error && <div style={{ height: '100%', display: 'table-cell', verticalAlign: 'middle' }}>
-            <div>
-                {error}
-            </div>
-        </div>}
-
+        {error &&
+            <div style={{ ...style, display: "flex", justifyContent: "flex-start", alignItems: "center", color: "red" }}>
+                <div>
+                    {error}
+                </div>
+            </div>}
     </>
 }
