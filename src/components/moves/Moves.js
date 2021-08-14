@@ -3,7 +3,7 @@ import { FaAngleLeft, FaAngleRight, FaAngleDoubleLeft, FaAngleDoubleRight } from
 import { useLayoutEffect, useMemo, useRef, useState } from "react"
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
-import './moves.css'
+import './moves.scss'
 import getMoveData from "./MoveUtils"
 import { FaPlus, FaClipboardList } from "react-icons/fa";
 import { useAuth } from "../../providers/ProvideAuth"

@@ -8,6 +8,7 @@ import RecoverPage from './components/users/RecoverPage'
 import LoginPage from './components/users/LoginPage'
 import RegisterPage from './components/users/RegisterPage'
 import { ProvideSocket } from './providers/ProvideSocket'
+import "./App.scss"
 
 function App() {
 
