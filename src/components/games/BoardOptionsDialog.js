@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Col, Container, Form, Row } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
 import { toast } from 'react-toastify'
@@ -23,8 +23,8 @@ export { colors }
 export function BoardOptionsDialog({ show, onHide, onChange, options }) {
 
     const { user } = useAuth()
-    const [color, setColor] = useState(options?.colors)
-    const [sounds, setSounds] = useState(options?.sounds)
+    const [color, setColor] = useState()
+    const [sounds, setSounds] = useState()
 
     const saveCoords = useCallback(coords => {
         if (user) {
@@ -34,7 +34,13 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
         }
     }, [color, onChange, sounds, user])
 
-    const [getCoordProps, coords] = useRadio(options?.coords, saveCoords)
+    const [getCoordProps, coords, setCoords] = useRadio(null, saveCoords)
+
+    useEffect(() => { 
+        setColor(options?.colors)
+        setSounds(options?.sounds)
+        setCoords(options?.coords)
+    }, [options, setCoords])
 
     const saveColor = useCallback(color => {
         if (user) {
