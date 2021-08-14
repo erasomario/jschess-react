@@ -52,7 +52,7 @@ export default function HomePage() {
     const onOptsChange = useCallback((opts) => { setOptions(opts); setshowBoardOpts(false) }, [])
 
     useEffect(() => {
-        setOptions(user?.boardOpts ? JSON.parse(user.boardOpts) : { coords: "out_opaque", colors: "light_blue", sounds: true })        
+        setOptions(user?.boardOpts ? JSON.parse(user.boardOpts) : { coords: "in", colors: "light_blue", sounds: true })        
         document.body.style.backgroundColor = '#eef2f3'
     }, [user])
 
@@ -194,8 +194,9 @@ export default function HomePage() {
             display: "grid",
             gridTemplateColumns: templateCols,
             gridTemplateRows: templateRows,
-            columnGap: "1.5em",
-            position: "relative"
+            columnGap: "2em",
+            position: "relative",
+            userSelect: "none"
         }}>
             {layout === "v" &&
                 <div style={{ gridColumn: "2/3", gridRow: "1/2", justifySelf: "end", alignSelf: "start" }}>
