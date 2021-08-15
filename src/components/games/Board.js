@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { useLayoutEffect, useMemo, useRef, useState } from "react"
 import { useAuth } from "../../providers/ProvideAuth"
 import { useGame } from "../../providers/ProvideGame"
 import { Tile } from "./Tile"
@@ -17,7 +17,7 @@ const startBoard = getStartBoard()
 
 export function Board({ reversed = false, size, style, showCfgButton, options, onOptionsClicked }) {
     console.log("board repaint")
-    const {emit} = useSocket()
+    const { emit } = useSocket()
     const animPiece = useRef()
     const { game } = useGame()
     const { user } = useAuth()
@@ -26,7 +26,7 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
     const [high, setHigh] = useState([])
     const [castling, setCastling] = useState([])
     const [showModal, setShowModal] = useState(false)
-    const [animating, setAnimating] = useState(false)    
+    const [animating, setAnimating] = useState(false)
     const th = (options.coords === "out_opaque" || options.coords === "out_trans") ? (size * 0.92) / 8 : size / 8
     const colorTheme = useMemo(() => colors[options.colors], [options?.colors])
     const lastSound = useRef(0)
@@ -82,8 +82,8 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
             }
             console.log("Mov Creation", Date.now());
             createMoveSocket(emit, game.id, piece, src, [c, r])
-                //.then(g => updateGame(g))
-                //.catch(e => toast.error(e.message))
+            //.then(g => updateGame(g))
+            //.catch(e => toast.error(e.message))
             return
         }
         setSrc([c, r])
@@ -117,7 +117,7 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
 
     const InnerBoard = () => {
         return <>
-            {showCfgButton && <div onClick={onOptionsClicked} style={{ position: "absolute", color: mix(colorTheme.primary, "#7F8C8D", 0.8), width: "2em", height: "2em", right: "-2.3em", top: "0.3em", cursor: "pointer" }}>
+            {showCfgButton && <div onClick={onOptionsClicked} style={{ color: "rgba(80, 80, 80, 1)", position: "absolute", width: "2em", height: "2em", right: "-2.4em", top: "0.3em", cursor: "pointer" }}>
                 <FaCog style={{ width: "2em", height: "2em" }} />
             </div>}
             <div style={{ boxShadow: `0px 0px 7px ${mix(colorTheme.primary, "#000000", 0.3)}`, position: "relative", display: "flex", flexDirection: "column", gridColumn: "2/3", gridRow: "2/3" }}>
@@ -131,7 +131,7 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
                             }
                             return <Tile
                                 key={c}
-                                colors={colorTheme}                                
+                                colors={colorTheme}
                                 col={c} row={r}
                                 piece={piece}
                                 reversed={reversed}
@@ -195,7 +195,7 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
     }
 
     return <>
-        
+
         <Modal size="sm" show={showModal} onHide={() => setShowModal(false)}>
             <Modal.Body>
                 <div style={{ cursor: "pointer", position: "relative", width: "245px", margin: "auto" }}>

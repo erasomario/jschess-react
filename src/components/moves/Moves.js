@@ -5,7 +5,6 @@ import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 import './moves.scss'
 import getMoveData from "./MoveUtils"
-import { FaPlus, FaClipboardList } from "react-icons/fa";
 import { useAuth } from "../../providers/ProvideAuth"
 import { Alert, Button } from "react-bootstrap"
 import { rematch } from "../../clients/game-client"
@@ -51,20 +50,28 @@ export default function Moves({ style, onNewGame = a => a, compact = false }) {
     return <div style={{ width: (compact ? "100%" : "17em"), fontSize: '2.1vh' }}>
         {!compact && <>
             <div className="movRow">
-                <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>#</div>
-                <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/wp.svg')` }} />
-                <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/bp.svg')` }} />
+                {data.show === "movs" && <>
+                    <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>#</div>
+                    <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/wp.svg')` }} />
+                    <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/bp.svg')` }} />
+                </>}
             </div>
             {data.show === "noGame" &&
-                <div className="instructionsCard" style={{ height: style.height }}>
-                    <div><b>Bienvenido</b></div>
-                    <div>Puede iniciar un juego contra amigos o contra el computador en <FaPlus />, o consultar sus partidas en curso y pasadas en <FaClipboardList />.</div>
+                <div className="instructionsCard" style={{ height: style.height, backgroundImage: `url('${process.env.PUBLIC_URL}/assets/pawn.jpg')`, }}>
+                    <div className="Overlay"></div>
+                    <div className="Content" >
+                        <p className="Title">Bienvenido</p>
+                        <p>Puede jugar o ver partidas en vivo usando los botones del menú.</p>
+                    </div>
                 </div>
             }
             {data.show === "noMovs" &&
-                <div className="instructionsCard" style={{ height: style.height }}>
-                    <div><b>Juegan las Blancas</b></div>
-                    <div>{data.myColor === "w" ? "Es su turno para iniciar" : `Es el turno de ${game?.whiteName} para iniciar`}</div>
+                <div className="instructionsCard" style={{ height: style.height, backgroundImage: `url('${process.env.PUBLIC_URL}/assets/pawn.jpg')`, }}>
+                    <div className="Overlay"></div>
+                    <div className="Content" >
+                        <p className="Title">Juegan las Blancas</p>
+                        <p><div>{data.myColor === "w" ? "Es su turno para iniciar" : `Es el turno de ${game?.whiteName} para iniciar`}</div></p>
+                    </div>
                 </div>
             }
             {data.show === "movs" && <SimpleBar style={{ height: style.height, fontSize: "0.9em" }}>
@@ -90,7 +97,7 @@ export default function Moves({ style, onNewGame = a => a, compact = false }) {
             </SimpleBar>
             }
         </>}
-        <div style={(compact ? { display: "flex" } : { display: "flex", marginTop: "1em" })}>
+        {data.show === "movs" && <div style={(compact ? { display: "flex" } : { display: "flex", marginTop: "1em" })}>
             {!compact && <button className="movBtn" onClick={beg} disabled={data.prevBtnDisabled} >
                 <FaAngleDoubleLeft className="movBtnIcon" />
             </button>}
@@ -108,7 +115,7 @@ export default function Moves({ style, onNewGame = a => a, compact = false }) {
             {!compact && <button className="movBtn" onClick={end} disabled={data.nextBtnDisabled}  >
                 <FaAngleDoubleRight className="movBtnIcon" />
             </button>}
-        </div>
+        </div>}
         {error && <Alert className='mt-3' variant="danger">{error}</Alert>}
     </div >
 }

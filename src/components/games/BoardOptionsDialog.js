@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Col, Container, Form, Row } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
+import { FaCheck, FaCog } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { editBoardOpts } from '../../clients/user-client'
 import { useRadio } from '../../hooks/useRadio'
@@ -9,6 +10,7 @@ import { mix } from '../../utils/Colors'
 
 
 const colors = {
+    "blue": { primary: "#84ADEA", secondary: "#CBDCF7", dot: "rgba(55, 112, 114, 0.4)", selection: "rgba(150, 243, 33, 0.4)" },
     "green_cream": { primary: "#64B2B4", secondary: "#FAF9F4", dot: "rgba(55, 112, 114, 0.4)", selection: "rgba(33, 150, 243, 0.4)" },
     "brown_cream": { primary: "#B58863", secondary: "#F0D9B5", dot: "rgba(60, 45, 33, 0.3)", },
     "light_blue": { primary: "#ADC5CF", secondary: mix("#ADC5CF", '#FFFFFF', 0.75) },
@@ -36,7 +38,7 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
 
     const [getCoordProps, coords, setCoords] = useRadio(null, saveCoords)
 
-    useEffect(() => { 
+    useEffect(() => {
         setColor(options?.colors)
         setSounds(options?.sounds)
         setCoords(options?.coords)
@@ -60,9 +62,14 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
         }
     }, [color, coords, onChange, user])
 
+    const circleSize = 3.5;
+
     return <Modal style={{ userSelect: "none" }} show={show} onHide={onHide}>
         <Modal.Header closeButton>
-            <Modal.Title>Opciones del Tablero</Modal.Title>
+            <Modal.Title style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                <FaCog style={{ marginRight: "0.3em" }} />
+                <div>Opciones del Tablero</div>
+            </Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Form>
@@ -73,11 +80,12 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
                     id="custom-switch"
                     label="Sonidos al mover las piezas"
                 />
-                <b>Coordenadas</b>
-                <Form.Check {...getCoordProps("out_opaque")} custom label="Borde Opaco" />
-                <Form.Check {...getCoordProps("out_trans")} custom label="Borde Transparente" />
-                <Form.Check {...getCoordProps("in")} custom label="Internas" />
-                <Form.Check {...getCoordProps("none")} custom label="Ocultas" />
+                <div style={{ marginBottom: "0.75em", marginTop: "0.75em" }}><b>Coordenadas</b></div>
+
+                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("out_opaque")} custom label="Borde Opaco" />
+                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("out_trans")} custom label="Borde Transparente" />
+                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("in")} custom label="Internas" />
+                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("none")} custom label="Ocultas" />
 
                 <Form.Group style={{ marginTop: "1em" }}>
                     <b>Colores</b>
@@ -87,9 +95,22 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
                                 return <Col key={k} style={{ textAlign: "right" }}>
                                     <div
                                         onClick={() => saveColor(k)}
-                                        style={{ cursor: "pointer", display: "flex", width: "4em", margin: "0.5em", boxShadow: color === k ? "0 0 0 0.2em rgba(0, 123, 255, 0.75)" : "0px 0px 3px #78909C" }}>
-                                        <div style={{ width: "2em", height: "2em", backgroundColor: colors[k].primary }}></div>
-                                        <div style={{ width: "2em", height: "2em", backgroundColor: colors[k].secondary }}></div>
+                                        style={{
+                                            position: "relative",
+                                            backgroundColor: colors[k].primary,
+                                            cursor: "pointer",
+                                            display: "flex",
+                                            width: `${circleSize + 0.2}em`,
+                                            height: `${circleSize + 0.2}em`,
+                                            margin: "0.5em",
+                                            border: "0.1em solid " + colors[k].primary,
+                                            boxShadow: "0px 0px 0 0.2em " + (color === k ? "#A3C7F6" : "rgba(0, 0, 0, 0)"),
+                                            borderRadius: "50%"
+                                        }}>
+                                        <div style={{ position: "relative", borderTopLeftRadius: `${circleSize / 2}em ${circleSize / 2}em`, borderBottomLeftRadius: `${circleSize / 2}em ${circleSize / 2}em`, width: `${circleSize / 2}em`, height: `${circleSize}em`, backgroundColor: colors[k].secondary }}></div>
+                                        {color === k && <div style={{ right: "0", width: "1.2em", height: "1.2em", backgroundColor: "#1A73E8", borderRadius: "50%", color: "white", position: "absolute" }}>
+                                            <FaCheck style={{ top: "0.3em", left: "0.3em", position: "absolute", fontSize: "0.75em" }}></FaCheck>
+                                        </div>}
                                     </div>
                                 </Col>
                             }

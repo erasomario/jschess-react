@@ -24,8 +24,6 @@ export default function LoginPage() {
   const windowDimensions = useDimensions()
   const { from } = location.state || { from: { pathname: "/" } }
 
-
-
   useEffect(() => {
     if (user) {
       history.replace(from)
@@ -64,9 +62,13 @@ export default function LoginPage() {
     frmWidth = "95%"
   }
 
+  useEffect(() => {
+    document.body.style.backgroundColor = '#eef2f3'
+  }, [])
+
   return (
     <div className='p-3 pt-4' style={{
-      background: 'linear-gradient(0deg, #eef2f3 0%, #8e9eab 100%)',
+      background: 'linear-gradient(180deg, #8e9eab -20%, #eef2f3 100%)',
       height: '100vh',
       userSelect: "none"
     }}>

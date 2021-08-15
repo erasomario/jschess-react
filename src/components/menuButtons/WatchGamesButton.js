@@ -1,8 +1,8 @@
 import { Button } from "react-bootstrap"
-import { FaGlasses } from "react-icons/fa"
+import { FaBinoculars } from "react-icons/fa"
 import HelpText from "../../utils/HelpText"
 
-function OpenCurrentGamesButton({ compact, onClick }) {
+function WatchGamesButton({ compact, onClick }) {
 
     const text = "Ver partidas en vivo"
 
@@ -10,16 +10,16 @@ function OpenCurrentGamesButton({ compact, onClick }) {
         return <>
             <HelpText message={text}>
                 <Button style={{ position: "relative" }} variant="primary" onClick={onClick}>
-                    <FaGlasses style={{ marginTop: -4 }} />
+                    <FaBinoculars style={{ marginTop: -4 }} />
                 </Button>
             </HelpText>
         </>
     } else {
         return <div onClick={onClick}
             className="DrawerButton">
-            <FaGlasses style={{ margin: "0.1em 0.5em 0 1em" }} /><div>{text}</div>
+            <FaBinoculars style={{ margin: "0.1em 0.5em 0 1em" }} /><div>{text}</div>
         </div>
     }
 }
 
-export default OpenCurrentGamesButton
+export default WatchGamesButton

@@ -24,10 +24,10 @@ import MenuButton from './menuButtons/MenuButton'
 import NewGameButton from './menuButtons/NewGameButton'
 import OfferDrawButton from './menuButtons/OfferDrawButton'
 import OpenGameButton from './menuButtons/OpenGameButton'
-import OpenWatchGamesButton from './menuButtons/OpenWatchGamesButton'
 import PlayerGamesList from './menuButtons/PlayerGamesList'
 import SurrenderButton from './menuButtons/SurrenderButton'
 import UserButton from './menuButtons/UserButton'
+import WatchGamesButton from './menuButtons/WatchGamesButton'
 import EditUserDialog from "./users/EditUserDialog"
 
 export default function HomePage() {
@@ -52,7 +52,7 @@ export default function HomePage() {
     const onOptsChange = useCallback((opts) => { setOptions(opts); setshowBoardOpts(false) }, [])
 
     useEffect(() => {
-        setOptions(user?.boardOpts ? JSON.parse(user.boardOpts) : { coords: "in", colors: "light_blue", sounds: true })        
+        setOptions(user?.boardOpts ? JSON.parse(user.boardOpts) : { coords: "in", colors: "light_blue", sounds: true })
         document.body.style.backgroundColor = '#eef2f3'
     }, [user])
 
@@ -157,7 +157,7 @@ export default function HomePage() {
     const layout = ratio > 1.6 ? "h" : (ratio > 1.3 ? "hc" : "v")
     let boardSize
     if (layout === "h") {
-        boardSize = (height - 50) * 0.95
+        boardSize = (height - 50) * 0.9
     } else if (layout === "hc") {
         boardSize = height - 100
     } else if (layout === "v") {
@@ -189,12 +189,12 @@ export default function HomePage() {
             hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss pauseOnHover />
 
         <div style={{
-            background: 'linear-gradient(0deg, #eef2f3 0%, #CED6DC 100%)',
+            background: 'linear-gradient(180deg, #8e9eab -20%, #eef2f3 100%)',
             padding: "1em",
             display: "grid",
             gridTemplateColumns: templateCols,
             gridTemplateRows: templateRows,
-            columnGap: "2em",
+            columnGap: "2.5em",
             position: "relative",
             userSelect: "none"
         }}>
@@ -213,7 +213,7 @@ export default function HomePage() {
                 {layout === "h" && <>
                     <NewGameButton compact={true} onClick={() => setShowNewGameDialog(true)} />
                     <OpenGameButton compact={true} onClick={() => { setShowGamesDialog(true) }} notNotifiedCount={notNotifiedCount} />
-                    <OpenWatchGamesButton compact={true} onClick={() => setShowWatchDialog(true)} />
+                    <WatchGamesButton compact={true} onClick={() => setShowWatchDialog(true)} />
                     <OfferDrawButton compact={true} onClick={onDrawOfferClicked} />
                     <SurrenderButton compact={true} onClick={onSurrender} />
                 </>}
@@ -256,7 +256,7 @@ export default function HomePage() {
                         setShowSidePanel(false)
                         setShowGamesDialog(true)
                     }} notNotifiedCount={notNotifiedCount} />
-                <OpenWatchGamesButton compact={false}
+                <WatchGamesButton compact={false}
                     onClick={() => {
                         setShowSidePanel(false)
                         setShowWatchDialog(true)
