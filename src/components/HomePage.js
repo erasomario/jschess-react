@@ -13,11 +13,11 @@ import Drawer from '../utils/Drawer'
 import './blablabla.css'
 import { Board } from './games/Board'
 import { BoardOptionsDialog } from './games/BoardOptionsDialog'
-import CreateGameDialog from './games/CreateGameDialog'
 import GameEndedDialog from './games/GameEndedDialog'
 import { PlayerData } from './games/PlayerData'
 import { getPlayersData } from './games/PlayerDataUtils'
 import { makeYesNoDialog, YesNoDialog } from './games/YesNoDialog'
+import NewGameDialog from './menuButtons/NewGameDialog'
 import EditUserButton from './menuButtons/EditUserButton'
 import ExitButton from './menuButtons/ExitButton'
 import MenuButton from './menuButtons/MenuButton'
@@ -177,7 +177,7 @@ export default function HomePage() {
     }
 
     return <>
-        <CreateGameDialog show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }} onNewGame={updateGame}></CreateGameDialog>
+        <NewGameDialog show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }} onNewGame={updateGame}></NewGameDialog>
         <PlayerGamesList show={showGamesDialog} onHide={() => { setShowGamesDialog(false) }}></PlayerGamesList>
         <WatchGamesList show={showWatchDialog} onHide={() => { setShowWatchDialog(false) }}></WatchGamesList>
         <EditUserDialog show={showUserDialog} onHide={() => { setShowUserDialog(false) }}></EditUserDialog>

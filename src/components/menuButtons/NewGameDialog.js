@@ -6,14 +6,14 @@ import { useRadio } from '../../hooks/useRadio'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
 import Modal from 'react-bootstrap/Modal'
-import { FaArrowLeft, FaArrowRight, FaChessPawn } from 'react-icons/fa'
+import { FaArrowLeft, FaArrowRight, FaChessPawn, FaPlus } from 'react-icons/fa'
 import { createGame } from '../../clients/game-client'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
 
 const times = [5, 10, 15, 30, 60, 0]
 
-export default function CreateGameDialog({ show, onHide = a => a, onNewGame = a => a }) {
+export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => a }) {
     const { user } = useAuth()
     const [error, setError] = useState(null)
     const [player, setPlayer] = useState(null)
@@ -64,10 +64,11 @@ export default function CreateGameDialog({ show, onHide = a => a, onNewGame = a 
 
     return <Modal show={show} onHide={() => onHide()}>
         <Modal.Header closeButton>
-            <div style={{ overflow: 'hidden' }} >
-                {page !== 'player' && <FaArrowLeft className='mr-2 mt-1 text-primary align-middle' style={{ cursor: "pointer", display: "inline" }} onClick={goBack} />}
-                <h4 style={{ display: "inline" }} className='align-top'>Nueva Partida</h4>
-            </div>
+            <Modal.Title style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                {page === 'player' && <FaPlus style={{ marginRight: "0.3em" }} />}
+                {page !== 'player' && <FaArrowLeft style={{ marginRight: "0.3em", cursor: "pointer", display: "inline" }} onClick={goBack} />}
+                <div>Nueva Partida</div>
+            </Modal.Title>
         </Modal.Header>
         <Modal.Body>
 

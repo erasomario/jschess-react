@@ -19,7 +19,9 @@ export default function Moves({ style, onNewGame = a => a, compact = false }) {
 
     useLayoutEffect(() => {
         if (scrollRef.current) {
-            scrollRef?.current?.scrollIntoView({ block: "nearest", behavior: "auto" })
+            setTimeout(() => {
+                scrollRef?.current?.scrollIntoView({ block: "nearest", behavior: "auto" })
+            }, 0)
         }
     })
 
@@ -51,7 +53,7 @@ export default function Moves({ style, onNewGame = a => a, compact = false }) {
         {!compact && <>
             <div className="movRow">
                 {data.show === "movs" && <>
-                    <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>#</div>
+                    <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>&nbsp;</div>
                     <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/wp.svg')` }} />
                     <div className="headerPawn" style={{ backgroundImage: `url('${process.env.PUBLIC_URL}/assets/bp.svg')` }} />
                 </>}
@@ -78,17 +80,16 @@ export default function Moves({ style, onNewGame = a => a, compact = false }) {
                 {data.matrix.map((r, i) => {
                     return <div
                         ref={data.selectedRow === i ? scrollRef : null}
-                        className="movRow"
-                        style={{ backgroundColor: (i % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : "") }} key={i}>
+                        className={"movRow" + (i % 2 === 0 ? " movRowAlt" : "")}
+                        key={i}>
                         <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>{i + 1}</div>
                         <MoveCell mov={r[0]} />
                         <MoveCell mov={r[1]} />
                     </div>
                 })}
                 {data.winLabel &&
-                    <div className="movRow"
-                        ref={data.selectedRow === data.matrix.length - 1 && game?.result ? scrollRef : null}
-                        style={{ padding: "0.75em", display: "flex", flexDirection: "column", alignItems: "center", height: "auto", backgroundColor: (data.matrix.length % 2 === 0 ? "rgba(255, 255, 255, 0.3)" : "") }} >
+                    <div className={`endGameCard ${data.matrix.length % 2 === 0 ? "movRowAlt" : ""}`}
+                        ref={data.selectedRow === data.matrix.length - 1 && game?.result ? scrollRef : null}>
                         <div style={{ fontWeight: "bold" }}>{data.winLabel}</div>
                         {data.winDetail && <div style={{ fontSize: "0.8em", textAlign: "center" }}>{data.winDetail}</div>}
                         {([game?.whiteId, game?.blackId].includes(user?.id)) &&
