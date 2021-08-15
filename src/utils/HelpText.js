@@ -1,6 +1,9 @@
 import { OverlayTrigger, Tooltip } from "react-bootstrap"
 
 const HelpText = ({ message, children }) => {
+    if (children["props"]?.disabled) {
+        return children
+    }
     return <OverlayTrigger
         key="right"
         placement="right"
