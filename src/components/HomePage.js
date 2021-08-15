@@ -24,7 +24,7 @@ import MenuButton from './menuButtons/MenuButton'
 import NewGameButton from './menuButtons/NewGameButton'
 import OfferDrawButton from './menuButtons/OfferDrawButton'
 import OpenGameButton from './menuButtons/OpenGameButton'
-import PlayerGamesList from './menuButtons/PlayerGamesList'
+import OpenGamesDialog from './menuButtons/OpenGamesDialog'
 import SurrenderButton from './menuButtons/SurrenderButton'
 import UserButton from './menuButtons/UserButton'
 import WatchGamesButton from './menuButtons/WatchGamesButton'
@@ -178,7 +178,7 @@ export default function HomePage() {
 
     return <>
         <NewGameDialog show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }} onNewGame={updateGame}></NewGameDialog>
-        <PlayerGamesList show={showGamesDialog} onHide={() => { setShowGamesDialog(false) }}></PlayerGamesList>
+        <OpenGamesDialog show={showGamesDialog} onHide={() => { setShowGamesDialog(false) }}></OpenGamesDialog>
         <WatchGamesList show={showWatchDialog} onHide={() => { setShowWatchDialog(false) }}></WatchGamesList>
         <EditUserDialog show={showUserDialog} onHide={() => { setShowUserDialog(false) }}></EditUserDialog>
         <YesNoDialog dialog={yesNoData} />

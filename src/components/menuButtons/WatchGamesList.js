@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { Alert } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
+import { FaBinoculars } from 'react-icons/fa'
 import { createSubcriber, findCurrentGames } from '../../clients/game-client'
 import { useAuth } from '../../providers/ProvideAuth'
 import { useGame } from '../../providers/ProvideGame'
@@ -26,9 +27,10 @@ export default function CurrentGamesList({ show, onHide = a => a }) {
     const height = "20em"
     return <Modal show={show} onHide={() => onHide()}>
         <Modal.Header closeButton>
-            <div style={{ overflow: 'hidden' }} >
-                <h4 style={{ display: "inline" }} className='align-top'>Partidas para Ver</h4>
-            </div>
+            <Modal.Title style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                <FaBinoculars style={{ marginRight: "0.3em" }} />
+                <div>Partidas en Vivo</div>
+            </Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <GamesList onDataNeeded={getCurrentGames} height={height} onSelect={select}

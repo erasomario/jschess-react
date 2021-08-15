@@ -3,6 +3,7 @@ import { Alert } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
+import { FaFolder, FaFolderOpen } from 'react-icons/fa'
 
 import { findGameById, setOpponentNotification } from '../../clients/game-client'
 import { findGamesByStatus } from '../../clients/user-client'
@@ -11,7 +12,7 @@ import { useGame } from '../../providers/ProvideGame'
 import { GamesList } from './GamesList'
 import "./PlayerGamesList.css"
 
-export default function PlayerGamesList({ show, onHide = a => a }) {
+export default function OpenGamesDialog({ show, onHide = a => a }) {
     const { user } = useAuth()
     const { updateGame } = useGame()
     const [error, setError] = useState(null)
@@ -47,21 +48,22 @@ export default function PlayerGamesList({ show, onHide = a => a }) {
 
     return <Modal show={show} onHide={() => onHide()}>
         <Modal.Header closeButton>
-            <div style={{ overflow: 'hidden' }} >
-                <h4 style={{ display: "inline" }} className='align-top'>Partidas</h4>
-            </div>
+            <Modal.Title style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                <FaFolderOpen style={{ marginRight: "0.3em" }} />
+                <div>Abrir Partida</div>
+            </Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Tabs activeKey={tab} onSelect={t => { setTab(t); setError() }} className="mb-3">
                 <Tab eventKey="open" title="En curso" >
-                    <GamesList onDataNeeded={getOpen} height={height} onSelect={select} 
-                    emptyMessage="No tiene partidas en Curso"
-                    onItemHighlighted={setOpenTab} />
+                    <GamesList onDataNeeded={getOpen} height={height} onSelect={select}
+                        emptyMessage="No tiene partidas en Curso"
+                        onItemHighlighted={setOpenTab} />
                 </Tab>
                 <Tab eventKey="closed" title="Finalizadas">
-                    <GamesList onDataNeeded={getClosed} height={height} onSelect={select} 
-                    emptyMessage="Aún no tiene partidas en Finalizadas"
-                    onItemHighlighted={setCloseTab} />
+                    <GamesList onDataNeeded={getClosed} height={height} onSelect={select}
+                        emptyMessage="Aún no tiene partidas en Finalizadas"
+                        onItemHighlighted={setCloseTab} />
                 </Tab>
             </Tabs>
             {error && <Alert variant="danger">{error}</Alert>}
