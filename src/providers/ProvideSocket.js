@@ -41,8 +41,8 @@ export function ProvideSocket({ children }) {
         if (!open) {
             return
         }
-        console.log("trying to emit ", event);
-        socket.current.emit(event, payload)
+        console.log("emitting", event);
+        socket.current.emit(event, payload)        
     }, [open])
 
     return <SocketContext.Provider value={{ addSocketListener, emit }}>

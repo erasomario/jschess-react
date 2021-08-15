@@ -228,8 +228,10 @@ export default function HomePage() {
                     (layout === "v" ? { gridColumn: "1/2", gridRow: "1/2", justifySelf: "start", alignSelf: "start" } :
                         { position: "absolute", left: "1em", bottom: "1em" })
                 )}>
-                {layout === "h" && <UserButton onEditClicked={() => setShowUserDialog(true)} />}
-                <Moves compact={layout !== "h"} onNewGame={updateGame} style={{ height: "28em" }} />
+                <Moves compact={layout !== "h"}
+                    onNewGame={updateGame}
+                    onEditClicked={() => setShowUserDialog(true)}
+                    style={{ height: "28em" }} />
             </div>
             <div style={(layout === "v" ?
                 { gridColumn: "1/3", gridRow: "2/3", padding: "0.5em 0 0.5em 0" } :

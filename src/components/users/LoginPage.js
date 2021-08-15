@@ -87,7 +87,7 @@ export default function LoginPage() {
               <div>Bienvenido a</div>
               <p style={{ display: "flex", flexDirection: "row", marginTop: "0.25em" }}>
                 <FaChessKnight className='mr-2' style={{ fontSize: "2em" }} />
-                <div style={{ fontWeight: "600", fontSize: "1.5em" }}>Mario's Chess</div>
+                <span style={{ fontWeight: "600", fontSize: "1.5em" }}>Mario's Chess</span>
               </p>
               <p>Este proyecto une mi interés en el ajedrez, el desarrollo de software, Javascript y el deseo de compartir un espacio ludico con familiares y amigos.</p>
               <p>¡Gracias su visita!</p>
@@ -95,11 +95,11 @@ export default function LoginPage() {
             </div>
           </div>}
           <div style={{ width: (compact ? "100%" : "60%"), padding: "1.2em" }}>
-            <p><div style={{
+            <p><span style={{
               fontWeight: "600", fontSize: "1.5em",
               marginTop: (compact ? "0em" : "1.1em"),
               marginBottom: (compact ? "0em" : "1em"),
-            }}>Inicio de Sesión</div></p>
+            }}>Inicio de Sesión</span></p>
             {compact && <p>
               Si no tiene una cuenta <Link to="/register">puede crearla gratis aquí</Link>.
             </p>}

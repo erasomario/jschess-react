@@ -37,7 +37,6 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
         setCastling()
         setAnimating(true)
         if (game?.board?.turn > 0) {
-            console.log("Animation Starting", Date.now())
             animate(animPiece.current, game, reversed, th, () => {
                 setAnimating(false)
                 if (options.sounds) {
@@ -46,7 +45,6 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
                         newNum = Math.floor(Math.random() * 4)
                     } while (newNum === lastSound.current)
                     lastSound.current = newNum
-                    console.log("pieceSound" + newNum, Date.now())
                     const snd = document.getElementById("pieceSound" + newNum)
                     if (snd) {
                         snd.volume = 1

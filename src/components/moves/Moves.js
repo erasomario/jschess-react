@@ -8,8 +8,9 @@ import getMoveData from "./MoveUtils"
 import { useAuth } from "../../providers/ProvideAuth"
 import { Alert, Button } from "react-bootstrap"
 import { rematch } from "../../clients/game-client"
+import UserButton from "../menuButtons/UserButton"
 
-export default function Moves({ style, onNewGame = a => a, compact = false }) {
+export default function Moves({ style, onNewGame = a => a, onEditClicked = a => a, compact = false }) {
     const { user } = useAuth()
     const scrollRef = useRef()
     const { game, updateTurn } = useGame()
@@ -49,8 +50,9 @@ export default function Moves({ style, onNewGame = a => a, compact = false }) {
             .catch(e => setError(e.message))
     }
 
-    return <div style={{ width: (compact ? "100%" : "17em"), fontSize: '2.1vh' }}>
+    return <div style={{display: "flex", flexDirection: "column",  width: (compact ? "100%" : "17em"), fontSize: '2.1vh' }}>
         {!compact && <>
+            <UserButton style={{ alignSelf: "flex-end" }} onEditClicked={onEditClicked} />
             <div className="movRow">
                 {data.show === "movs" && <>
                     <div style={{ flexBasis: "20%", marginLeft: "0.75em" }}>&nbsp;</div>
