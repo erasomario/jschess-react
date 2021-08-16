@@ -23,7 +23,7 @@ const SurrenderButton = ({ onClick, compact }) => {
     } else {
         return <div onClick={() => { if (enabled) { onClick() } }} disabled={!enabled}
             className="DrawerButton">
-            <FaFlag style={{ margin: "0.1em 0.5em 0 1em" }} /><div>{text}</div>
+            <FaFlag className="icon" /><div>{text}</div>
         </div>
     }
 

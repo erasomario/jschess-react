@@ -9,7 +9,7 @@ const ExitButton = () => {
 
   return <div onClick={() => logout()}
     className="DrawerButton">
-    <FaSignOutAlt style={{ margin: "0.1em 0.5em 0 1em" }} /><div>Salir</div>
+    <FaSignOutAlt className="icon" /><div>Salir</div>
   </div>
 }
 

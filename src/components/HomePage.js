@@ -10,7 +10,6 @@ import { useAuth } from '../providers/ProvideAuth'
 import { useGame } from '../providers/ProvideGame'
 import { useSocket } from '../providers/ProvideSocket'
 import Drawer from '../utils/Drawer'
-import './blablabla.css'
 import { Board } from './games/Board'
 import { BoardOptionsDialog } from './games/BoardOptionsDialog'
 import GameEndedDialog from './games/GameEndedDialog'
@@ -26,9 +25,10 @@ import OfferDrawButton from './menuButtons/OfferDrawButton'
 import OpenGameButton from './menuButtons/OpenGameButton'
 import OpenGamesDialog from './menuButtons/OpenGamesDialog'
 import SurrenderButton from './menuButtons/SurrenderButton'
-import UserButton from './menuButtons/UserButton'
 import WatchGamesButton from './menuButtons/WatchGamesButton'
 import EditUserDialog from "./users/EditUserDialog"
+import "./menuButtons/drawerButtons.scss"
+import './blablabla.css'
 
 export default function HomePage() {
     const [showNewGameDialog, setShowNewGameDialog] = useState(false)

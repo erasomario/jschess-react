@@ -1,7 +1,6 @@
 import { Button } from "react-bootstrap"
 import { FaPlus } from "react-icons/fa"
 import HelpText from "../../utils/HelpText"
-import "./drawerButtons.css"
 
 const NewGameButton = ({ compact, onClick }) => {
     const text = "Nueva Partida"
@@ -14,7 +13,7 @@ const NewGameButton = ({ compact, onClick }) => {
     } else {
         return <div onClick={onClick}
             className="DrawerButton">
-            <FaPlus style={{ margin: "0.1em 0.5em 0 1em" }} /><div>{text}</div>
+            <FaPlus className="icon" /><div>{text}</div>
         </div>
 
     }

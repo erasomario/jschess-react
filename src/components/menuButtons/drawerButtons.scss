@@ -1,0 +1,29 @@
+.DrawerButton {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 3em;
+    color: #212529;
+    width: 100%;
+}
+
+.DrawerButton[disabled] .icon {
+    color: #ADB5BD;
+    margin: 0.1em 0.5em 0 1em
+}
+
+.DrawerButton .icon {
+    color: #6C757D;
+    margin: 0.1em 0.5em 0 1em
+}
+
+.DrawerButton[disabled] {
+    cursor: default;
+    color: #ADB5BD;
+}
+
+.DrawerButton:hover {
+    background-color: #E9ECEF;
+}

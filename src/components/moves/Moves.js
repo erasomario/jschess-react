@@ -108,7 +108,7 @@ export default function Moves({ style, onNewGame = a => a, onEditClicked = a => 
                 <FaAngleLeft className="movBtnIcon" />
             </button>
             {compact && <button
-                style={{ color: "white", width: "4em", paddingTop: "0.4em" }}
+                style={{ color: "white", width: "5em", paddingTop: "0.4em" }}
                 className="movBtn" disabled={!data.lastMovLabel}  >
                 {data.lastMovLabel}
             </button>}

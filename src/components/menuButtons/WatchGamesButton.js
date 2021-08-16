@@ -17,7 +17,7 @@ function WatchGamesButton({ compact, onClick }) {
     } else {
         return <div onClick={onClick}
             className="DrawerButton">
-            <FaBinoculars style={{ margin: "0.1em 0.5em 0 1em" }} /><div>{text}</div>
+            <FaBinoculars className="icon" /><div>{text}</div>
         </div>
     }
 }

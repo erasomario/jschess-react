@@ -10,7 +10,7 @@ const UserButton = ({ onEditClicked, style }) => {
   }
 
   return <div style={style}>
-    <DropdownButton as={ButtonGroup} title={user.username} variant="link">
+    <DropdownButton as={ButtonGroup} title={user.username} variant="link" menuAlign="right">
       <Dropdown.Item onClick={() => onEditClicked()}>Editar Perfil</Dropdown.Item>
       <Dropdown.Item onClick={logout}>Salir</Dropdown.Item>
     </DropdownButton>

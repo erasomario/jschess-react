@@ -23,7 +23,6 @@ function OpenGameButton({ notNotifiedCount, compact, onClick }) {
 
     if (compact) {
         return <>
-
             <HelpText message={text}>
                 <Button style={{ position: "relative" }} variant="primary" onClick={onClick}>
                     <FaFolderOpen style={{ marginTop: -4 }} ></FaFolderOpen>
@@ -34,7 +33,7 @@ function OpenGameButton({ notNotifiedCount, compact, onClick }) {
     } else {
         return <div onClick={onClick}
             className="DrawerButton">
-            <FaFolderOpen style={{ margin: "0.1em 0.5em 0 1em" }} /><div>{text}</div>
+            <FaFolderOpen className="icon" /><div>{text}</div>
         </div>
     }
 }
