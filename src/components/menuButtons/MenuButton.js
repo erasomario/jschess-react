@@ -1,9 +1,12 @@
 import { Button } from "react-bootstrap"
-import { FaBars, FaCog } from "react-icons/fa"
+import { FaBars, FaCog, FaRedo } from "react-icons/fa"
 
-function MenuButton({ onMenuClick, onCfgClick, showCfgBtn }) {
+function MenuButton({ onMenuClick, onCfgClick, onRematchClick, showCfgBtn }) {
     if (showCfgBtn) {
         return <div style={{ display: "flex", fontSize: '2.1vh' }}>
+            {onRematchClick && <button className="movBtn" onClick={onRematchClick}  >
+                <FaRedo className="movBtnIcon" />
+            </button>}
             <button className="movBtn" onClick={onCfgClick}  >
                 <FaCog className="movBtnIcon" />
             </button>

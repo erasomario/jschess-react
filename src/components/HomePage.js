@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { acceptDraw, offerDraw, rejectDraw, surrender } from '../clients/game-client'
+import { acceptDraw, offerDraw, rejectDraw, rematch, surrender } from '../clients/game-client'
 import { findNotNotifiedGamesCount } from '../clients/user-client'
 import WatchGamesList from "../components/menuButtons/WatchGamesList"
 import Moves from '../components/moves/Moves'
@@ -74,7 +74,6 @@ export default function HomePage() {
 
     useEffect(() => {
         if (user) {
-
             addSocketListener('drawOffered', gameId => {
                 if (gameId === game?.id) {
                     const opponentName = (user.id === game.whiteId ? game.whiteName : game.blackName)
@@ -128,7 +127,6 @@ export default function HomePage() {
                 gameChanged(data)
             })
         }
-
     }, [addSocketListener, gameChanged, user])
 
     if (!user) {
@@ -151,6 +149,14 @@ export default function HomePage() {
     const onSurrender = () => {
         setYesNoData(makeYesNoDialog(t("confirm"), t("do you really want to surrender?"), t("yes"), t("No"), () => {
             surrender(user?.api_key, game?.id)
+                .catch(e => toast.error(e.message))
+        }))
+    }
+
+    const onRematch = () => {
+        setYesNoData(makeYesNoDialog(t("confirm"), t("do you really want to start a rematch?"), t("yes"), t("No"), () => {
+            rematch(user, game)
+                .then(g => updateGame(g))
                 .catch(e => toast.error(e.message))
         }))
     }
@@ -206,10 +212,11 @@ export default function HomePage() {
                     <MenuButton showCfgBtn={true}
                         onMenuClick={() => setShowSidePanel(true)}
                         onCfgClick={() => setshowBoardOpts(true)}
+                        onRematchClick={[game?.whiteId, game?.blackId].includes(user?.id) && game?.result ? onRematch : null}
                     />
                 </div>
             }
-            <div className="mainButtons" style={{  }}>
+            <div className="mainButtons" style={{}}>
                 {layout === "hc" &&
                     <MenuButton showCfgBtn={false} onMenuClick={() => setShowSidePanel(true)} />
                 }
