@@ -69,7 +69,6 @@ export function PlayerData({ playerInfo, mode, style }) {
                 {playerName}
             </div>
             <div style={{ fontSize: '0.9em', margin: "-0.8em  0 -0.8em 0" }}>{result}</div>
-
         </div>
     }
 

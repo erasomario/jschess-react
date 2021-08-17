@@ -4,7 +4,6 @@ import { FaCheck, FaTimes } from 'react-icons/fa'
 import { Button } from 'react-bootstrap'
 
 export function makeYesNoDialog(title, message, yesLabel, noLabel, yesCb, noCb) {
-    console.log("dialog");
     return { title, message, yesLabel, noLabel, yesCb, noCb }
 }
 

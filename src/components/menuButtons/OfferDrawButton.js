@@ -1,14 +1,15 @@
 import { Button } from "react-bootstrap"
+import { useTranslation } from "react-i18next"
 import { FaStarHalfAlt } from "react-icons/fa"
 import { useAuth } from "../../providers/ProvideAuth"
 import { useGame } from "../../providers/ProvideGame"
 import HelpText from "../../utils/HelpText"
 
 const OfferDrawButton = ({ compact, onClick }) => {
-
+    const { t } = useTranslation()
     const { user } = useAuth()
     const { game } = useGame()
-    const text = "Ofrecer empate"
+    const text = t("offer draw")
 
     const enabled = (game && (game.movs.length >= 2 && !game.result && (user?.id === game?.whiteId || user?.id === game?.blackId)))
 

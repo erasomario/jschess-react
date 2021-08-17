@@ -27,8 +27,8 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
     const [castling, setCastling] = useState([])
     const [showModal, setShowModal] = useState(false)
     const [animating, setAnimating] = useState(false)
-    const th = (options.coords === "out_opaque" || options.coords === "out_trans") ? (size * 0.92) / 8 : size / 8
-    const colorTheme = useMemo(() => colors[options.colors], [options?.colors])
+    const th = (options?.coords === "out_opaque" || options?.coords === "out_trans") ? (size * 0.92) / 8 : size / 8
+    const colorTheme = useMemo(() => colors[options?.colors], [options?.colors])
     const lastSound = useRef(0)
 
     useLayoutEffect(() => {
@@ -56,6 +56,10 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [game?.board?.turn, reversed])
 
+    if (!options) {
+        return <></>
+    }
+
     const myColor = game ? (user.id === game.whiteId ? "w" : (user.id === game.blackId ? "b" : null)) : null
     const myTurn = game && myColor ? (myColor === "w" ? game.movs.length % 2 === 0 : game.movs.length % 2 !== 0) : false
 
@@ -80,8 +84,6 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
             }
             console.log("Mov Creation", Date.now());
             createMoveSocket(emit, game.id, piece, src, [c, r])
-            //.then(g => updateGame(g))
-            //.catch(e => toast.error(e.message))
             return
         }
         setSrc([c, r])

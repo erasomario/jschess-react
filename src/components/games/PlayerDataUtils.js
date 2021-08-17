@@ -22,13 +22,13 @@ const getRemainingTime = (game, color) => {
     return parseInt(secs)
 }
 
-const getResultLabel = (game, color) => {
+const getResultLabel = (game, color, t) => {
     if (!game.result) {
         return null
     } else if (game.result === 'd') {
-        return "Empate"
+        return t("draw")
     } else if (game.result === color) {
-        return "Ganador"
+        return t("winner")
     }
 }
 
@@ -43,7 +43,7 @@ export const secsToStr = secs => {
     return (min ? "-" : "") + m.toString().padStart(2, "0") + ":" + s.toString().padStart(2, "0")
 }
 
-export const getPlayersData = (game, user, reversed) => {
+export const getPlayersData = (game, user, reversed, t) => {
     const top = {}, bottom = {}
     if (game) {
         const turn = game.board.turn % 2 === 0 ? "w" : "b"
@@ -55,7 +55,7 @@ export const getPlayersData = (game, user, reversed) => {
         top.playerId = reversed ? game.whiteId : game.blackId
         top.remainingTime = getRemainingTime(game, top.color)
         top.tick = top.turn && game.movs.length >= 2 && game.board.turn === game.movs.length && !game.result && game.time
-        top.result = getResultLabel(game, top.color)
+        top.result = getResultLabel(game, top.color, t)
 
         bottom.color = reversed ? "b" : "w"
         bottom.turn = bottom.color === turn
@@ -65,10 +65,10 @@ export const getPlayersData = (game, user, reversed) => {
         bottom.playerId = reversed ? game.blackId : game.whiteId
         bottom.remainingTime = getRemainingTime(game, bottom.color)
         bottom.tick = bottom.turn && game.movs.length >= 2 && game.board.turn === game.movs.length && !game.result && game.time
-        bottom.result = getResultLabel(game, bottom.color)
+        bottom.result = getResultLabel(game, bottom.color, t)
     } else {
         top.captures = {}
-        top.playerName = "Oponente"
+        top.playerName = t("opponent")
         top.hasPicture = false
         top.playerId = null
         top.color = "b"

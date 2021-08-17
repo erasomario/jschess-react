@@ -1,10 +1,11 @@
 import { Button } from "react-bootstrap"
+import { useTranslation } from "react-i18next"
 import { FaBinoculars } from "react-icons/fa"
 import HelpText from "../../utils/HelpText"
 
 function WatchGamesButton({ compact, onClick }) {
-
-    const text = "Ver partidas en vivo"
+    const {t} = useTranslation()
+    const text = t("watch live games")
 
     if (compact) {
         return <>

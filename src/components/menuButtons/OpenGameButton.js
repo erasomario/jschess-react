@@ -4,14 +4,16 @@ import { FaFolderOpen } from "react-icons/fa"
 import { toast } from 'react-toastify';
 import "./OpenGameButton.css"
 import HelpText from "../../utils/HelpText"
+import { useTranslation } from "react-i18next";
 
 function OpenGameButton({ notNotifiedCount, compact, onClick }) {
+    const { t } = useTranslation()
     const [dot, setDot] = useState()
-    const text = "Abrir mis partidas"
+    const text = t("open my games")
 
     useEffect(() => {
         if (notNotifiedCount > 0) {
-            toast.info("Tiene invitaciones por revisar")
+            toast.info(t("you have invitations to check"))
             const timer = setInterval(() => {
                 setDot(b => !b)
             }, 1000)
@@ -19,7 +21,7 @@ function OpenGameButton({ notNotifiedCount, compact, onClick }) {
         } else {
             setDot(false)
         }
-    }, [notNotifiedCount])
+    }, [notNotifiedCount, t])
 
     if (compact) {
         return <>

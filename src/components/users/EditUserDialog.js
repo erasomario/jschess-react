@@ -19,8 +19,10 @@ import {
 import Input from '../Input'
 import { toast } from 'react-toastify'
 import { Alert, Spinner } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
 
 export default function EditPage({ show, onHide = a => a }) {
+    const { t } = useTranslation()
     const { user, key, refreshKey } = useAuth()
     const [pictureUrl, setPictureUrl] = useState()
     const [origPassProps, setOrigPass, origPassFocus] = useInput()
@@ -68,35 +70,35 @@ export default function EditPage({ show, onHide = a => a }) {
         try {
             if (!origPassProps.value) {
                 origPassFocus()
-                throw Error('Debe escribir la contraseña actual')
+                throw Error(t("you should write your current password"))
             }
             if (page === 'username') {
                 if (!usernameProps.value) {
                     usernameFocus()
-                    throw Error('Debe escribir un nuevo nombre de usuario')
+                    throw Error(t("you should write a new username"))
                 }
                 await editUsername(user, origPassProps.value, usernameProps.value)
-                toast.success("El nombre de usuario se cambió con éxito")
+                toast.success(t("username was successfully changed"))
             } else if (page === 'password') {
                 if (!passProps.value) {
                     passFocus()
-                    throw Error('Debe escribir una nueva contraseña')
+                    throw Error(t("you should write a new password"))
                 } else if (!passConfProps.value) {
                     passConfFocus()
-                    throw Error('Debe escribir la confirmación de la nueva contraseña')
+                    throw Error(t("you should write new passwords confirmation"))
                 } else if (passProps.value !== passConfProps.value) {
                     passConfFocus()
-                    throw Error('La nueva contraseña y su confirmación no coinciden')
+                    throw Error(t("new password and its match dont match"))
                 }
                 await editPassword(user, origPassProps.value, passProps.value)
-                toast.success("La contraseña se cambió con éxito")
+                toast.success(t("password was successfully changed"))
             } else if (page === 'email') {
                 if (!emailProps.value) {
                     emailFocus()
-                    throw Error('Debe escribir un nuevo email')
+                    throw Error(t("you should write a new email"))
                 }
                 await editEmail(user, origPassProps.value, emailProps.value)
-                toast.success("El email se cambió con éxito")
+                toast.success(t("email was successfully changed"))
             }
             setOrigPass('')
             await refreshKey(user.api_key)
@@ -108,7 +110,10 @@ export default function EditPage({ show, onHide = a => a }) {
     return (
         <Modal show={show} onHide={() => onHide()}>
             <Modal.Header closeButton>
-                <Modal.Title>{user?.username}<Button variant="link" onClick={() => { setPage('username') }}>Editar</Button></Modal.Title>
+                <Modal.Title>{user?.username}
+                    <Button variant="link" onClick={() => { setPage('username') }}>
+                        {t("edit")}
+                    </Button></Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={save}>
@@ -122,7 +127,9 @@ export default function EditPage({ show, onHide = a => a }) {
                                 </div>}
                                 <div className='pb'>
                                     <label htmlFor="file-input" style={{ cursor: 'pointer' }}>
-                                        <div variant="light"><FaCamera className='mr-2 camera' /><span style={{ verticalAlign: 'middle' }}>{user.hasPicture ? 'Cambiar' : 'Agregar'}</span></div>
+                                        <div variant="light"><FaCamera className='mr-2 camera' /><span style={{ verticalAlign: 'middle' }}>
+                                            {user.hasPicture ? t("change") : t("add")}
+                                        </span></div>
                                     </label>
                                 </div>
                                 <input type="file" id="file-input" accept="image/png, image/gif, image/jpeg" style={{ display: 'none' }}
@@ -131,39 +138,40 @@ export default function EditPage({ show, onHide = a => a }) {
                                     }} />
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                                <Button variant="link" onClick={() => setPage('password')}>Cambiar Contraseña</Button>
-                                <Button variant="link" onClick={() => setPage('email')}>Cambiar Correo</Button>
+                                <Button variant="link" onClick={() => setPage('password')}>{t("change password")}</Button>
+                                <Button variant="link" onClick={() => setPage('email')}>{t("change email")}</Button>
                             </div>
                         </div>
                     }
 
                     {page &&
                         <>
-                            <Input id="curPassword" label='Contraseña Actual' type="password"
-                                placeholder="Contraseña que usa para iniciar sesión" {...origPassProps} >
+                            <Input id="curPassword" label={t("current password")} type="password"
+                                placeholder={t("password you use to login")} {...origPassProps} >
                                 <FaLock />
                             </Input>
-                            {page === 'username' && <Input id="username" label='Nombre de Usuario' type="text" {...usernameProps} autoComplete="off" >
+                            {page === 'username' && <Input id="username" label={t("username")} type="text" {...usernameProps} autoComplete="off" >
                                 <FaUser />
                             </Input>}
                             {page === 'email' && <Input id="email" label='Email' type="email" autoComplete="off"
-                                placeholder='Para recuperar su cuenta si olvida su contraseña' {...emailProps} >
+                                placeholder={t("to recover your account if you forget your password")} {...emailProps} >
                                 <FaEnvelope />
                             </Input>}
                             {page === 'password' && <>
-                                <Input id="newPassword" label='Contraseña Nueva' type="password"
-                                    placeholder="Contraseña que usará para iniciar sesión" {...passProps} >
+                                <Input id="newPassword" label={t("new password")} type="password"
+                                    placeholder={t("password you'll use to login")} {...passProps} >
                                     <FaLock />
                                 </Input>
-                                <Input id="conf" label='Confirmación de la Contraseña' type="password"
-                                    placeholder="Repita la contraseña nueva" {...passConfProps} >
+                                <Input id="conf" label={t("password confirmation")} type="password"
+                                    placeholder={t("repeat your new password")} {...passConfProps} >
                                     <FaCopy />
                                 </Input>
                             </>}
                         </>
                     }
                     {error && <Alert variant="danger" className='mt-3'>{error}</Alert>}
-                    <Button className="float-right" variant="primary" disabled={!page} type="submit">Guardar
+                    <Button className="float-right" variant="primary" disabled={!page} type="submit">
+                        {t("save")}
                         <FaCheck className='ml-2' />
                     </Button>
                 </Form>

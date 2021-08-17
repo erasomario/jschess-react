@@ -8,8 +8,11 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 import { addUser } from '../../clients/user-client'
+import { LangSwitch } from '../../locales/LangSwitch'
+import { useTranslation } from 'react-i18next'
 
 export default function RegisterPage() {
+    const { t, i18n } = useTranslation()
     const [file, setFile] = useState(null)
     const [usernameProps, , usernameFocus] = useInput("");
     const [emailProps, , mailFocus] = useInput("");
@@ -23,27 +26,27 @@ export default function RegisterPage() {
         e.preventDefault()
         if (!usernameProps.value) {
             usernameFocus()
-            setError('Debe escribir un nombre de usuario')
+            setError(t("you should write a username"))
         } else if (!emailProps.value) {
             mailFocus()
-            setError('Debe escribir un correo')
+            setError(t("you should write an email"))
         } else if (!passProps.value) {
             passFocus()
-            setError('Debe escribir una contraseña')
+            setError(t("you should write a password"))
         } else if (!passConfProps.value) {
             passConfFocus()
-            setError('Debe escribir una confirmación de contraseña')
+            setError(t("you should write a password confirmation"))
         } else if (passProps.value !== passConfProps.value) {
             passConfFocus()
-            setError('La contraseña y su confirmación no coinciden')
+            setError(t("password and its confirmation doesnt match"))
         } else {
-            addUser(usernameProps.value, emailProps.value, passProps.value, file)
+            addUser(usernameProps.value, emailProps.value, passProps.value, i18n.language, file)
                 .then(() => {
                     setPage('created')
                     setError(null)
                 }).catch(e => setError(e.message))
         }
-    };
+    }
 
     return (
         <div className='p-3 pt-4' style={{
@@ -53,39 +56,40 @@ export default function RegisterPage() {
 
             <Card className="mx-auto dialog">
                 <Card.Body>
+                    <LangSwitch style={{ position: "absolute", right: "1.2em" }} />
                     <Card.Title>
                         <Link to="/login"><FaArrowLeft className='mr-2' /></Link>
                         <span className='align-middle'>
-                            Registrarse
+                            {t("create account")}
                         </span>
                     </Card.Title>
                     {page === 'create' &&
                         <>
                             <Card.Text>
-                                Puede crear una cuenta únicamente con los siguientes datos:
+                                {t("you can create an account with")}:
                             </Card.Text>
                             <Form onSubmit={register}>
-                                <Input autocomplete="off" id="username" label='Nombre de Usuario' type="text" {...usernameProps} >
+                                <Input autoComplete="off" id="username" label={t("username")} type="text" {...usernameProps} >
                                     <FaUser />
                                 </Input>
-                                <Input autocomplete="off" id="email" label='Email' type="email"
-                                    placeholder='Para recuperar su cuenta si tiene olvida su contraseña' {...emailProps} >
+                                <Input autoComplete="off" id="email" label='Email' type="email"
+                                    placeholder={t("to recover your account if you forget your password")} {...emailProps} >
                                     <FaEnvelope />
                                 </Input>
-                                <Input id="password" label='Contraseña' type="password"
-                                    placeholder="Contraseña que usará para iniciar sesión" {...passProps} >
+                                <Input id="password" label={t("password")} type="password"
+                                    placeholder={t("password that youll use to login")} {...passProps} >
                                     <FaLock />
                                 </Input>
-                                <Input id="conf" label='Confirmación de la Contraseña' type="password"
-                                    placeholder="Repita la contraseña" {...passConfProps} >
+                                <Input id="conf" label={t("password confirmation")} type="password"
+                                    placeholder={t("repeat your password")} {...passConfProps} >
                                     <FaCopy />
                                 </Input>
 
                                 <Form.Group controlId="picture" className="mb-3">
-                                    <Form.Label>Imágen de Perfil (Opcional)</Form.Label>
+                                    <Form.Label>{t("profile picture (optional)")}</Form.Label>
                                     <Form.File
                                         label={file?.name || ''}
-                                        data-browse="Seleccionar"
+                                        data-browse={t("choose")}
                                         accept="image/png, image/gif, image/jpeg"
                                         custom
                                         onChange={event => {
@@ -95,7 +99,7 @@ export default function RegisterPage() {
                                 </Form.Group>
                                 {error && <Alert variant="danger">{error}</Alert>}
                                 <Button className='float-right' variant="primary" type="submit">
-                                    <span className='align-middle'>Crear Cuenta</span><FaUserPlus className='ml-2' />
+                                    <span className='align-middle'>{t("create account")}</span><FaUserPlus className='ml-2' />
                                 </Button>
                             </Form>
                         </>
@@ -103,9 +107,9 @@ export default function RegisterPage() {
                     {page === 'created' &&
                         <>
                             <Card.Text>
-                                <b>{usernameProps.value}</b> su cuenta se creó con éxito, ahora puede iniciar sesión con los datos que suministró
+                                <b>{usernameProps.value}</b> {t("your account was successfully created")}
                             </Card.Text>
-                            <Link to="/login" ><Button variant="primary">Ir al Inicio de Sesión</Button></Link>
+                            <Link to="/login" ><Button variant="primary">{t("go to login")}</Button></Link>
                         </>
                     }
                 </Card.Body>

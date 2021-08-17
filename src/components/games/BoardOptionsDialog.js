@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Col, Container, Form, Row } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
+import { useTranslation } from 'react-i18next'
 import { FaCheck, FaCog } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { editBoardOpts } from '../../clients/user-client'
@@ -23,7 +24,7 @@ const colors = {
 
 export { colors }
 export function BoardOptionsDialog({ show, onHide, onChange, options }) {
-
+    const { t } = useTranslation()
     const { user } = useAuth()
     const [color, setColor] = useState()
     const [sounds, setSounds] = useState()
@@ -68,7 +69,7 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
         <Modal.Header closeButton>
             <Modal.Title style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                 <FaCog style={{ marginRight: "0.3em" }} />
-                <div>Opciones del Tablero</div>
+                <div>{t("board settings")}</div>
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -78,17 +79,17 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
                     onChange={e => saveSound(e.target.checked)}
                     type="switch"
                     id="custom-switch"
-                    label="Sonidos al mover las piezas"
+                    label={t("sounds when moving pieces")}
                 />
-                <div style={{ marginBottom: "0.75em", marginTop: "0.75em" }}><b>Coordenadas</b></div>
+                <div style={{ marginBottom: "0.75em", marginTop: "0.75em" }}><b>{t("coordinates")}</b></div>
 
-                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("out_opaque")} custom label="Borde Opaco" />
-                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("out_trans")} custom label="Borde Transparente" />
-                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("in")} custom label="Internas" />
-                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("none")} custom label="Ocultas" />
+                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("out_opaque")} custom label={t("opaque border")} />
+                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("out_trans")} custom label={t("transparent border")} />
+                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("in")} custom label={t("internal")} />
+                <Form.Check style={{ marginBottom: "0.3em" }} {...getCoordProps("none")} custom label={t("hidden")} />
 
                 <Form.Group style={{ marginTop: "1em" }}>
-                    <b>Colores</b>
+                    <b>{t("colors")}</b>
                     <Container>
                         <Row>
                             {Object.keys(colors).map(k => {

@@ -3,6 +3,7 @@ import { Alert } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
+import { useTranslation } from 'react-i18next'
 import { FaFolderOpen } from 'react-icons/fa'
 import { findGameById, setOpponentNotification } from '../../clients/game-client'
 import { findGamesByStatus } from '../../clients/user-client'
@@ -12,6 +13,7 @@ import { GamesList } from './GamesList'
 import "./PlayerGamesList.css"
 
 export default function OpenGamesDialog({ show, onHide = a => a }) {
+    const { t } = useTranslation()
     const { user } = useAuth()
     const { updateGame } = useGame()
     const [error, setError] = useState(null)
@@ -49,19 +51,19 @@ export default function OpenGamesDialog({ show, onHide = a => a }) {
         <Modal.Header closeButton>
             <Modal.Title style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                 <FaFolderOpen style={{ marginRight: "0.3em" }} />
-                <div>Abrir Partida</div>
+                <div>{t("open my games")}</div>
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Tabs activeKey={tab} onSelect={t => { setTab(t); setError() }} className="mb-3">
-                <Tab eventKey="open" title="En curso" >
+                <Tab eventKey="open" title={t("ongoing")} >
                     <GamesList onDataNeeded={getOpen} height={height} onSelect={select}
-                        emptyMessage="No tiene partidas en Curso"
+                        emptyMessage={t("no ongoing games")}
                         onItemHighlighted={setOpenTab} />
                 </Tab>
-                <Tab eventKey="closed" title="Finalizadas">
+                <Tab eventKey="closed" title={t("finished")}>
                     <GamesList onDataNeeded={getClosed} height={height} onSelect={select}
-                        emptyMessage="Aún no tiene partidas en Finalizadas"
+                        emptyMessage={t("no finished games yet")}
                         onItemHighlighted={setCloseTab} />
                 </Tab>
             </Tabs>

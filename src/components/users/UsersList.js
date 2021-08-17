@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form'
 import { findUsersLike } from '../../clients/user-client';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
+import { useTranslation } from 'react-i18next';
 
 export default function UserList({ onSelect = (a) => a, style, focus }) {
 
@@ -13,6 +14,7 @@ export default function UserList({ onSelect = (a) => a, style, focus }) {
     const { user } = useAuth()
     const [list, setList] = useState([])
     const [selected, setSelected] = useState(null)
+    const { t } = useTranslation()
 
     const [error, setError] = useState();
 
@@ -38,7 +40,7 @@ export default function UserList({ onSelect = (a) => a, style, focus }) {
                 onChange={e => setText(e.target.value.replace(/\s/g, ""))}
                 value={text}
                 ref={textRef}
-                placeholder="Escriba parte del nombre" />
+                placeholder={t("white part of the name")} />
         </Form.Group>
 
         {list.length > 0 &&
@@ -57,13 +59,13 @@ export default function UserList({ onSelect = (a) => a, style, focus }) {
 
             <div style={{ ...style, display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
                 <div>
-                    Escriba al menos 3 letras para empezar a buscar
+                    {t("type at least three letters to search")}
                 </div>
             </div>}
         {(!error && list.length === 0 && text.length >= 3) &&
             <div style={{ ...style, display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
                 <div>
-                    No se encontraron jugadores similares a "{text}"
+                {t("there are no players like")} "{text}"
                 </div>
             </div>}
         {error &&

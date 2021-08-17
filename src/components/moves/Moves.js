@@ -9,12 +9,14 @@ import { useAuth } from "../../providers/ProvideAuth"
 import { Alert, Button } from "react-bootstrap"
 import { rematch } from "../../clients/game-client"
 import UserButton from "../menuButtons/UserButton"
+import { useTranslation } from "react-i18next"
 
 export default function Moves({ style, onNewGame = a => a, onEditClicked = a => a, compact = false }) {
+    const { t } = useTranslation()
     const { user } = useAuth()
     const scrollRef = useRef()
     const { game, updateTurn } = useGame()
-    const data = useMemo(() => getMoveData(game, user), [game, user])
+    const data = useMemo(() => getMoveData(game, user, t), [game, user, t])
     const board = game ? game.board : null
     const [error, setError] = useState()
 
@@ -50,7 +52,7 @@ export default function Moves({ style, onNewGame = a => a, onEditClicked = a => 
             .catch(e => setError(e.message))
     }
 
-    return <div style={{display: "flex", flexDirection: "column",  width: (compact ? "100%" : "17em"), fontSize: '2.1vh' }}>
+    return <div style={{ display: "flex", flexDirection: "column", width: (compact ? "100%" : "17em"), fontSize: '2.1vh' }}>
         {!compact && <>
             <UserButton style={{ alignSelf: "flex-end" }} onEditClicked={onEditClicked} />
             <div className="movRow">
@@ -64,8 +66,8 @@ export default function Moves({ style, onNewGame = a => a, onEditClicked = a => 
                 <div className="instructionsCard" style={{ height: style.height, backgroundImage: `url('${process.env.PUBLIC_URL}/assets/pawn.jpg')`, }}>
                     <div className="Overlay"></div>
                     <div className="Content" >
-                        <p className="Title">Bienvenido</p>
-                        <p>Puede jugar o ver partidas en vivo usando los botones del menú.</p>
+                        <p className="Title">{t("welcome")}</p>
+                        <p>{t("you can play or watch live games")}</p>
                     </div>
                 </div>
             }
@@ -73,8 +75,8 @@ export default function Moves({ style, onNewGame = a => a, onEditClicked = a => 
                 <div className="instructionsCard" style={{ height: style.height, backgroundImage: `url('${process.env.PUBLIC_URL}/assets/pawn.jpg')`, }}>
                     <div className="Overlay"></div>
                     <div className="Content" >
-                        <p className="Title">Juegan las Blancas</p>
-                        <p><div>{data.myColor === "w" ? "Es su turno para iniciar" : `Es el turno de ${game?.whiteName} para iniciar`}</div></p>
+                        <p className="Title">{t("white plays")}</p>
+                        <p><div>{data.myColor === "w" ? t("it's your turn to start") : t("it's {{white}}'s turn to start", { white: game?.whiteName })}</div></p>
                     </div>
                 </div>
             }
@@ -95,7 +97,7 @@ export default function Moves({ style, onNewGame = a => a, onEditClicked = a => 
                         <div style={{ fontWeight: "bold" }}>{data.winLabel}</div>
                         {data.winDetail && <div style={{ fontSize: "0.8em", textAlign: "center" }}>{data.winDetail}</div>}
                         {([game?.whiteId, game?.blackId].includes(user?.id)) &&
-                            <Button onClick={callRematch} style={{ fontSize: "1em", textAlign: "center", margin: "0", padding: "0" }} variant="link">Revancha</Button>}
+                            <Button onClick={callRematch} style={{ fontSize: "1em", textAlign: "center", margin: "0", padding: "0" }} variant="link">{t("rematch")}</Button>}
                     </div>}
             </SimpleBar>
             }

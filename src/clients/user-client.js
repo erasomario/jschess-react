@@ -39,8 +39,8 @@ const editBoardOpts = (user, options) => {
     return apiRequest(`/v1/users/${user.id}/boardOptions`, 'PUT', user.api_key, options)
 }
 
-const addUser = async (username, email, password, file) => {
-    const usr = await apiRequest(`/v1/users/`, 'POST', null, { username, email, password })
+const addUser = async (username, email, password, lang, file) => {
+    const usr = await apiRequest(`/v1/users/`, 'POST', null, { username, email, password, lang })
     if (file) {
         await apiRequest(`/v1/users/${usr.id}/picture`, 'PUT', usr.api_key, file)
         return usr
@@ -73,6 +73,9 @@ const findNotNotifiedGamesCount = async (userId, apiKey) => {
     return apiRequest(`/v1/users/${userId}/notNotifiedGamesCount`, 'GET', apiKey, null)
 }
 
+const createTranslation = async (key, eng, esp) => {
+    return apiRequest(`/v1/api_keys/translation`, 'POST', null, { key, eng, esp })
+}
 
 export {
     addUser,
@@ -89,4 +92,5 @@ export {
     findGamesByStatus,
     findUserById,
     findNotNotifiedGamesCount,
+    createTranslation
 }

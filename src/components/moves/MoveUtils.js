@@ -1,3 +1,5 @@
+import { getEndingMessage } from '../games/GameEndedLogic'
+
 const unicode = { K: ['\u2654', '\u265A'], Q: ['\u2655', '\u265B'], R: ['\u2656', '\u265C'], B: ['\u2657', '\u265D'], N: ['\u2658', '\u265E'] }
 
 const getUnicodeLabel = (mov, i) => {
@@ -35,33 +37,18 @@ const getMatrix = (movs) => {
  * @param {*} game 
  * @returns always returns an object
  */
-const getMoveData = (game, user) => {
+const getMoveData = (game, user, t) => {
     let winDetail, winLabel
+    const message = getEndingMessage(game, t)
     if (game?.result) {
         if (game.result === "w") {
             winLabel = "1-0"
-            winDetail = "Ganaron las blancas"
         } else if (game.result === "b") {
             winLabel = "0-1"
-            winDetail = "Ganaron las negras"
         } else {
             winLabel = "0-0"
-            winDetail = "Empate"
         }
-
-        if (game?.endType === 'time') {
-            winDetail += `. Las ${game.result === "w" ? "negras" : "blancas"} se quedaron sin tiempo`
-        } else if (game?.endType === 'check') {
-            winDetail += `. Las ${game.result === "w" ? "blancas" : "negras"} dieron jaque mate`
-        } else if (game?.endType === 'stale') {
-            winDetail += `. Las ${game.movs.length % 2 === 0 ? "blancas" : "negras"} se quedaron sin opciones`
-        } else if (game.endType === "material") {
-            winDetail += "No hay piezas sufientes para llegar a un jaque mate"
-        } else if (game.endType === "agreed") {
-            winDetail = "Los jugadores acordaron un empate"
-        } else if (game.endType === "surrender") {
-            winDetail = `${game.result === "b" ? "Las blancas" : "Las negras"} se rindieron`
-        }
+        winDetail = message.msg + ". " + message.detail
     }
 
     return {

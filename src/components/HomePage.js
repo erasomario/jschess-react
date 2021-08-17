@@ -29,8 +29,11 @@ import WatchGamesButton from './menuButtons/WatchGamesButton'
 import EditUserDialog from "./users/EditUserDialog"
 import "./menuButtons/drawerButtons.scss"
 import './blablabla.css'
+import { useTranslation } from 'react-i18next'
+import { getBrowserLang } from '../locales/LangSwitch'
 
 export default function HomePage() {
+    const [t, i18n] = useTranslation()
     const [showNewGameDialog, setShowNewGameDialog] = useState(false)
     const [showGamesDialog, setShowGamesDialog] = useState(false)
     const [showWatchDialog, setShowWatchDialog] = useState(false)
@@ -52,9 +55,10 @@ export default function HomePage() {
     const onOptsChange = useCallback((opts) => { setOptions(opts); setshowBoardOpts(false) }, [])
 
     useEffect(() => {
+        i18n.changeLanguage(user?.lang || getBrowserLang())
         setOptions(user?.boardOpts ? JSON.parse(user.boardOpts) : { coords: "in", colors: "light_blue", sounds: true })
         document.body.style.backgroundColor = '#eef2f3'
-    }, [user])
+    }, [i18n, user])
 
     useEffect(() => {
         addSocketListener("opponentNotificationUpdated", c => setNotNotifiedCount(c))
@@ -74,7 +78,7 @@ export default function HomePage() {
             addSocketListener('drawOffered', gameId => {
                 if (gameId === game?.id) {
                     const opponentName = (user.id === game.whiteId ? game.whiteName : game.blackName)
-                    setYesNoData(makeYesNoDialog("Confirmación", `${opponentName} le ofrece un empate`, "Aceptar", "Rechazar", () => {
+                    setYesNoData(makeYesNoDialog(t("confirm"), t("opponent offers you a draw", { opponent: opponentName }), t("accept"), t("reject"), () => {
                         acceptDraw(user?.api_key, game?.id)
                             .catch(e => toast.error(e.message))
                     }, () => {
@@ -86,11 +90,11 @@ export default function HomePage() {
             addSocketListener('drawRejected', gameId => {
                 if (gameId === game?.id) {
                     const opponentName = (user.id === game.whiteId ? game.blackName : game.whiteName)
-                    toast.error(`${opponentName} rechazó su ofrecimiento de empate`)
+                    toast.error(t("rejected your draw offer", { opponent: opponentName }))
                 }
             })
         }
-    }, [addSocketListener, game?.id, game?.whiteId, game?.blackName, game?.whiteName, user])
+    }, [addSocketListener, game?.id, game?.whiteId, game?.blackName, game?.whiteName, user, t])
 
     const gameChanged = useCallback(ng => {
         if (game?.id === ng.id) {
@@ -106,17 +110,17 @@ export default function HomePage() {
             if (myColor) {
                 if (ng.result) {
                     //the game ended and I'm one of the players
-                    toast(`El juego contra ${myColor === "w" ? ng.blackName : ng.whiteName} finalizó`)
+                    toast(t("game against opponent ended", { opponent: myColor === "w" ? ng.blackName : ng.whiteName }))
                 } else {
                     const turn = ng.movs.length % 2 === 0 ? "w" : "b"
                     if (turn === myColor) {
                         //if it's my turn to play it means my opponent made a move
-                        toast(`${myColor === "w" ? ng.blackName : ng.whiteName} hizo un movimiento en otro juego`)
+                        toast(t("opponent made a move on another game", { opponent: myColor === "w" ? ng.blackName : ng.whiteName }))
                     }
                 }
             }
         }
-    }, [updateGame, game?.id, user?.id])
+    }, [updateGame, game?.id, user?.id, t])
 
     useEffect(() => {
         if (user) {
@@ -132,12 +136,12 @@ export default function HomePage() {
     }
 
     const onDrawOfferClicked = () => {
-        setYesNoData(makeYesNoDialog("Confirmación", "¿Desea ofrecer un empate?", "Si", "No", () => {
+        setYesNoData(makeYesNoDialog(t("confirm"), t("Do you wish to offer a draw?"), t("yes"), t("No"), () => {
             offerDraw(user?.api_key, game?.id)
                 .then(() => {
                     if (game.whiteId === user.id ? game.blackId : game.whiteId) {
                         //if you offer draw to bot you'll get an inmediate answer, so this toast is not needed
-                        toast.info(`Su ofrecimiento de empate se envió a ${game.whiteId !== user.id ? game.whiteName : game.blackName}`)
+                        toast.info(t("Your draw offering was sent to opponent", { opponent: game.whiteId !== user.id ? game.whiteName : game.blackName }))
                     }
                 })
                 .catch(e => toast.error(e.message))
@@ -145,14 +149,13 @@ export default function HomePage() {
     }
 
     const onSurrender = () => {
-        setYesNoData(makeYesNoDialog("Confirmación", "¿Realmente desea rendirse?", "Si", "No", () => {
+        setYesNoData(makeYesNoDialog(t("confirm"), t("do you really want to surrender?"), t("yes"), t("No"), () => {
             surrender(user?.api_key, game?.id)
                 .catch(e => toast.error(e.message))
         }))
     }
 
-
-    const [topData, bottomData] = getPlayersData(game, user, reversed)
+    const [topData, bottomData] = getPlayersData(game, user, reversed, t)
     const ratio = width / height
     const layout = ratio > 1.6 ? "h" : (ratio > 1.3 ? "hc" : "v")
     let boardSize

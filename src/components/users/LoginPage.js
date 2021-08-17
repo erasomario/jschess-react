@@ -11,6 +11,9 @@ import Input from '../Input'
 import './dialogs.css'
 import "./LoginPage.scss"
 import { useDimensions } from "../../hooks/useDimensions"
+import { Trans, useTranslation } from 'react-i18next'
+import { LangSwitch } from '../../locales/LangSwitch'
+//import CreateTranslation from './CreateTranslation'
 
 export default function LoginPage() {
   const [error, setError] = useState()
@@ -23,6 +26,7 @@ export default function LoginPage() {
   const [remembersProps] = useCheckbox(true)
   const windowDimensions = useDimensions()
   const { from } = location.state || { from: { pathname: "/" } }
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (user) {
@@ -38,10 +42,10 @@ export default function LoginPage() {
     e.preventDefault()
     if (!loginProps.value) {
       loginFocus()
-      setError('Debe escribir un email o nombre de usuario')
+      setError(t("You should write an email or username"))
     } else if (!passProps.value) {
       passFocus()
-      setError('Debe escribir una contraseña')
+      setError(t("You should write a password"))
     } else {
       signIn(loginProps.value, passProps.value, remembersProps.checked)
         .then(() => history.replace(from))
@@ -84,45 +88,51 @@ export default function LoginPage() {
             <div className="LoginLeft"
               style={{ borderTopLeftRadius: "0.4em", borderBottomLeftRadius: "0.4em", position: "absolute", width: "100%", height: "100%", top: "0", left: "0" }} ></div>
             <div style={{ position: "relative" }}>
-              <div>Bienvenido a</div>
+              <div>{t("Welcome to")}</div>
               <p style={{ display: "flex", flexDirection: "row", marginTop: "0.25em" }}>
                 <FaChessKnight className='mr-2' style={{ fontSize: "2em" }} />
                 <span style={{ fontWeight: "600", fontSize: "1.5em" }}>Mario's Chess</span>
               </p>
-              <p>Este proyecto une mi interés en el ajedrez, el desarrollo de software, Javascript y el deseo de compartir un espacio ludico con familiares y amigos.</p>
-              <p>¡Gracias su visita!</p>
+              <p>{t("login greeting")}</p>
+              <p>{t("thanks for your visit")}</p>
               <p style={{ textAlign: "right" }}>Mario Raúl Eraso</p>
             </div>
           </div>}
-          <div style={{ width: (compact ? "100%" : "60%"), padding: "1.2em" }}>
+          <div style={{ width: (compact ? "100%" : "60%"), padding: "1.2em", position: "relative" }}>
+            <LangSwitch style={{ position: "absolute", right: "1.2em" }} />
             <p><span style={{
               fontWeight: "600", fontSize: "1.5em",
               marginTop: (compact ? "0em" : "1.1em"),
               marginBottom: (compact ? "0em" : "1em"),
-            }}>Inicio de Sesión</span></p>
+            }}>{t("Login")}</span></p>
             {compact && <p>
-              Si no tiene una cuenta <Link to="/register">puede crearla gratis aquí</Link>.
+              <Trans i18nKey="if you dont have an acount short">
+                <Link to="/register"></Link>
+              </Trans>
             </p>}
             {!compact && <p>
-              Si aún no tiene una cuenta <Link to="/register">puede crearla aquí</Link>, es gratis y no toma más de un minuto.
+              <Trans i18nKey="if you dont have an acount long">
+                <Link to="/register"></Link>
+              </Trans>
             </p>}
             <Form onSubmit={login}>
-              <Input id="login" label='Nombre de Usuario o Email' {...loginProps} type="text" ><FaUser /></Input>
-              <Input id="password" label='Contraseña' {...passProps} type="password" ><FaLock /></Input>
+              <Input id="login" label={t("username or email")} {...loginProps} type="text" ><FaUser /></Input>
+              <Input id="password" label={t("password")} {...passProps} type="password" ><FaLock /></Input>
               <Form.Group controlId="remember" style={{ userSelect: 'none' }}>
-                <Form.Check type="checkbox" {...remembersProps} custom label="Recordarme en este equipo" />
+                <Form.Check type="checkbox" {...remembersProps} custom label={t("Remember me on this computer")} />
               </Form.Group>
               {error && <Alert variant="danger">{error}</Alert>}
-              <p><Link to="/recover">Olvidé mi usuario o contraseña</Link></p>
+              <p><Link to="/recover">{t("I forgot my username or password")}</Link></p>
 
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button variant="primary" type="submit">
                   <span className='align-middle'>
-                    Continuar</span>
+                    {t("continue")}</span>
                   <FaDoorOpen className='ml-2' />
                 </Button>
               </div>
             </Form>
+            {/*<CreateTranslation></CreateTranslation>*/}
           </div>
         </div>
       </div>

@@ -10,10 +10,12 @@ import { FaArrowLeft, FaArrowRight, FaChessPawn, FaPlus } from 'react-icons/fa'
 import { createGame } from '../../clients/game-client'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
+import { useTranslation } from 'react-i18next'
 
 const times = [5, 10, 15, 30, 60, 0]
 
 export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => a }) {
+    const { t } = useTranslation()
     const { user } = useAuth()
     const [error, setError] = useState(null)
     const [player, setPlayer] = useState(null)
@@ -38,7 +40,7 @@ export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => 
     const create = (e) => {
         e.preventDefault()
         if (tab === "friend" && !player) {
-            setError('Seleccione un oponente')
+            setError(t('choose an opponent'))
         } else {
             createGame(user.api_key, player?.id, time, additionTime, color)
                 .then(onNewGame)
@@ -50,7 +52,7 @@ export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => 
     const nextPage = (e) => {
         e.preventDefault()
         if (tab === "friend" && !player) {
-            setError('Seleccione un oponente')
+            setError(t('choose an opponent'))
         } else {
             setError()
             setPage("opts")
@@ -67,16 +69,16 @@ export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => 
             <Modal.Title style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                 {page === 'player' && <FaPlus style={{ marginRight: "0.3em" }} />}
                 {page !== 'player' && <FaArrowLeft style={{ marginRight: "0.3em", cursor: "pointer", display: "inline" }} onClick={goBack} />}
-                <div>Nueva Partida</div>
+                <div>{t('new game')}</div>
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
 
             {page === 'player' && <Form onSubmit={nextPage}>
-                <div style={{ marginBottom: "0.5em" }}>Seleccione un oponente</div>
+                <div style={{ marginBottom: "0.5em" }}>{t('choose an opponent')}</div>
                 <Form.Group>
                     <Tabs className="mb-3" activeKey={tab} onSelect={t => { setTab(t); setError() }}>
-                        <Tab eventKey="friend" title="Amigos">
+                        <Tab eventKey="friend" title={t("friends")}>
                             <UserList focus={show} style={{ height: '15rem' }} onSelect={(u) => { setPlayer(u); setError() }}>
                             </UserList>
                         </Tab>
@@ -84,8 +86,8 @@ export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => 
                             <div style={{ height: '10rem', display: "flex", flexDirection: "row", alignItems: "center", gap: "1em" }}>
                                 <div style={{ flexShrink: "0", borderRadius: '15%', backgroundImage: `url(${process.env.PUBLIC_URL}/assets/bot.svg)`, width: "7em", height: "7em", backgroundSize: "7em 7em" }}></div>
                                 <div style={{ display: "flex", flexDirection: "column" }}>
-                                    <b>¡Hola Humano!</b>
-                                    <div>Soy un robot sencillo pero daré lo mejor de mí de para ofrecerte un juego entretenido.</div>
+                                    <b>{t("hello human")}</b>
+                                    <div>{t("bot greeting")}</div>
                                 </div>
                             </div>
                             <div style={{ height: "3em" }}></div>
@@ -94,7 +96,7 @@ export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => 
                 </Form.Group>
                 {error && <Alert className='mt-3' variant="danger">{error}</Alert>}
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Button type="submit"><span>Continuar</span><FaArrowRight className='ml-2' /></Button>
+                    <Button type="submit"><span>{t('continue')}</span><FaArrowRight className='ml-2' /></Button>
                 </div>
             </Form>
             }
@@ -102,19 +104,19 @@ export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => 
             {
                 page === 'opts' && <Form onSubmit={create}>
                     <Form.Group>
-                        <Form.Label>Minutos por Cada Jugador</Form.Label>
+                        <Form.Label>{t("minutes for each player")}</Form.Label><br/>
                         <ButtonGroup toggle >
-                            {times.map((t, i) => <ToggleButton
+                            {times.map((time, i) => <ToggleButton
                                 key={i}
                                 name="time"
-                                {...makeTimeProps(t)}>
-                                {t !== 0 ? t : 'Ilimitado'}
+                                {...makeTimeProps(time)}>
+                                {time !== 0 ? time : t("unlimited")}
                             </ToggleButton>
                             )}
                         </ButtonGroup>
                     </Form.Group>
                     <Form.Group controlId="formBasicRange">
-                        <Form.Label>Segundos de Adición por Jugada: <b>{additionTime}</b></Form.Label>
+                        <Form.Label>{t("addition for each move")}: <b>{additionTime}</b></Form.Label>
                         <Form.Control disabled={time === 0} type="range" custom min="0" max="180" defaultValue={additionTime} onChange={(e) => setAdditionTime(e.target.value)} />
                     </Form.Group>
                     <Form.Group>
@@ -131,7 +133,7 @@ export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => 
                         </ButtonGroup>
                     </Form.Group>
                     {error && <Alert className='mt-3' variant="danger">{error}</Alert>}
-                    <Button className='float-right' type="submit"><span className='align-baseline'>Crear Partida</span><FaChessPawn className='ml-2' /></Button>
+                    <Button className='float-right' type="submit"><span className='align-baseline'>{t("create game")}</span><FaChessPawn className='ml-2' /></Button>
                 </Form>
             }
         </Modal.Body >
