@@ -12,7 +12,7 @@ function MenuButton({ onMenuClick, onCfgClick, showCfgBtn }) {
             </button>
         </div>
     } else {
-        return <Button style={{ position: "relative" }} variant="primary" onClick={onMenuClick}>
+        return <Button size="lg" style={{ position: "relative" }} variant="primary" onClick={onMenuClick}>
             <FaBars style={{ marginTop: -4 }} ></FaBars>
         </Button>
     }

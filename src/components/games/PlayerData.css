@@ -1,0 +1,19 @@
+.playerDataVContainer {
+    display: flex;
+}
+
+.playerDataVContainer > div {
+    margin: 0.25em 0 0.25em 0;
+}
+
+.playerDataHContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
+    font-size: 2.1vh;
+}
+
+.playerDataHContainer > div {
+    margin-left: 0.5em;
+}

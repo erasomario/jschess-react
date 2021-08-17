@@ -76,7 +76,7 @@ export default function Moves({ style, onNewGame = a => a, onEditClicked = a => 
                     <div className="Overlay"></div>
                     <div className="Content" >
                         <p className="Title">{t("white plays")}</p>
-                        <p><div>{data.myColor === "w" ? t("it's your turn to start") : t("it's {{white}}'s turn to start", { white: game?.whiteName })}</div></p>
+                        <p>{data.myColor === "w" ? t("it's your turn to start") : t("it's {{white}}'s turn to start", { white: game?.whiteName })}</p>
                     </div>
                 </div>
             }

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { acceptDraw, offerDraw, rejectDraw, surrender } from '../clients/game-client'
@@ -6,6 +7,7 @@ import { findNotNotifiedGamesCount } from '../clients/user-client'
 import WatchGamesList from "../components/menuButtons/WatchGamesList"
 import Moves from '../components/moves/Moves'
 import { useDimensions } from '../hooks/useDimensions'
+import { getBrowserLang } from '../locales/LangSwitch'
 import { useAuth } from '../providers/ProvideAuth'
 import { useGame } from '../providers/ProvideGame'
 import { useSocket } from '../providers/ProvideSocket'
@@ -16,21 +18,19 @@ import GameEndedDialog from './games/GameEndedDialog'
 import { PlayerData } from './games/PlayerData'
 import { getPlayersData } from './games/PlayerDataUtils'
 import { makeYesNoDialog, YesNoDialog } from './games/YesNoDialog'
-import NewGameDialog from './menuButtons/NewGameDialog'
+import "./homePage.css"
+import "./menuButtons/drawerButtons.scss"
 import EditUserButton from './menuButtons/EditUserButton'
 import ExitButton from './menuButtons/ExitButton'
 import MenuButton from './menuButtons/MenuButton'
 import NewGameButton from './menuButtons/NewGameButton'
+import NewGameDialog from './menuButtons/NewGameDialog'
 import OfferDrawButton from './menuButtons/OfferDrawButton'
 import OpenGameButton from './menuButtons/OpenGameButton'
 import OpenGamesDialog from './menuButtons/OpenGamesDialog'
 import SurrenderButton from './menuButtons/SurrenderButton'
 import WatchGamesButton from './menuButtons/WatchGamesButton'
 import EditUserDialog from "./users/EditUserDialog"
-import "./menuButtons/drawerButtons.scss"
-import './blablabla.css'
-import { useTranslation } from 'react-i18next'
-import { getBrowserLang } from '../locales/LangSwitch'
 
 export default function HomePage() {
     const [t, i18n] = useTranslation()
@@ -209,7 +209,7 @@ export default function HomePage() {
                     />
                 </div>
             }
-            <div style={{ padding: "1em", position: "absolute", display: "flex", flexDirection: "column", gap: "0.5em" }}>
+            <div className="mainButtons" style={{  }}>
                 {layout === "hc" &&
                     <MenuButton showCfgBtn={false} onMenuClick={() => setShowSidePanel(true)} />
                 }

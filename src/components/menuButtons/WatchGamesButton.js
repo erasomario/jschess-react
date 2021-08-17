@@ -10,7 +10,7 @@ function WatchGamesButton({ compact, onClick }) {
     if (compact) {
         return <>
             <HelpText message={text}>
-                <Button style={{ position: "relative" }} variant="primary" onClick={onClick}>
+                <Button size="lg" style={{ position: "relative" }} variant="primary" onClick={onClick}>
                     <FaBinoculars style={{ marginTop: -4 }} />
                 </Button>
             </HelpText>

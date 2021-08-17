@@ -17,7 +17,7 @@ const SurrenderButton = ({ onClick, compact }) => {
     if (compact) {
         return <>
             <HelpText message={text}>
-                <Button disabled={!enabled} variant="primary" onClick={onClick}>
+                <Button size="lg" disabled={!enabled} variant="primary" onClick={onClick}>
                     <FaFlag style={{ marginTop: -4 }} ></FaFlag>
                 </Button>
             </HelpText>

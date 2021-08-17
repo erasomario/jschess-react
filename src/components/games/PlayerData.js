@@ -5,6 +5,7 @@ import { secsToStr } from "./PlayerDataUtils"
 import { useGame } from "../../providers/ProvideGame"
 import { timeout } from "../../clients/game-client"
 import { toast } from "react-toastify"
+import "./PlayerData.css"
 
 export function PlayerData({ playerInfo, mode, style }) {
     const { key } = useAuth()
@@ -41,10 +42,10 @@ export function PlayerData({ playerInfo, mode, style }) {
     }, [tick, game?.lastMovAt, calcElapsed])
 
     const alert = playerInfo.remainingTime - elapsed < (game?.time * 60) * 0.2
-    
+
     if (mode[0] === 'v') {
         const flexDirection = mode[1] !== 't' ? "column" : "column-reverse"
-        return <div style={{ ...style, display: "flex", flexDirection, alignItems: "flex-end", fontSize: "2.1vh", gap: "0.5em", backgroundColor: "" }}>
+        return <div className="playerDataVContainer" style={{ ...style, display: "flex", flexDirection, alignItems: "flex-end", fontSize: "2.1vh" }}>
             <div style={{ height: "1.8em" }}></div>
             <div style={{ display: "flex", height: '2.5em', fontSize: "0.7em", justifyItems: "flex-end" }}>
                 {Object.entries(captures).map(c => {
@@ -72,7 +73,7 @@ export function PlayerData({ playerInfo, mode, style }) {
         </div>
     }
 
-    return <div style={{ ...style, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-end", fontSize: "2.1vh", gap: "0.5em" }}>
+    return <div className="playerDataHContainer" style={{ ...style }}>
         <img alt="" src={url} style={{ borderRadius: '15%', width: "3.5em", height: "3.5em" }} />
         <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", alignItems: "center" }}>

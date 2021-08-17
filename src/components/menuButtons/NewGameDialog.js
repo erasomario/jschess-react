@@ -83,8 +83,8 @@ export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => 
                             </UserList>
                         </Tab>
                         <Tab eventKey="pc" title="Robot">
-                            <div style={{ height: '10rem', display: "flex", flexDirection: "row", alignItems: "center", gap: "1em" }}>
-                                <div style={{ flexShrink: "0", borderRadius: '15%', backgroundImage: `url(${process.env.PUBLIC_URL}/assets/bot.svg)`, width: "7em", height: "7em", backgroundSize: "7em 7em" }}></div>
+                            <div style={{ height: '10rem', display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                <div style={{ flexShrink: "0", borderRadius: '15%', backgroundImage: `url(${process.env.PUBLIC_URL}/assets/bot.svg)`, width: "7em", height: "7em", backgroundSize: "7em 7em", marginRight: "1em" }}></div>
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <b>{t("hello human")}</b>
                                     <div>{t("bot greeting")}</div>
@@ -104,7 +104,7 @@ export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => 
             {
                 page === 'opts' && <Form onSubmit={create}>
                     <Form.Group>
-                        <Form.Label>{t("minutes for each player")}</Form.Label><br/>
+                        <Form.Label>{t("minutes for each player")}</Form.Label><br />
                         <ButtonGroup toggle >
                             {times.map((time, i) => <ToggleButton
                                 key={i}

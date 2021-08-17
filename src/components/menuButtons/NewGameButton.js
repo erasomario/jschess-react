@@ -9,7 +9,7 @@ const NewGameButton = ({ compact, onClick }) => {
     if (compact) {
         return <>
             <HelpText message={text}>
-                <Button variant="primary" onClick={onClick}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
+                <Button size="lg" variant="primary" onClick={onClick}><FaPlus style={{ marginTop: -4 }} ></FaPlus></Button>
             </HelpText>
         </>
     } else {

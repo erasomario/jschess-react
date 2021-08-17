@@ -16,7 +16,7 @@ const OfferDrawButton = ({ compact, onClick }) => {
     if (compact) {
         return <>
             <HelpText message={text}>
-                <Button disabled={!enabled} variant="primary" onClick={onClick}>
+                <Button size="lg" disabled={!enabled} variant="primary" onClick={onClick}>
                     <FaStarHalfAlt style={{ marginTop: -4 }} ></FaStarHalfAlt>
                 </Button>
             </HelpText>

@@ -106,8 +106,8 @@ const Loading = ({ style, t }) => {
 }
 
 const NoData = ({ emptyMessage, style }) => {
-    return <div style={{ ...style, display: "flex", flexDirection: "column", justifyContent: "center", gap: "1em" }}>
-        <b>{emptyMessage}</b>
+    return <div style={{ ...style, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <p><b>{emptyMessage}</b></p>
         <div>
             <Trans i18nKey="you can start a new game against friends or the computer">
                 <FaPlus />

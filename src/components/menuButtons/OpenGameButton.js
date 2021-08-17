@@ -26,7 +26,7 @@ function OpenGameButton({ notNotifiedCount, compact, onClick }) {
     if (compact) {
         return <>
             <HelpText message={text}>
-                <Button style={{ position: "relative" }} variant="primary" onClick={onClick}>
+                <Button size="lg" style={{ position: "relative" }} variant="primary" onClick={onClick}>
                     <FaFolderOpen style={{ marginTop: -4 }} ></FaFolderOpen>
                     <div className={"OpenGameButtonRedDot " + (dot ? "shown" : "hidden")}></div>
                 </Button>

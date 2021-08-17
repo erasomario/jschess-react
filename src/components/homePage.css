@@ -1,0 +1,14 @@
+.Toastify__progress-bar--default {
+    background: #007bff;
+}
+
+.mainButtons {
+    padding: 1em;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+}
+
+.mainButtons button {
+    margin-bottom: 0.5em;
+}
