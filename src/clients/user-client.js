@@ -35,6 +35,10 @@ const editEmail = (user, password, newEmail) => {
     return apiRequest(`/v1/users/${user.id}/email`, 'PUT', user.api_key, { password, newEmail })
 }
 
+const editLang = (user, lang) => {
+    return apiRequest(`/v1/users/${user.id}/lang`, 'PUT', user.api_key, { lang })
+}
+
 const editBoardOpts = (user, options) => {
     return apiRequest(`/v1/users/${user.id}/boardOptions`, 'PUT', user.api_key, options)
 }
@@ -85,6 +89,7 @@ export {
     editUsername,
     editPassword,
     editEmail,
+    editLang,
     editBoardOpts,
     generateRecoveryKey,
     recoverPassword,

@@ -117,8 +117,9 @@
  "winner": "Winner",
  "opponent": "Opponent",
  "welcome": "Welcome",
- "you can play or watch live games": "You can play or watch live games using the buttons on the main menu",
+ "you can play or watch live games": "You can play or watch live games using the buttons on the left menu",
  "white plays": "White Plays",
  "it's your turn to start": "It's your turn to start",
- "it's {{white}}'s turn to start": "It's {{white}}'s turn to start"
+ "it's {{white}}'s turn to start": "It's {{white}}'s turn to start",
+ "change language": "Change Language"
 }

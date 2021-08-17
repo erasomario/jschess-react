@@ -20,6 +20,7 @@ import Input from '../Input'
 import { toast } from 'react-toastify'
 import { Alert, Spinner } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
+import { LangSwitch } from '../../locales/LangSwitch'
 
 export default function EditPage({ show, onHide = a => a }) {
     const { t } = useTranslation()
@@ -140,16 +141,17 @@ export default function EditPage({ show, onHide = a => a }) {
                             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                                 <Button variant="link" onClick={() => setPage('password')}>{t("change password")}</Button>
                                 <Button variant="link" onClick={() => setPage('email')}>{t("change email")}</Button>
+                                <Button variant="link" onClick={() => setPage('lang')}>{t("change language")}</Button>
                             </div>
                         </div>
                     }
 
                     {page &&
                         <>
-                            <Input id="curPassword" label={t("current password")} type="password"
+                            {page !== "lang" && <Input id="curPassword" label={t("current password")} type="password"
                                 placeholder={t("password you use to login")} {...origPassProps} >
                                 <FaLock />
-                            </Input>
+                            </Input>}
                             {page === 'username' && <Input id="username" label={t("username")} type="text" {...usernameProps} autoComplete="off" >
                                 <FaUser />
                             </Input>}
@@ -167,13 +169,19 @@ export default function EditPage({ show, onHide = a => a }) {
                                     <FaCopy />
                                 </Input>
                             </>}
+                            {page === "lang" &&
+                                <LangSwitch user={user} ></LangSwitch>
+                            }
                         </>
                     }
                     {error && <Alert variant="danger" className='mt-3'>{error}</Alert>}
-                    <Button className="float-right" variant="primary" disabled={!page} type="submit">
-                        {t("save")}
-                        <FaCheck className='ml-2' />
-                    </Button>
+                    {page !== "lang" &&
+                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Button variant="primary" disabled={!page} type="submit">
+                                {t("save")}
+                                <FaCheck className='ml-2' />
+                            </Button>
+                        </div>}
                 </Form>
             </Modal.Body>
         </Modal>

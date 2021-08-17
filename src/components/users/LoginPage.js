@@ -13,7 +13,7 @@ import "./LoginPage.scss"
 import { useDimensions } from "../../hooks/useDimensions"
 import { Trans, useTranslation } from 'react-i18next'
 import { LangSwitch } from '../../locales/LangSwitch'
-//import CreateTranslation from './CreateTranslation'
+import CreateTranslation from './CreateTranslation'
 
 export default function LoginPage() {
   const [error, setError] = useState()
