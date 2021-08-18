@@ -33,7 +33,7 @@ export default function EditPage({ show, onHide = a => a }) {
     const [passConfProps, , passConfFocus] = useInput()
     const [error, setError] = useState()
     const [page, setPage] = useState(null)
-    const [uploading, setUploading] = useState(false)
+    const [loadingImg, setLoadingImg] = useState(false)
 
     useEffect(() => {
         setError()
@@ -44,8 +44,10 @@ export default function EditPage({ show, onHide = a => a }) {
             setPage()
             setError()
         } else {
+            setLoadingImg(true)
             getProfilePictureUrl(user.id, user.hasPicture, user.api_key).then(setPictureUrl)
                 .catch(e => toast.error(e.message))
+                .finally(() => setLoadingImg(false))
             setUsername(user.username)
         }
     }, [show, user, setUsername])
@@ -58,11 +60,11 @@ export default function EditPage({ show, onHide = a => a }) {
 
     const updatePp = file => {
         if (file) {
-            setUploading(true)
+            setLoadingImg(true)
             updateProfilePicture(user, file)
                 .then(() => refreshKey(key))
                 .catch(e => toast.error(e.message))
-                .finally(() => setUploading(false))
+                .finally(() => setLoadingImg(false))
         }
     }
 
@@ -122,8 +124,8 @@ export default function EditPage({ show, onHide = a => a }) {
                         <div style={{ display: "flex", flexDirection: "row" }} className='mb-3'>
                             <div style={{ position: "relative" }} className='mr-3'>
                                 {user.hasPicture && <FaWindowClose onClick={removePp} style={{ position: 'absolute', right: '0px', cursor: 'pointer' }} />}
-                                {!uploading && <img alt="profile_picture" src={pictureUrl} className='pp' />}
-                                {uploading && <div className='pp' style={{ backgroundColor: "#1976D2", display: "flex", justifyContent: "center", alignItems: "center" }} >
+                                {!loadingImg && <img alt="profile_picture" src={pictureUrl} className='pp' />}
+                                {loadingImg && <div className='pp' style={{ backgroundColor: "#1976D2", display: "flex", justifyContent: "center", alignItems: "center" }} >
                                     <Spinner animation="border" variant="light" />
                                 </div>}
                                 <div className='pb'>
