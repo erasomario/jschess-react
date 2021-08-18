@@ -76,11 +76,11 @@ export function PlayerData({ playerInfo, mode, style }) {
     return <div className="playerDataHContainer" style={{ ...style }}>
         <img alt="" src={url} style={{ borderRadius: '15%', width: "3.5em", height: "3.5em" }} />
         <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ display: "flex", alignItems: "center" }}>
-                {turn && <div style={{ width: '0.75em', height: '0.75em', backgroundColor: '#4caf50', borderRadius: '50%', margin: "0.25em 0.5em 0 0" }}></div>}
-                <div style={{ fontSize: '1.2em', fontWeight: (turn ? 'bold' : 'normal') }}>
+            <div style={{ display: "flex", alignItems: "center" }}>                
+                <div style={{ fontSize: '1.2em', fontWeight: (turn ? '600' : 'normal') }}>
                     {playerName}
                 </div>
+                {turn && <div style={{ width: '0.75em', height: '0.75em', backgroundColor: '#4caf50', borderRadius: '50%', margin: "0.25em 0 0 0.5em" }}></div>}
             </div>
             <div style={{ display: "flex", height: '2.5em', fontSize: "0.7em", justifyItems: "flex-start" }}>
                 {Object.entries(captures).map(c => {

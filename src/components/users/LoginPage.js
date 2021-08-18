@@ -132,7 +132,7 @@ export default function LoginPage() {
                 </Button>
               </div>
             </Form>
-            {/*<CreateTranslation></CreateTranslation>*/}
+            {<CreateTranslation></CreateTranslation>}
           </div>
         </div>
       </div>

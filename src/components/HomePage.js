@@ -153,12 +153,8 @@ export default function HomePage() {
         }))
     }
 
-    const onRematch = () => {
-        setYesNoData(makeYesNoDialog(t("confirm"), t("do you really want to start a rematch?"), t("yes"), t("No"), () => {
-            rematch(user, game)
-                .then(g => updateGame(g))
-                .catch(e => toast.error(e.message))
-        }))
+    const onEndInfo = () => {
+        setShowEndDialog(true)
     }
 
     const [topData, bottomData] = getPlayersData(game, user, reversed, t)
@@ -212,7 +208,7 @@ export default function HomePage() {
                     <MenuButton showCfgBtn={true}
                         onMenuClick={() => setShowSidePanel(true)}
                         onCfgClick={() => setshowBoardOpts(true)}
-                        onRematchClick={[game?.whiteId, game?.blackId].includes(user?.id) && game?.result ? onRematch : null}
+                        onEndInfoClick={[game?.whiteId, game?.blackId].includes(user?.id) && game?.result ? onEndInfo : null}
                     />
                 </div>
             }
