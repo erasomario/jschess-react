@@ -3,3 +3,16 @@
 .LoginLeft {
     background-color: rgba(theme-color("primary"), 0.85);
 }
+
+.loginGreeting {
+    transition: opacity 0.25s;
+}
+
+.loginGreetingDot {
+    transition: opacity 0.25s;
+    margin: 0 0.25em 0 0.25em;
+    background-color: white;
+    width: 0.6em;
+    height: 0.6em;
+    border-radius: 50%;
+}

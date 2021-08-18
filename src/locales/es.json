@@ -17,13 +17,12 @@
  "Welcome to": "Bienvenido a",
  "Login": "Inicio de Sesión",
  "thanks for your visit": "¡Gracias su visita!",
- "login greeting": "Este proyecto une mi interés en el ajedrez, el desarrollo de software, Javascript y el deseo de compartir un espacio ludico con familiares y amigos.",
  "I forgot my username or password": "Olvidé mi usuario o contraseña",
  "Remember me on this computer": "Recordarme en este equipo",
  "password": "Contraseña",
  "username or email": "Nombre de Usuario o Email",
  "if you dont have an acount short": "Si no tiene una cuenta <0>puede crearla gratis aquí</0>.",
- "if you dont have an acount long": "Si no tiene una cuanta puede <0>crearla aquí</0>, es gratis y no toma más de un minuto",
+ "if you dont have an acount long": "Si no tiene una cuenta puede <0>crearla aquí</0>, es gratis y no toma más de un minuto",
  "create account": "Crear Cuenta",
  "username": "Nombre de Usuario",
  "to recover your account if you forget your password": "Para recuperar su cuenta si olvida su contraseña",
@@ -121,5 +120,12 @@
  "white plays": "Juegan las Blancas",
  "it's your turn to start": "Es su turno para iniciar",
  "it's {{white}}'s turn to start": "Es el turno de {{white}} para iniciar",
- "change language": "Cambiar Idioma"
+ "change language": "Cambiar Idioma",
+ "mario's chess combines my interest": "Mario's Chess combina mi interés por el Ajedrez, el desarrollo de software, el aprendizaje y Javascript, y mi deseo de compartir un espacio lúdico con familiares y amigos",
+ "on mario’s chess you can play against friends": "En Mario's chess puede jugar contra amigos o contra un computador de Ajedrez básico el cual, a pesar de estar en su estado inicial, puede resultar desafiante, en especial si es nuevo en el mundo del ajedrez.",
+ "there's always a game to play!": "¡Siempre hay una partida por jugar!",
+ "mario’s chess is made with responsiveness": "Mario's chess se construye pensando en diseño responsive y compatibilidad, se adapta a una amplia variedad de navegadores y dispositivos desde pequeños smartphones a tablets y desktops.",
+ "enjoy it at home or on the go!": "¡Disfrútelo en casa o en la marcha!",
+ "mario’s chess was built from scratch using javascript": "Mario's chess se construyó desde cero usando Javascript con la ayuda de poderosas bibliotecas y tecnologías como React, NodeJs, Express, MongoDB, Socket.io, i18next entre otras.",
+ "mario's cheess is opensource": "¡Mario's Cheess es OpenSource, encuentrelo on GitHub!"
 }

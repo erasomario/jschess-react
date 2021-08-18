@@ -17,7 +17,6 @@
  "Welcome to": "Welcome to",
  "Login": "Login",
  "thanks for your visit": "Thanks for your visit!",
- "login greeting": "This project combines my interest on chess, software development and Javascript and my wish to share a fun space with family and friends.",
  "I forgot my username or password": "I forgot my username or password",
  "Remember me on this computer": "Remember me on this computer",
  "password": "Password",
@@ -121,5 +120,12 @@
  "white plays": "White Plays",
  "it's your turn to start": "It's your turn to start",
  "it's {{white}}'s turn to start": "It's {{white}}'s turn to start",
- "change language": "Change Language"
+ "change language": "Change Language",
+ "mario's chess combines my interest": "Mario's Chess combines my interest on Chess, software development, learning and Javascript and my wish to share a fun space with family and friends.",
+ "on mario’s chess you can play against friends": "On Mario's chess you can play against friends or a basic chess computer which regardless its early stage still can be challenging, specially if you’re introducing yourself to the world of chess.",
+ "there's always a game to play!": "There's always a game to play!",
+ "mario’s chess is made with responsiveness": "Mario's chess is made with responsiveness and compatibility on mind, it adapts to a wide variety of browsers and devices from small smartphones, to tablets and desktops.",
+ "enjoy it at home or on the go!": "Enjoy it at home or on the go!",
+ "mario’s chess was built from scratch using javascript": "Mario’s chess was built from scratch using Javascript with the aid of powerful libraries and technologies such as React, NodeJs, Express, MongoDB, Socket.io, i18next among others.",
+ "mario's cheess is opensource": "Mario's Cheess is OpenSource, find it on GitHub!"
 }
