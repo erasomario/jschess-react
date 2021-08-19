@@ -4,11 +4,9 @@ import HomePage from './components/HomePage'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { ProvideAuth } from './providers/ProvideAuth'
 import { ProvideGame } from './providers/ProvideGame'
-import RecoverPage from './components/users/RecoverPage'
-import LoginPage from './components/users/LoginPage'
-import RegisterPage from './components/users/RegisterPage'
 import { ProvideSocket } from './providers/ProvideSocket'
 import "./App.scss"
+import LoginFrame from './components/users/LoginFrame'
 
 function App() {
 
@@ -16,14 +14,8 @@ function App() {
     <ProvideAuth>
       <Router basename="/chess">
         <Switch>
-          <Route path="/recover">
-            <RecoverPage />
-          </Route>
           <Route path="/login">
-            <LoginPage />
-          </Route>
-          <Route path="/register" >
-            <RegisterPage />
+            <LoginFrame />
           </Route>
           <PrivateRoute path="/">
             <ProvideSocket>

@@ -1,0 +1,110 @@
+import { useInput } from '../../hooks/useInput'
+import { useState } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
+import Input from '../Input'
+import { FaUser, FaLock, FaEnvelope, FaCopy, FaArrowLeft, FaUserPlus } from 'react-icons/fa'
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
+import Alert from 'react-bootstrap/Alert';
+import { addUser } from '../../clients/user-client'
+import { useTranslation } from 'react-i18next'
+import { useAuth } from '../../providers/ProvideAuth'
+import { toast } from 'react-toastify'
+
+export default function RegisterForm({ compact, onPageChanged }) {
+    const { t, i18n } = useTranslation()
+    const history = useHistory()
+    const location = useLocation()
+    const { loggedIn } = useAuth()
+    const { from } = location.state || { from: { pathname: "/" } }
+
+    const [file, setFile] = useState(null)
+    const [usernameProps, , usernameFocus] = useInput("");
+    const [emailProps, , mailFocus] = useInput("");
+    const [passProps, , passFocus] = useInput("");
+    const [passConfProps, , passConfFocus] = useInput("");
+
+    const [error, setError] = useState();
+
+    const register = e => {
+        e.preventDefault()
+        if (!usernameProps.value) {
+            usernameFocus()
+            setError(t("you should write a username"))
+        } else if (!emailProps.value) {
+            mailFocus()
+            setError(t("you should write an email"))
+        } else if (!passProps.value) {
+            passFocus()
+            setError(t("you should write a password"))
+        } else if (!passConfProps.value) {
+            passConfFocus()
+            setError(t("you should write a password confirmation"))
+        } else if (passProps.value !== passConfProps.value) {
+            passConfFocus()
+            setError(t("password and its confirmation doesnt match"))
+        } else {
+            addUser(usernameProps.value, emailProps.value, passProps.value, i18n.language, file)
+                .then(user => loggedIn(user))
+                .then(() => history.replace(from))
+                .then(toast.success(t("welcome! your account was successfully created")))
+                .catch(error => setError(error.message))
+        }
+    }
+
+    return (
+        <>
+            <div style={{
+                display: "flex",
+                alignItems: "center",
+                fontWeight: "600", fontSize: "1.3em",
+                marginTop: (compact ? "0em" : "1.3em"),
+                marginBottom: "0.5em",
+            }}>
+                <FaArrowLeft className="loginLink mr-2 mt-1" onClick={() => onPageChanged("login")} />
+                <div>{t("create account")}</div>
+            </div>
+            <Card.Text>
+                {t("you can create an account with")}:
+            </Card.Text>
+            <Form onSubmit={register}>
+                <Input autoComplete="off" id="username" label={t("username")} type="text" {...usernameProps} >
+                    <FaUser />
+                </Input>
+                <Input autoComplete="off" id="email" label='Email' type="email"
+                    placeholder={t("to recover your account if you forget your password")} {...emailProps} >
+                    <FaEnvelope />
+                </Input>
+                <Input id="password" label={t("password")} type="password"
+                    placeholder={t("password that youll use to login")} {...passProps} >
+                    <FaLock />
+                </Input>
+                <Input id="conf" label={t("password confirmation")} type="password"
+                    placeholder={t("repeat your password")} {...passConfProps} >
+                    <FaCopy />
+                </Input>
+
+                <Form.Group controlId="picture" className="mb-3">
+                    <Form.Label>{t("profile picture (optional)")}</Form.Label>
+                    <Form.File
+                        label={file?.name || ''}
+                        data-browse={t("choose")}
+                        accept="image/png, image/gif, image/jpeg"
+                        custom
+                        onChange={event => {
+                            setFile(event.target.files[0])
+                        }}
+                    />
+                </Form.Group>
+                {error && <Alert variant="danger">{error}</Alert>}
+
+                <div style={{margin: "2em 0 0.5em 0", display: "flex", justifyContent: "flex-end"}}>
+                    <Button variant="primary" type="submit">
+                        <span className='align-middle'>{t("create account")}</span><FaUserPlus className='ml-2' />
+                    </Button>
+                </div>
+            </Form>
+        </>
+    )
+}

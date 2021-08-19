@@ -74,7 +74,7 @@
  "password you'll use to login": "Password you'll use to login",
  "repeat your new password": "Repeat your new password",
  "recover password": "Recover Account",
- "if your forget your access data": "If your forget your access data, write your email or username and you'll get instructions to recover your account.",
+ "if your forget your access data": "If you forgot your access data, write your email or username and to get instructions to recover your account.",
  "your password was successfully changed, now you can use it to login": "Your password was successfully changed, now you can use it to login",
  "new passwords confirmation": "New password's confirmation",
  "repeat the new password": "Repeat the new password",
@@ -127,5 +127,8 @@
  "mario’s chess is made with responsiveness": "Mario's chess is made with responsiveness and compatibility on mind, it adapts to a wide variety of browsers and devices from small smartphones, to tablets and desktops.",
  "enjoy it at home or on the go!": "Enjoy it at home or on the go!",
  "mario’s chess was built from scratch using javascript": "Mario’s chess was built from scratch using Javascript with the aid of powerful libraries and technologies such as React, NodeJs, Express, MongoDB, Socket.io, i18next among others.",
- "mario's cheess is opensource": "Mario's Cheess is OpenSource, find it on GitHub!"
+ "mario's cheess is opensource": "Mario's Cheess is OpenSource, find it on GitHub!",
+ "i want to login as guest": "I want to login as guest",
+ "create translation": "Create Translation",
+ "welcome! your account was successfully created": "Welcome! your account was successfully created"
 }

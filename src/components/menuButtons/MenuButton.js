@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap"
-import { FaBars, FaCog, FaInfo, FaRedo } from "react-icons/fa"
+import { FaBars, FaCog, FaInfo } from "react-icons/fa"
 
 function MenuButton({ onMenuClick, onCfgClick, onEndInfoClick, showCfgBtn }) {
     if (showCfgBtn) {

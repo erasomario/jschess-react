@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { acceptDraw, offerDraw, rejectDraw, rematch, surrender } from '../clients/game-client'
+import { acceptDraw, offerDraw, rejectDraw, surrender } from '../clients/game-client'
 import { findNotNotifiedGamesCount } from '../clients/user-client'
 import WatchGamesList from "../components/menuButtons/WatchGamesList"
 import Moves from '../components/moves/Moves'
@@ -57,7 +57,6 @@ export default function HomePage() {
     useEffect(() => {
         i18n.changeLanguage(user?.lang || getBrowserLang())
         setOptions(user?.boardOpts ? JSON.parse(user.boardOpts) : { coords: "in", colors: "light_blue", sounds: true })
-        document.body.style.backgroundColor = '#eef2f3'
     }, [i18n, user])
 
     useEffect(() => {
@@ -201,7 +200,8 @@ export default function HomePage() {
             gridTemplateRows: templateRows,
             columnGap: "2.5em",
             position: "relative",
-            userSelect: "none"
+            userSelect: "none",
+            minHeight: "100vh"
         }}>
             {layout === "v" &&
                 <div style={{ gridColumn: "2/3", gridRow: "1/2", justifySelf: "end", alignSelf: "start" }}>

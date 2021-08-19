@@ -1,5 +1,15 @@
 @import "/src/App.scss";
 
+.loginLink {
+    color: theme-color("primary");
+}
+
+.loginLink:hover {
+    color: theme-color-level("primary", 2);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .LoginLeft {
     background-color: rgba(theme-color("primary"), 0.85);
 }

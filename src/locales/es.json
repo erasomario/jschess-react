@@ -127,5 +127,8 @@
  "mario’s chess is made with responsiveness": "Mario's chess se construye pensando en diseño responsive y compatibilidad, se adapta a una amplia variedad de navegadores y dispositivos desde pequeños smartphones a tablets y desktops.",
  "enjoy it at home or on the go!": "¡Disfrútelo en casa o en la marcha!",
  "mario’s chess was built from scratch using javascript": "Mario's chess se construyó desde cero usando Javascript con la ayuda de poderosas bibliotecas y tecnologías como React, NodeJs, Express, MongoDB, Socket.io, i18next entre otras.",
- "mario's cheess is opensource": "¡Mario's Cheess es OpenSource, encuentrelo on GitHub!"
+ "mario's cheess is opensource": "¡Mario's Cheess es OpenSource, encuentrelo on GitHub!",
+ "i want to login as guest": "Iniciar sesión como Invitado",
+ "create translation": "Registrar Traducción",
+ "welcome! your account was successfully created": "¡Bienvenido! Su cuenta se creó exitosamente"
 }

@@ -53,36 +53,42 @@ const addUser = async (username, email, password, lang, file) => {
     }
 }
 
-const generateRecoveryKey = async (login) => {
+const generateRecoveryKey = login => {
     return apiRequest('/v1/recovery_keys/', 'POST', null, { login })
 }
 
-const recoverPassword = async (id, recoveryKey, password) => {
+const recoverPassword = (id, recoveryKey, password) => {
     return apiRequest(`/v1/users/${id}/password/recovery`, 'POST', null, { recoveryKey, password })
 }
 
-const findUsersLike = async (like, apiKey) => {
+const findUsersLike = (like, apiKey) => {
     return apiRequest(`/v1/users/like/${like}`, 'GET', apiKey, null)
 }
 
-const findGamesByStatus = async (userId, apiKey, status) => {
+const findGamesByStatus = (userId, apiKey, status) => {
     return apiRequest(`/v1/users/${userId}/games/${status}`, 'GET', apiKey, null)
 }
 
-const findUserById = async (userId, apiKey) => {
+const findUserById = (userId, apiKey) => {
     return apiRequest(`/v1/users/${userId}`, 'GET', apiKey, null)
 }
 
-const findNotNotifiedGamesCount = async (userId, apiKey) => {
+const findNotNotifiedGamesCount = (userId, apiKey) => {
     return apiRequest(`/v1/users/${userId}/notNotifiedGamesCount`, 'GET', apiKey, null)
 }
 
-const createTranslation = async (key, eng, esp) => {
+const createTranslation = (key, eng, esp) => {
     return apiRequest(`/v1/api_keys/translation`, 'POST', null, { key, eng, esp })
 }
 
+const createGuest = lang => {
+    return apiRequest('/v1/api_keys', 'POST', null, { lang })
+}
+
+
 export {
     addUser,
+    createGuest,
     getProfilePictureUrl,
     updateProfilePicture,
     removeProfilePicture,

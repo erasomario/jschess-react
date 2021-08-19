@@ -29,7 +29,16 @@ export function ProvideAuth({ children }) {
     refreshKey(key)
   }, [key])
 
+  const loggedIn = async user => {
+    setRemember(true)
+    localStorage.setItem('key', user.api_key)
+    sessionStorage.removeItem('key')
+    setKey(user.api_key)
+    return key
+  }
+
   const signIn = async (login, password, remember) => {
+
     const user = await apiRequest('/v1/api_keys', 'POST', null, { login, password })
     if (remember) {
       setRemember(true)
@@ -65,7 +74,7 @@ export function ProvideAuth({ children }) {
     }
     setUser(usr);
   }
-  const auth = { user, key, remember, signIn, signOut, refreshKey }
+  const auth = { user, key, remember, signIn, loggedIn, signOut, refreshKey }
   return (
     <authContext.Provider value={auth}>
       {children}
