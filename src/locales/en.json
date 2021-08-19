@@ -130,5 +130,7 @@
  "mario's cheess is opensource": "Mario's Cheess is OpenSource, find it on GitHub!",
  "i want to login as guest": "I want to login as guest",
  "create translation": "Create Translation",
- "welcome! your account was successfully created": "Welcome! your account was successfully created"
+ "welcome! your account was successfully created": "Welcome! your account was successfully created",
+ "working...": "Working...",
+ "your password was changed successfully": "Your password was changed successfully, now you can use it login"
 }

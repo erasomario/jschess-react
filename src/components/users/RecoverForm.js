@@ -1,7 +1,5 @@
 import { useInput } from '../../hooks/useInput'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
@@ -9,6 +7,8 @@ import { generateRecoveryKey, recoverPassword } from '../../clients/user-client'
 import { FaUser, FaLock, FaCopy, FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 import Input from '../Input'
 import { useTranslation } from 'react-i18next'
+import IconWaitButton from '../../utils/IconWaitButton'
+import { toast } from 'react-toastify'
 
 export default function RecoverForm({ compact, onPageChanged }) {
   const { t } = useTranslation()
@@ -18,9 +18,10 @@ export default function RecoverForm({ compact, onPageChanged }) {
   const [passProps, , passFocus] = useInput("")
   const [passConfProps, , passConfFocus] = useInput("")
 
-  const [error, setError] = useState();
-  const [recoveryData, setRecoveryData] = useState(null);
-  const [page, setPage] = useState('login');
+  const [working, setWorking] = useState(false)
+  const [error, setError] = useState()
+  const [recoveryData, setRecoveryData] = useState(null)
+  const [page, setPage] = useState('login')
 
   useEffect(() => {
     setError()
@@ -32,11 +33,14 @@ export default function RecoverForm({ compact, onPageChanged }) {
       loginFocus()
       setError(t("You should write an email or username"))
     } else {
+      setWorking(true)
       generateRecoveryKey(loginProps.value)
         .then(data => {
           setRecoveryData(data)
           setPage('key')
-        }).catch(e => setError(e.message))
+        })
+        .catch(e => setError(e.message))
+        .finally(() => setWorking(false))
     }
   }
 
@@ -55,9 +59,12 @@ export default function RecoverForm({ compact, onPageChanged }) {
       passConfFocus()
       setError(t("password and its confirmation doesnt match"))
     } else {
+      setWorking(true)
       recoverPassword(recoveryData.id, keyProps.value, passProps.value)
-        .then(() => setPage('end'))
-        .catch(e => setError(e.message))
+        .then(() => onPageChanged("login"))
+        .then(() => toast.success(t("your password was changed successfully")))
+        .catch(error => setError(error.message))
+        .finally(() => setWorking(false))
     }
   }
 
@@ -85,11 +92,10 @@ export default function RecoverForm({ compact, onPageChanged }) {
             <FaUser />
           </Input>
           {error && <Alert variant="danger">{error}</Alert>}
-          <div style={{ margin: "4em 0 1em 0", display: "flex", justifyContent: "flex-end" }}>
-            <Button variant="primary" type="submit">
-              {t("continue")}
-              <FaArrowRight className='ml-2' />
-            </Button>
+          <div style={{ margin: "5em 0 1em 0", display: "flex", justifyContent: "flex-end" }}>
+            <IconWaitButton type="submit" label={t("continue")} working={working}>
+              <FaArrowRight />
+            </IconWaitButton>
           </div>
         </Form>
       </>
@@ -115,24 +121,13 @@ export default function RecoverForm({ compact, onPageChanged }) {
 
           {error && <Alert variant="danger">{error}</Alert>}
           <div style={{ margin: "2em 0 0.5em 0", display: "flex", justifyContent: "flex-end" }}>
-            <Button variant="primary" type="submit">
-              {t("continue")}
-              <FaArrowRight className='ml-2' />
-            </Button>
+            <IconWaitButton type="submit" label={t("continue")} working={working}>
+              <FaArrowRight />
+            </IconWaitButton>
           </div>
         </Form>
       </>
     }
-    {
-      page === 'end' &&
-      <>
-        <Card.Text>
-          {t("your password was successfully changed, now you can use it to login")}
-        </Card.Text>
-        <Link to="/login"><Button variant="primary">{t("go to login")}</Button></Link>
-      </>
-    }
-
 
   </>
 }

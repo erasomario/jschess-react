@@ -1,6 +1,5 @@
 import { Trans, useTranslation } from "react-i18next"
 import { useHistory, useLocation } from "react-router-dom"
-import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
 import Input from '../Input'
@@ -10,6 +9,7 @@ import { useCheckbox } from '../../hooks/useCheckbox'
 import { useEffect, useState } from "react"
 import { useAuth } from "../../providers/ProvideAuth"
 import { createGuest } from "../../clients/user-client"
+import IconWaitButton from "../../utils/IconWaitButton"
 
 export function LoginForm({ compact, onPageChanged }) {
 
@@ -22,6 +22,7 @@ export function LoginForm({ compact, onPageChanged }) {
     const [loginProps, , loginFocus] = useInput("")
     const [passProps, , passFocus] = useInput("")
     const [remembersProps] = useCheckbox(true)
+    const [working, setWorking] = useState(false)
     const [error, setError] = useState()
 
     useEffect(() => {
@@ -43,9 +44,11 @@ export function LoginForm({ compact, onPageChanged }) {
             passFocus()
             setError(t("You should write a password"))
         } else {
+            setWorking(true)
             signIn(loginProps.value, passProps.value, remembersProps.checked)
                 .then(() => history.replace(from))
                 .catch(error => setError(error.message))
+                .finally(() => setWorking(false))
         }
     }
 
@@ -89,11 +92,10 @@ export function LoginForm({ compact, onPageChanged }) {
 
 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button variant="primary" type="submit">
-                    <span className='align-middle'>
-                        {t("continue")}</span>
-                    <FaDoorOpen className='ml-2' />
-                </Button>
+                <IconWaitButton type="submit" label={t("continue")} working={working}>
+                    <FaDoorOpen />
+                </IconWaitButton>
+
             </div>
         </Form>
     </div>

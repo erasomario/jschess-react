@@ -3,14 +3,14 @@ import { useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import Input from '../Input'
 import { FaUser, FaLock, FaEnvelope, FaCopy, FaArrowLeft, FaUserPlus } from 'react-icons/fa'
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
-import Alert from 'react-bootstrap/Alert';
+import Card from 'react-bootstrap/Card'
+import Form from 'react-bootstrap/Form'
+import Alert from 'react-bootstrap/Alert'
 import { addUser } from '../../clients/user-client'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../providers/ProvideAuth'
 import { toast } from 'react-toastify'
+import IconWaitButton from '../../utils/IconWaitButton'
 
 export default function RegisterForm({ compact, onPageChanged }) {
     const { t, i18n } = useTranslation()
@@ -20,12 +20,13 @@ export default function RegisterForm({ compact, onPageChanged }) {
     const { from } = location.state || { from: { pathname: "/" } }
 
     const [file, setFile] = useState(null)
-    const [usernameProps, , usernameFocus] = useInput("");
-    const [emailProps, , mailFocus] = useInput("");
-    const [passProps, , passFocus] = useInput("");
-    const [passConfProps, , passConfFocus] = useInput("");
+    const [usernameProps, , usernameFocus] = useInput("")
+    const [emailProps, , mailFocus] = useInput("")
+    const [passProps, , passFocus] = useInput("")
+    const [passConfProps, , passConfFocus] = useInput("")
 
-    const [error, setError] = useState();
+    const [working, setWorking] = useState(false)
+    const [error, setError] = useState()
 
     const register = e => {
         e.preventDefault()
@@ -45,11 +46,13 @@ export default function RegisterForm({ compact, onPageChanged }) {
             passConfFocus()
             setError(t("password and its confirmation doesnt match"))
         } else {
+            setWorking(true)
             addUser(usernameProps.value, emailProps.value, passProps.value, i18n.language, file)
                 .then(user => loggedIn(user))
                 .then(() => history.replace(from))
-                .then(toast.success(t("welcome! your account was successfully created")))
+                .then(() => toast.success(t("welcome! your account was successfully created")))
                 .catch(error => setError(error.message))
+                .finally(() => setWorking(false))
         }
     }
 
@@ -99,10 +102,11 @@ export default function RegisterForm({ compact, onPageChanged }) {
                 </Form.Group>
                 {error && <Alert variant="danger">{error}</Alert>}
 
-                <div style={{margin: "2em 0 0.5em 0", display: "flex", justifyContent: "flex-end"}}>
-                    <Button variant="primary" type="submit">
-                        <span className='align-middle'>{t("create account")}</span><FaUserPlus className='ml-2' />
-                    </Button>
+                <div style={{ margin: "2em 0 0.5em 0", display: "flex", justifyContent: "flex-end" }}>                    
+                    <IconWaitButton type="submit" label={t("create account")} working={working}>
+                        <FaUserPlus />
+                    </IconWaitButton>
+
                 </div>
             </Form>
         </>

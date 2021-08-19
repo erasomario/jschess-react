@@ -7,11 +7,14 @@ import { ProvideGame } from './providers/ProvideGame'
 import { ProvideSocket } from './providers/ProvideSocket'
 import "./App.scss"
 import LoginFrame from './components/users/LoginFrame'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
 
   return (
     <ProvideAuth>
+      <ToastContainer position="top-right" autoClose={5000}
+        hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss pauseOnHover />
       <Router basename="/chess">
         <Switch>
           <Route path="/login">
