@@ -1,4 +1,5 @@
 import React, { useContext, createContext, useState, useEffect } from "react"
+import { login } from "../clients/user-client";
 import { apiRequest } from '../utils/ApiClient'
 
 const authContext = createContext();
@@ -37,9 +38,8 @@ export function ProvideAuth({ children }) {
     return key
   }
 
-  const signIn = async (login, password, remember) => {
-
-    const user = await apiRequest('/v1/api_keys', 'POST', null, { login, password })
+  const signIn = async (loginParam, password, lang, remember) => {    
+    const user = await login(loginParam, password, lang)
     if (remember) {
       setRemember(true)
       localStorage.setItem('key', user.api_key)

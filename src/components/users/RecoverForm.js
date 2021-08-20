@@ -11,7 +11,7 @@ import IconWaitButton from '../../utils/IconWaitButton'
 import { toast } from 'react-toastify'
 
 export default function RecoverForm({ compact, onPageChanged }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const [loginProps, , loginFocus] = useInput("")
   const [keyProps, , keyFocus] = useInput("")
@@ -25,8 +25,8 @@ export default function RecoverForm({ compact, onPageChanged }) {
 
   useEffect(() => {
     setError()
-  }, [page])
-
+  }, [page, i18n.language])
+  
   const generateKey = (e) => {
     e.preventDefault();
     if (!loginProps.value) {
@@ -34,7 +34,7 @@ export default function RecoverForm({ compact, onPageChanged }) {
       setError(t("You should write an email or username"))
     } else {
       setWorking(true)
-      generateRecoveryKey(loginProps.value)
+      generateRecoveryKey(loginProps.value, i18n.language)
         .then(data => {
           setRecoveryData(data)
           setPage('key')

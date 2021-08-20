@@ -1,5 +1,5 @@
 import { useInput } from '../../hooks/useInput'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import Input from '../Input'
 import { FaUser, FaLock, FaEnvelope, FaCopy, FaArrowLeft, FaUserPlus } from 'react-icons/fa'
@@ -27,6 +27,14 @@ export default function RegisterForm({ compact, onPageChanged }) {
 
     const [working, setWorking] = useState(false)
     const [error, setError] = useState()
+
+    useEffect(() => {
+        setError(null)
+    }, [i18n.language])
+
+    useEffect(() => {
+        usernameFocus()
+    }, [usernameFocus])
 
     const register = e => {
         e.preventDefault()
@@ -102,7 +110,7 @@ export default function RegisterForm({ compact, onPageChanged }) {
                 </Form.Group>
                 {error && <Alert variant="danger">{error}</Alert>}
 
-                <div style={{ margin: "2em 0 0.5em 0", display: "flex", justifyContent: "flex-end" }}>                    
+                <div style={{ margin: "2em 0 0.5em 0", display: "flex", justifyContent: "flex-end" }}>
                     <IconWaitButton type="submit" label={t("create account")} working={working}>
                         <FaUserPlus />
                     </IconWaitButton>

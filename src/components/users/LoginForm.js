@@ -35,6 +35,10 @@ export function LoginForm({ compact, onPageChanged }) {
         loginFocus()
     }, [loginFocus])
 
+    useEffect(() => {
+        setError()
+    }, [i18n.language])
+
     const login = e => {
         e.preventDefault()
         if (!loginProps.value) {
@@ -45,7 +49,7 @@ export function LoginForm({ compact, onPageChanged }) {
             setError(t("You should write a password"))
         } else {
             setWorking(true)
-            signIn(loginProps.value, passProps.value, remembersProps.checked)
+            signIn(loginProps.value, passProps.value, i18n.language, remembersProps.checked)
                 .then(() => history.replace(from))
                 .catch(error => setError(error.message))
                 .finally(() => setWorking(false))
