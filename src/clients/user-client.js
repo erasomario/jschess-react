@@ -1,5 +1,9 @@
 const { apiRequest } = require("../utils/ApiClient")
 
+const login = (login, password, lang) => {
+    return apiRequest('/v1/api_keys', 'POST', null, { login, password, lang })
+}
+
 const getProfilePictureUrl = async (userId, hasPicture, apiKey) => {
     console.log("getting profile picture for ", userId)
     if (hasPicture) {
@@ -53,8 +57,8 @@ const addUser = async (username, email, password, lang, file) => {
     }
 }
 
-const generateRecoveryKey = login => {
-    return apiRequest('/v1/recovery_keys/', 'POST', null, { login })
+const generateRecoveryKey = (login, lang) => {
+    return apiRequest('/v1/recovery_keys/', 'POST', null, { login, lang })
 }
 
 const recoverPassword = (id, recoveryKey, password) => {
@@ -77,16 +81,12 @@ const findNotNotifiedGamesCount = (userId, apiKey) => {
     return apiRequest(`/v1/users/${userId}/notNotifiedGamesCount`, 'GET', apiKey, null)
 }
 
-const createTranslation = (key, eng, esp) => {
-    return apiRequest(`/v1/api_keys/translation`, 'POST', null, { key, eng, esp })
-}
-
 const createGuest = lang => {
     return apiRequest('/v1/api_keys', 'POST', null, { lang })
 }
 
-
 export {
+    login,
     addUser,
     createGuest,
     getProfilePictureUrl,
@@ -102,6 +102,5 @@ export {
     findUsersLike,
     findGamesByStatus,
     findUserById,
-    findNotNotifiedGamesCount,
-    createTranslation
+    findNotNotifiedGamesCount
 }

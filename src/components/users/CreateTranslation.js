@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react"
 import { useTranslation } from "react-i18next"
 import { FaArrowLeft, FaDoorOpen, FaUser } from "react-icons/fa"
 import { toast } from "react-toastify"
-import { createTranslation } from "../../clients/user-client"
+import { createTranslation } from "../../clients/translation-client"
 import { useInput } from "../../hooks/useInput"
 import Input from "../Input"
 
