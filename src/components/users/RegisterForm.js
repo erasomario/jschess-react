@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import Input from '../Input'
 import { FaUser, FaLock, FaEnvelope, FaCopy, FaArrowLeft, FaUserPlus } from 'react-icons/fa'
-import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
 import { addUser } from '../../clients/user-client'
@@ -12,13 +11,9 @@ import { useAuth } from '../../providers/ProvideAuth'
 import { toast } from 'react-toastify'
 import IconWaitButton from '../../utils/IconWaitButton'
 
-export default function RegisterForm({ compact, onPageChanged }) {
+export default function RegisterForm({ compact, onPageChanged, onUserCreated = a => a, guestId = null }) {
     const { t, i18n } = useTranslation()
-    const history = useHistory()
-    const location = useLocation()
-    const { loggedIn } = useAuth()
-    const { from } = location.state || { from: { pathname: "/" } }
-
+    
     const [file, setFile] = useState(null)
     const [usernameProps, , usernameFocus] = useInput("")
     const [emailProps, , mailFocus] = useInput("")
@@ -55,10 +50,8 @@ export default function RegisterForm({ compact, onPageChanged }) {
             setError(t("password and its confirmation doesnt match"))
         } else {
             setWorking(true)
-            addUser(usernameProps.value, emailProps.value, passProps.value, i18n.language, file)
-                .then(user => loggedIn(user))
-                .then(() => history.replace(from))
-                .then(() => toast.success(t("welcome! your account was successfully created")))
+            addUser(usernameProps.value, emailProps.value, passProps.value, i18n.language, guestId, file)
+                .then(onUserCreated)
                 .catch(error => setError(error.message))
                 .finally(() => setWorking(false))
         }
@@ -66,7 +59,7 @@ export default function RegisterForm({ compact, onPageChanged }) {
 
     return (
         <>
-            <div style={{
+            {onPageChanged && <div style={{
                 display: "flex",
                 alignItems: "center",
                 fontWeight: "600", fontSize: "1.3em",
@@ -75,10 +68,8 @@ export default function RegisterForm({ compact, onPageChanged }) {
             }}>
                 <FaArrowLeft className="loginLink mr-2 mt-1" onClick={() => onPageChanged("login")} />
                 <div>{t("create account")}</div>
-            </div>
-            <Card.Text>
-                {t("you can create an account with")}:
-            </Card.Text>
+            </div>}
+            <p>{t("you can create an account with")}:</p>
             <Form onSubmit={register}>
                 <Input autoComplete="off" id="username" label={t("username")} type="text" {...usernameProps} >
                     <FaUser />
@@ -114,7 +105,6 @@ export default function RegisterForm({ compact, onPageChanged }) {
                     <IconWaitButton type="submit" label={t("create account")} working={working}>
                         <FaUserPlus />
                     </IconWaitButton>
-
                 </div>
             </Form>
         </>

@@ -1,11 +1,12 @@
 import { useTranslation } from "react-i18next"
-import { FaUserEdit } from "react-icons/fa"
+import { FaUserEdit, FaUserPlus } from "react-icons/fa"
 
-const EditUserButton = ({ onEditClicked }) => {
-    const {t} = useTranslation()
+const EditUserButton = ({ onEditClicked, user }) => {
+    const { t } = useTranslation()
     return <div onClick={onEditClicked}
         className="DrawerButton">
-        <FaUserEdit className="icon" /><div>{t("edit account")}</div>
+        {!user.guest && <><FaUserEdit className="icon" /><div>{t("edit account")}</div></>}
+        {user.guest && <><FaUserPlus className="icon" /><div>{t("become user")}</div></>}
     </div>
 }
 

@@ -9,10 +9,18 @@ import './dialogs.css'
 import RegisterForm from './RegisterForm'
 import RecoverForm from './RecoverForm'
 import CreateTranslation from './CreateTranslation'
+import { toast } from 'react-toastify'
+import { useHistory, useLocation } from 'react-router-dom'
+import { useAuth } from '../../providers/ProvideAuth'
 
 export default function LoginFrame() {
 
   const GREET_TIME = 9000
+  const history = useHistory()
+  const location = useLocation()
+  const { loggedIn } = useAuth()
+  const { from } = location.state || { from: { pathname: "/" } }
+
   const windowDimensions = useDimensions()
   const { t } = useTranslation()
   const greetRef = useRef()
@@ -114,7 +122,14 @@ export default function LoginFrame() {
           <div style={{ width: (compact ? "100%" : "60%"), padding: "1.2em", position: "relative" }}>
             <LangSwitch style={{ position: "absolute", right: "1.2em" }} />
             {page === "login" && <LoginForm onPageChanged={setPage} compact={compact}></LoginForm>}
-            {page === "register" && <RegisterForm onPageChanged={setPage} compact={compact}></RegisterForm>}
+            {page === "register" && <RegisterForm
+              onPageChanged={setPage} compact={compact}
+              onUserCreated={user => {
+                loggedIn(user)
+                history.replace(from)
+                toast.success(t("welcome! your account was successfully created"))
+              }}
+            ></RegisterForm>}
             {page === "recover" && <RecoverForm onPageChanged={setPage} compact={compact}></RecoverForm>}
             {page === "translation" && <CreateTranslation onPageChanged={setPage} compact={compact} />}
           </div>

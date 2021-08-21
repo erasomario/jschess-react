@@ -3,7 +3,7 @@ import { useHistory, useLocation } from "react-router-dom"
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
 import Input from '../Input'
-import { FaDoorOpen, FaUser, FaLock } from "react-icons/fa"
+import { FaUser, FaLock, FaSignInAlt } from "react-icons/fa"
 import { useInput } from '../../hooks/useInput'
 import { useCheckbox } from '../../hooks/useCheckbox'
 import { useEffect, useState } from "react"
@@ -97,7 +97,7 @@ export function LoginForm({ compact, onPageChanged }) {
 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <IconWaitButton type="submit" label={t("continue")} working={working}>
-                    <FaDoorOpen />
+                    <FaSignInAlt />
                 </IconWaitButton>
 
             </div>

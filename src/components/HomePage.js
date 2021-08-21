@@ -19,6 +19,7 @@ import { PlayerData } from './games/PlayerData'
 import { getPlayersData } from './games/PlayerDataUtils'
 import { makeYesNoDialog, YesNoDialog } from './games/YesNoDialog'
 import "./homePage.css"
+import BecomeUserDialog from './menuButtons/BecomeUserDialog'
 import "./menuButtons/drawerButtons.scss"
 import EditUserButton from './menuButtons/EditUserButton'
 import ExitButton from './menuButtons/ExitButton'
@@ -184,12 +185,13 @@ export default function HomePage() {
         <NewGameDialog show={showNewGameDialog} onHide={() => { setShowNewGameDialog(false) }} onNewGame={updateGame}></NewGameDialog>
         <OpenGamesDialog show={showGamesDialog} onHide={() => { setShowGamesDialog(false) }}></OpenGamesDialog>
         <WatchGamesList show={showWatchDialog} onHide={() => { setShowWatchDialog(false) }}></WatchGamesList>
-        <EditUserDialog show={showUserDialog} onHide={() => { setShowUserDialog(false) }}></EditUserDialog>
+        <EditUserDialog show={!user?.guest && showUserDialog} onHide={() => setShowUserDialog(false)}></EditUserDialog>
+        <BecomeUserDialog guestId={user?.id} show={user?.guest && showUserDialog} onHide={() => setShowUserDialog(false)}></BecomeUserDialog>
         <YesNoDialog dialog={yesNoData} />
         <BoardOptionsDialog show={showBoardOpts} onHide={() => setshowBoardOpts(false)} options={options} onChange={onOptsChange}></BoardOptionsDialog>
 
         <GameEndedDialog show={showEndDialog} onHide={() => { setShowEndDialog(false) }} onNewGame={updateGame}></GameEndedDialog>
-        
+
         <div style={{
             background: 'linear-gradient(180deg, #8e9eab -20%, #eef2f3 100%)',
             padding: "1em",
@@ -278,7 +280,7 @@ export default function HomePage() {
                         onSurrender()
                     }} />
 
-                <EditUserButton onEditClicked={() => {
+                <EditUserButton user={user} onEditClicked={() => {
                     setShowSidePanel(false)
                     setShowUserDialog(true)
                 }} />

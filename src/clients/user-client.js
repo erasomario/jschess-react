@@ -47,8 +47,8 @@ const editBoardOpts = (user, options) => {
     return apiRequest(`/v1/users/${user.id}/boardOptions`, 'PUT', user.api_key, options)
 }
 
-const addUser = async (username, email, password, lang, file) => {
-    const usr = await apiRequest(`/v1/users/`, 'POST', null, { username, email, password, lang })
+const addUser = async (username, email, password, lang, guestId, file) => {
+    const usr = await apiRequest(`/v1/users/`, 'POST', null, { username, email, password, lang, guestId })
     if (file) {
         await apiRequest(`/v1/users/${usr.id}/picture`, 'PUT', usr.api_key, file)
         return usr
