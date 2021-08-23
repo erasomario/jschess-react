@@ -1,14 +1,11 @@
 import { useInput } from '../../hooks/useInput'
 import { useEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
 import Input from '../Input'
 import { FaUser, FaLock, FaEnvelope, FaCopy, FaArrowLeft, FaUserPlus } from 'react-icons/fa'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
 import { addUser } from '../../clients/user-client'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '../../providers/ProvideAuth'
-import { toast } from 'react-toastify'
 import IconWaitButton from '../../utils/IconWaitButton'
 
 export default function RegisterForm({ compact, onPageChanged, onUserCreated = a => a, guestId = null }) {

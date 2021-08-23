@@ -68,7 +68,7 @@ export default function EditPage({ show, onHide = a => a }) {
         }
     }
 
-    const save = async (e) => {
+    const save = async e => {
         e.preventDefault()
         try {
             if (!origPassProps.value) {
@@ -82,6 +82,7 @@ export default function EditPage({ show, onHide = a => a }) {
                 }
                 await editUsername(user, origPassProps.value, usernameProps.value)
                 toast.success(t("username was successfully changed"))
+                onHide()
             } else if (page === 'password') {
                 if (!passProps.value) {
                     passFocus()
@@ -95,6 +96,7 @@ export default function EditPage({ show, onHide = a => a }) {
                 }
                 await editPassword(user, origPassProps.value, passProps.value)
                 toast.success(t("password was successfully changed"))
+                onHide()
             } else if (page === 'email') {
                 if (!emailProps.value) {
                     emailFocus()
@@ -102,6 +104,7 @@ export default function EditPage({ show, onHide = a => a }) {
                 }
                 await editEmail(user, origPassProps.value, emailProps.value)
                 toast.success(t("email was successfully changed"))
+                onHide()
             }
             setOrigPass('')
             await refreshKey(user.api_key)
