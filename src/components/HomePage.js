@@ -178,7 +178,7 @@ export default function HomePage() {
         templateRows = `${boardSize / 2}px ${boardSize / 2}px`
     } else if (layout === "v") {
         templateCols = `1fr 1fr`
-        templateRows = `0.5fr 1fr ${boardSize}px 1fr`
+        templateRows = `0.25fr 0.125fr ${boardSize}px 0.125fr`
     }
 
     return <>
