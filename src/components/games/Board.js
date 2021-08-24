@@ -35,7 +35,7 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
         setSrc()
         setHigh()
         setCastling()
-        if (!game) {
+        if (!game || (!game.movs || game.movs.length === 0)) {
             return
         }
         let sCol, sRow, dCol, dRow
@@ -52,7 +52,7 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
             sCol = m.sCol
             sRow = m.sRow
             dCol = m.dCol
-            dRow = m.dRow            
+            dRow = m.dRow
         }
 
         const piece = game.board.inGameTiles[dRow][dCol]
