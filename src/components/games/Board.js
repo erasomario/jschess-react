@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react"
 import { useAuth } from "../../providers/ProvideAuth"
 import { useGame } from "../../providers/ProvideGame"
 import { Tile } from "./Tile"
-import { getAttacked, getCastling, includes, getStartBoard } from "../../utils/Chess"
+import { getAttacked, getCastling, includes, getStartBoard, getPieces } from "../../utils/Chess"
 import Modal from "react-bootstrap/Modal"
 import { createMove, createMoveSocket } from "../../clients/game-client"
 import { animate } from "./PieceAnimation"
@@ -19,14 +19,14 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
     console.log("board repaint")
     const { emit } = useSocket()
     const animPiece = useRef()
-    const { game } = useGame()
+    const { game, lastTurn } = useGame()
     const { user } = useAuth()
     const [src, setSrc] = useState(null)
     const [dest, setDest] = useState(null)
     const [high, setHigh] = useState([])
     const [castling, setCastling] = useState([])
     const [showModal, setShowModal] = useState(false)
-    const [animating, setAnimating] = useState(false)
+    const [animating, setAnimating] = useState(null)
     const th = (options?.coords === "out_opaque" || options?.coords === "out_trans") ? (size * 0.92) / 8 : size / 8
     const colorTheme = useMemo(() => colors[options?.colors], [options?.colors])
     const lastSound = useRef(0)
@@ -35,24 +35,43 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
         setSrc()
         setHigh()
         setCastling()
-        setAnimating(true)
-        if (game?.board?.turn > 0) {
-            animate(animPiece.current, game, reversed, th, () => {
-                setAnimating(false)
-                if (options.sounds) {
-                    let newNum
-                    do {
-                        newNum = Math.floor(Math.random() * 4)
-                    } while (newNum === lastSound.current)
-                    lastSound.current = newNum
-                    const snd = document.getElementById("pieceSound" + newNum)
-                    if (snd) {
-                        snd.volume = 1
-                        snd.play().catch(e => e)
-                    }
-                }
-            })
+        if (!game) {
+            return
         }
+        let sCol, sRow, dCol, dRow
+        if (lastTurn && lastTurn - 1 === game?.board?.turn) {
+            //backward
+            const m = game.movs[lastTurn - 1]
+            sCol = m.dCol
+            sRow = m.dRow
+            dCol = m.sCol
+            dRow = m.sRow
+        } else {
+            //forward
+            const m = game.movs[game?.board?.turn - 1]
+            sCol = m.sCol
+            sRow = m.sRow
+            dCol = m.dCol
+            dRow = m.dRow            
+        }
+
+        const piece = game.board.inGameTiles[dRow][dCol]
+        setAnimating(piece)
+        animate(animPiece.current, piece, reversed, th, sCol, sRow, dCol, dRow, () => {
+            setAnimating(null)
+            if (options.sounds) {
+                let newNum
+                do {
+                    newNum = Math.floor(Math.random() * 4)
+                } while (newNum === lastSound.current)
+                lastSound.current = newNum
+                const snd = document.getElementById("pieceSound" + newNum)
+                if (snd) {
+                    snd.volume = 1
+                    snd.play().catch(e => e)
+                }
+            }
+        })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [game?.board?.turn, reversed])
 
@@ -126,7 +145,7 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
                         cols.map((c) => {
                             const lm = (game && game.board.turn > 0) && ((game.movs[game.board.turn - 1].sCol === c && game.movs[game.board.turn - 1].sRow === r) || (game.movs[game.board.turn - 1].dCol === c && game.movs[game.board.turn - 1].dRow === r))
                             let piece = (game ? game.board.inGameTiles : startBoard)[r][c]
-                            if (lm && animating) {
+                            if (animating === piece) {
                                 piece = null
                             }
                             return <Tile
@@ -150,8 +169,10 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
                 )}
                 <div ref={animPiece}
                     style={{
-                        position: "absolute", width: `${th}px`, height: `${th}px`,
-                        backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundSize: "100% 100%"
+                        position: "absolute", top: "0px", left: "0px",
+                        backgroundPosition: "bottom right",
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: `${th}px ${th}px`
                     }}>
                 </div>
             </div>

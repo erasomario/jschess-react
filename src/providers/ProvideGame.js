@@ -8,13 +8,27 @@ const gameContext = createContext();
 export function ProvideGame({ children }) {
     const { user, remember } = useAuth()
     const [game, setGame] = useState(null)
-    
+    const [lastTurn, setLastTurn] = useState(null)
+
     const updateGame = useCallback(g => {
-        setGame({ ...g, board: getBoard(g.movs, g.movs.length) })
+        setGame((oldGame, props) => {
+            console.log(props)
+            if (oldGame?.id === g?.id) {
+                setLastTurn(oldGame.board.turn)
+            }
+            return {
+                ...g, board: getBoard(g.movs, g.movs.length)
+            }
+        })
     }, [])
 
     const updateTurn = useCallback(t => {
-        setGame(g => { return { ...g, board: getBoard(g.movs, t) } })
+        setGame(g => {
+            setLastTurn(g.board.turn)
+            return {
+                ...g, board: getBoard(g.movs, t)
+            }
+        })
     }, [])
 
     useEffect(() => {
@@ -35,7 +49,7 @@ export function ProvideGame({ children }) {
             }
         }
     }, [game?.id, game?.whiteId, game?.blackId, user, remember])
-    const val = { game, updateGame, updateTurn }
+    const val = { game, lastTurn, updateGame, updateTurn }
     return (
         <gameContext.Provider value={val}>
             {children}
