@@ -21,7 +21,9 @@ const getEndingMessage = (game, t) => {
             detail = t("player came to an agreement")
         } else if (game.endType === "surrender") {
             detail = t("{{looser}} surrendered", { looser: capital(game.result === "b" ? game.whiteName : game.blackName) })
-        }
+        } else if (game.endType === "threefold") {
+            detail = t("same board positions repeated three times")
+        }        
     }
     return { msg, detail }
 }

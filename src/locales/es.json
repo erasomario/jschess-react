@@ -133,5 +133,6 @@
  "welcome! your account was successfully created": "¡Bienvenido! Su cuenta se creó exitosamente",
  "working...": "Espere...",
  "your password was changed successfully": "Su contraseña se cambio con éxito, ahora puede usarla para iniciar sesión",
- "become user": "Crear Cuenta"
+ "become user": "Crear Cuenta",
+ "same board positions repeated three times": "Las mismas posiciones en el tablero se repitieron tres veces"
 }
