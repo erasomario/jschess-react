@@ -65,14 +65,14 @@ export function ProvideAuth({ children }) {
     if (!apiKey) {
       return
     }
-    const usr = await apiRequest('/v1/api_keys', 'PUT', apiKey, null);
+    const usr = await apiRequest('/v1/api_keys', 'PUT', apiKey, null)
     if (localStorage.getItem('key') !== null) {
-      localStorage.setItem('key', apiKey);
+      localStorage.setItem('key', apiKey)
     }
     if (sessionStorage.getItem('key') !== null) {
-      sessionStorage.setItem('key', apiKey);
+      sessionStorage.setItem('key', apiKey)
     }
-    setUser(usr);
+    setUser(usr)
   }
   const auth = { user, key, remember, signIn, loggedIn, signOut, refreshKey }
   return (
@@ -83,5 +83,5 @@ export function ProvideAuth({ children }) {
 }
 
 export function useAuth() {
-  return useContext(authContext);
+  return useContext(authContext)
 }
