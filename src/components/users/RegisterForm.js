@@ -10,7 +10,7 @@ import IconWaitButton from '../../utils/IconWaitButton'
 
 export default function RegisterForm({ compact, onPageChanged, onUserCreated = a => a, guestId = null }) {
     const { t, i18n } = useTranslation()
-    
+
     const [file, setFile] = useState(null)
     const [usernameProps, , usernameFocus] = useInput("")
     const [emailProps, , mailFocus] = useInput("")
@@ -25,7 +25,9 @@ export default function RegisterForm({ compact, onPageChanged, onUserCreated = a
     }, [i18n.language])
 
     useEffect(() => {
-        usernameFocus()
+        setTimeout(() => {
+            usernameFocus()
+        }, 0)
     }, [usernameFocus])
 
     const register = e => {
