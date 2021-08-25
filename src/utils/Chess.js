@@ -21,6 +21,73 @@ const getPosition = (board, piece) => {
     return null
 }
 
+const checkEnoughMaterial = tiles => {
+    const w = { p: 0, n: 0, b: 0, r: 0, q: 0, k: 0 }
+    const b = { p: 0, n: 0, b: 0, r: 0, q: 0, k: 0 }
+    const rta = { w, b }
+
+    tiles.forEach(row => row.forEach(p => {
+        if (p) {
+            rta[p.slice(0, 1)][p.slice(1, 2)]++;
+        }
+    }))
+
+    const rule = (arr) => {
+        return arr.reduce((and, cur) => and && rta[cur[0]][cur[1]] === cur[2], true)
+    }
+
+    const nsAndBs = (wn, bn, wb, bb) => rule([["w", "n", wn ? 1 : 0], ["w", "b", wb ? 1 : 0], ["b", "n", bn ? 1 : 0], ["b", "b", bb ? 1 : 0]])
+
+    const isBlack = (col, row) => col % 2 !== 0 ? row % 2 !== 0 : row % 2 === 0
+
+    if (rule([["w", "p", 0], ["b", "p", 0], ["w", "r", 0], ["b", "r", 0], ["w", "q", 0], ["b", "q", 0], ["w", "k", 1], ["b", "k", 1]])) {
+        //king against king
+        if (nsAndBs(false, false, false, false)) {
+            return false
+        }
+        if (nsAndBs(false, false, true, false) || nsAndBs(false, false, false, true)) {
+            return false
+        }
+        if (nsAndBs(true, false, false, false) || nsAndBs(false, true, false, false)) {
+            return false
+        }
+        if (nsAndBs(false, false, true, true)) {
+            const bishopColors = []
+            tiles.forEach((row, i) => row.forEach((p, j) => {
+                if (p && p.slice(1, 2) === "b") {
+                    bishopColors.push(isBlack(i, j))
+                }
+            }))
+            //both bishops on squares of the same color
+            return !(bishopColors[0] && bishopColors[1]) || (!bishopColors[0] && !bishopColors[1])
+        }
+    }
+    return true
+}
+
+
+const getBoardHash = board => {
+    const m = {
+        wp: "1", wn: "2", wb: "3", wr: "4", wq: "5", wk: "6",
+        bp: "7", bn: "8", bb: "9", br: "0", bq: "A", bk: "B"
+    }
+    const squares = board.inGameTiles
+    const rta = [board.turn % 2 ? "w" : "b"]
+    for (let i = 0; i < squares.length; i++) {
+        const r = squares[i];
+        for (let j = 0; j < r.length; j++) {
+            rta.push(r[j] ? m[r[j].slice(0, 2)] : "_")
+        }
+    }
+    rta.push(board.touched.includes("br1") ? "1" : "0")
+    rta.push(board.touched.includes("br2") ? "1" : "0")
+    rta.push(board.touched.includes("bk1") ? "1" : "0")
+    rta.push(board.touched.includes("wr1") ? "1" : "0")
+    rta.push(board.touched.includes("wr2") ? "1" : "0")
+    rta.push(board.touched.includes("wk1") ? "1" : "0")
+    return rta.join("")
+}
+
 const getBoard = (movs, turn) => {
     const board = getStartBoard()
     const whiteCaptured = []
@@ -31,7 +98,7 @@ const getBoard = (movs, turn) => {
         const srcPiece = board[m.sRow][m.sCol]
         const destPiece = board[m.dRow][m.dCol]
         if (destPiece) {
-            (destPiece.slice(0, 1) === "w" ? whiteCaptured : blackCaptured).push(destPiece)
+            (destPiece.slice(0, 1) === 'w' ? whiteCaptured : blackCaptured).push(destPiece)
         }
 
         if (!touched.includes(srcPiece)) {
@@ -41,7 +108,7 @@ const getBoard = (movs, turn) => {
         if (srcPiece.slice(1, 2) === 'p' && m.sCol !== m.dCol && !destPiece) {
             const capt = board[m.sRow][m.dCol];
             board[m.sRow][m.dCol] = null;
-            (capt.slice(0, 1) === "w" ? whiteCaptured : blackCaptured).push(capt)
+            (capt.slice(0, 1) === 'w' ? whiteCaptured : blackCaptured).push(capt)
         }
 
         board[m.dRow][m.dCol] = srcPiece
@@ -63,6 +130,17 @@ const getBoard = (movs, turn) => {
         touched.push(lastMovedPiece)
     }
     return { inGameTiles: board, whiteCaptured: sortCaptures(whiteCaptured), blackCaptured: sortCaptures(blackCaptured), touched, turn }
+}
+
+const checkThreefold = (game, hash) => {
+    let reps = 0
+    game.movs.forEach((m, i) => {
+        if (i < game.movs.length - 2 && m.boardHash === hash) {
+            reps++
+        }
+    })
+    //it's 2 cos I need to find another to hashes like mine to make it 3    
+    return reps === 2
 }
 
 const isMine = (myColor, piece) => {
@@ -170,7 +248,7 @@ const getAllAttackedByEnemy = (board, touched, myColor) => {
     board.forEach((r, i) => r.forEach((c, j) => {
         if (c && c.slice(0, 1) !== myColor) {
             //if it's my turn to play, it means the enemy king is not under attack, no there's no need to check
-            attacked = attacked.concat(getAttacked(board, touched, myColor === "w" ? "b" : "w", j, i, false))
+            attacked = attacked.concat(getAttacked(board, touched, myColor === 'w' ? 'b' : 'w', j, i, false))
         }
     }))
     return attacked
@@ -220,7 +298,7 @@ const getAttacked = (board, touched, myColor, c, r, checkForKingAttacks = true) 
         scanRow(arr, board, myColor, c, r, -1, 0)
     } else if (type === 'n') {
         getKnightSquares(c, r).forEach(s => scanTileN(arr, board, myColor, s[0], s[1]))
-    } else if (type === "b") {
+    } else if (type === 'b') {
         scanRow(arr, board, myColor, c, r, 1, 1)
         scanRow(arr, board, myColor, c, r, 1, -1)
         scanRow(arr, board, myColor, c, r, -1, 1)
@@ -235,7 +313,7 @@ const getAttacked = (board, touched, myColor, c, r, checkForKingAttacks = true) 
         scanRow(arr, board, myColor, c, r, 1, 0)
         scanRow(arr, board, myColor, c, r, -1, 0)
     } else if (type === 'p') {
-        const delta = color === "w" ? 1 : -1
+        const delta = color === 'w' ? 1 : -1
         //first square
         if (onBoard(c, r + delta) && !board[r + delta][c]) {
             arr.push([c, r + delta])
@@ -257,11 +335,11 @@ const getAttacked = (board, touched, myColor, c, r, checkForKingAttacks = true) 
         }
         //passing
         const pass1 = board[r][c - 1]
-        if (pass1 && ((pass1[0] !== myColor && pass1[1] === 'p') && ((myColor === "w" && r === 4) || (myColor === "b" && r === 3)) && touched[touched.length - 1] === pass1)) {
+        if (pass1 && ((pass1[0] !== myColor && pass1[1] === 'p') && ((myColor === 'w' && r === 4) || (myColor === 'b' && r === 3)) && touched[touched.length - 1] === pass1)) {
             arr.push([c - 1, r + delta])
         }
         const pass2 = board[r][c + 1]
-        if (pass2 && ((pass2[0] !== myColor && pass2[1] === 'p') && ((myColor === "w" && r === 4) || (myColor === "b" && r === 3)) && touched[touched.length - 1] === pass2)) {
+        if (pass2 && ((pass2[0] !== myColor && pass2[1] === 'p') && ((myColor === 'w' && r === 4) || (myColor === 'b' && r === 3)) && touched[touched.length - 1] === pass2)) {
             arr.push([c + 1, r + delta])
         }
     }
@@ -275,4 +353,17 @@ const getAttacked = (board, touched, myColor, c, r, checkForKingAttacks = true) 
     return arr
 }
 
-export { getBoard, getAttacked, getCastling, isKingAttacked, getAllAttackedByMe, includes, getStartBoard }
+export {
+    getStartBoard,
+    getBoard,
+    getAttacked,
+    getCastling,
+    isKingAttacked,
+    getAllAttackedByMe,
+    getAllAttackedByEnemy,
+    simulateMov,
+    includes,
+    checkEnoughMaterial,
+    getBoardHash,
+    checkThreefold
+}
