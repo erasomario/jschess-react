@@ -62,7 +62,7 @@ export default function HomePage() {
 
     useEffect(() => {
         addSocketListener("opponentNotificationUpdated", c => setNotNotifiedCount(c))
-    }, [addSocketListener])
+    }, [addSocketListener, user])
 
     useEffect(() => {
         if (user) {
