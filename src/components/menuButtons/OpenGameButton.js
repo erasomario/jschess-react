@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button } from "react-bootstrap"
 import { FaFolderOpen } from "react-icons/fa"
-import { toast } from 'react-toastify';
 import "./OpenGameButton.css"
 import HelpText from "../../utils/HelpText"
 import { useTranslation } from "react-i18next";
@@ -13,7 +12,6 @@ function OpenGameButton({ notNotifiedCount, compact, onClick }) {
 
     useEffect(() => {
         if (notNotifiedCount > 0) {
-            toast.info(t("you have invitations to check"))
             const timer = setInterval(() => {
                 setDot(b => !b)
             }, 1000)
@@ -34,8 +32,9 @@ function OpenGameButton({ notNotifiedCount, compact, onClick }) {
         </>
     } else {
         return <div onClick={onClick}
-            className="DrawerButton">
+            className="DrawerButton" style={{ position: "relative" }}>
             <FaFolderOpen className="icon" /><div>{text}</div>
+            <div className={"OpenGameButtonRedDotDrawer " + (dot ? "shown" : "hidden")}></div>
         </div>
     }
 }

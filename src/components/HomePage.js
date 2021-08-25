@@ -61,8 +61,14 @@ export default function HomePage() {
     }, [i18n, user])
 
     useEffect(() => {
+        if (notNotifiedCount > 0) {
+            toast.info(t("you have invitations to check"))
+        }
+    }, [notNotifiedCount, t])
+
+    useEffect(() => {
         addSocketListener("opponentNotificationUpdated", c => setNotNotifiedCount(c))
-    }, [addSocketListener, user])
+    }, [addSocketListener, user, t])
 
     useEffect(() => {
         if (user) {
@@ -159,7 +165,7 @@ export default function HomePage() {
 
     const [topData, bottomData] = getPlayersData(game, user, reversed, t)
     const ratio = width / height
-    const layout = ratio > 1.6 ? "h" : (ratio > 1.3 ? "hc" : "v")
+    const layout = ratio > 1.7 ? "h" : (ratio > 1.3 ? "hc" : "v")
     let boardSize
     if (layout === "h") {
         boardSize = (height - 50) * 0.9
@@ -209,6 +215,7 @@ export default function HomePage() {
                         onMenuClick={() => setShowSidePanel(true)}
                         onCfgClick={() => setshowBoardOpts(true)}
                         onEndInfoClick={[game?.whiteId, game?.blackId].includes(user?.id) && game?.result ? onEndInfo : null}
+                        notNotifiedCount={notNotifiedCount}
                     />
                 </div>
             }
