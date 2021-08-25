@@ -12,7 +12,7 @@ i18n
       es: {translation: es},
     },
     lng: getBrowserLang(),
-    debug: true,
+    debug: false,
     interpolation: {
       escapeValue: false,
     },

@@ -11,8 +11,7 @@ export function ProvideGame({ children }) {
     const [lastTurn, setLastTurn] = useState(null)
 
     const updateGame = useCallback(g => {
-        setGame((oldGame, props) => {
-            console.log(props)
+        setGame(oldGame => {
             if (oldGame?.id === g?.id) {
                 setLastTurn(oldGame.board.turn)
             }
