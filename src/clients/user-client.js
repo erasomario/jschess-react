@@ -1,7 +1,7 @@
-const {apiRequest} = require("../utils/ApiClient")
+const { apiRequest } = require("../utils/ApiClient")
 
 const login = (login, password, lang) => {
-    return apiRequest('/v1/api_keys', 'POST', null, {login, password, lang})
+    return apiRequest('/v1/api_keys', 'POST', null, { login, password, lang })
 }
 
 const getProfilePictureUrl = async (userId, hasPicture, apiKey) => {
@@ -28,19 +28,19 @@ const updateProfilePicture = (user, file, apiKey) => {
 }
 
 const editUsername = (user, password, newUsername, apiKey) => {
-    return apiRequest(`/v1/users/${user.id}/username`, 'PUT', apiKey, {password, newUsername})
+    return apiRequest(`/v1/users/${user.id}/username`, 'PUT', apiKey, { password, newUsername })
 }
 
 const editPassword = (user, password, newPassword, apiKey) => {
-    return apiRequest(`/v1/users/${user.id}/password`, 'PUT', apiKey, {password, newPassword})
+    return apiRequest(`/v1/users/${user.id}/password`, 'PUT', apiKey, { password, newPassword })
 }
 
 const editEmail = (user, password, newEmail, apiKey) => {
-    return apiRequest(`/v1/users/${user.id}/email`, 'PUT', apiKey, {password, newEmail})
+    return apiRequest(`/v1/users/${user.id}/email`, 'PUT', apiKey, { password, newEmail })
 }
 
 const editLang = (user, lang, apiKey) => {
-    return apiRequest(`/v1/users/${user.id}/lang`, 'PUT', apiKey, {lang})
+    return apiRequest(`/v1/users/${user.id}/lang`, 'PUT', apiKey, { lang })
 }
 
 const editBoardOpts = (user, options, apiKey) => {
@@ -48,21 +48,22 @@ const editBoardOpts = (user, options, apiKey) => {
 }
 
 const addUser = async (username, email, password, lang, guestId, file) => {
-    const usr = await apiRequest(`/v1/users/`, 'POST', null, {username, email, password, lang, guestId})
+    const apiKey = (await apiRequest(`/v1/users/`, 'POST', null, { username, email, password, lang, guestId }))    
     if (file) {
-        await apiRequest(`/v1/users/${usr.id}/picture`, 'PUT', usr.api_key, file)
-        return usr
+        const user = await findUserByApiKey(apiKey)
+        await apiRequest(`/v1/users/${user.id}/picture`, 'PUT', apiKey, file)
+        return apiKey
     } else {
-        return usr
+        return apiKey
     }
 }
 
 const generateRecoveryKey = (login, lang) => {
-    return apiRequest('/v1/recovery_keys/', 'POST', null, {login, lang})
+    return apiRequest('/v1/recovery_keys/', 'POST', null, { login, lang })
 }
 
 const recoverPassword = (id, recoveryKey, password) => {
-    return apiRequest(`/v1/users/${id}/password/recovery`, 'POST', null, {recoveryKey, password})
+    return apiRequest(`/v1/users/${id}/password/recovery`, 'POST', null, { recoveryKey, password })
 }
 
 const findUsersLike = (like, apiKey) => {
@@ -82,7 +83,7 @@ const findNotNotifiedGamesCount = (userId, apiKey) => {
 }
 
 const createGuest = lang => {
-    return apiRequest('/v1/api_keys', 'POST', null, {lang})
+    return apiRequest('/v1/api_keys', 'POST', null, { lang })
 }
 
 export {
