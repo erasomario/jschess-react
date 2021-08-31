@@ -84,10 +84,10 @@ export default function HomePage() {
                 if (gameId === game?.id) {
                     const opponentName = (user.id === game.whiteId ? game.whiteName : game.blackName)
                     setYesNoData(makeYesNoDialog(t("confirm"), t("opponent offers you a draw", { opponent: opponentName }), t("accept"), t("reject"), () => {
-                        acceptDraw(user?.api_key, game?.id)
+                        acceptDraw(apiKey, game?.id)
                             .catch(e => toast.error(e.message))
                     }, () => {
-                        rejectDraw(user?.api_key, game?.id)
+                        rejectDraw(apiKey, game?.id)
                             .catch(e => toast.error(e.message))
                     }))
                 }
@@ -141,7 +141,7 @@ export default function HomePage() {
 
     const onDrawOfferClicked = () => {
         setYesNoData(makeYesNoDialog(t("confirm"), t("Do you wish to offer a draw?"), t("yes"), t("No"), () => {
-            offerDraw(user?.api_key, game?.id)
+            offerDraw(apiKey, game?.id)
                 .then(() => {
                     if (game.whiteId === user.id ? game.blackId : game.whiteId) {
                         //if you offer draw to bot you'll get an inmediate answer, so this toast is not needed
@@ -154,7 +154,7 @@ export default function HomePage() {
 
     const onSurrender = () => {
         setYesNoData(makeYesNoDialog(t("confirm"), t("do you really want to surrender?"), t("yes"), t("No"), () => {
-            surrender(user?.api_key, game?.id)
+            surrender(apiKey, game?.id)
                 .catch(e => toast.error(e.message))
         }))
     }
