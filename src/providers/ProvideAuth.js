@@ -1,9 +1,9 @@
-import React, {useContext, createContext, useState, useEffect} from "react"
-import {findUserByApiKey, login} from "../clients/user-client";
+import React, { useContext, createContext, useState, useEffect } from "react"
+import { findUserByApiKey, login } from "../clients/user-client";
 
 const authContext = createContext()
 
-export function ProvideAuth({children}) {
+export function ProvideAuth({ children }) {
     const [remember, setRemember] = useState(() => {
         const local = localStorage.getItem('key')
         return local ? true : false
@@ -38,7 +38,6 @@ export function ProvideAuth({children}) {
 
     const signIn = async (loginParam, password, lang, remember) => {
         const apiKey = await login(loginParam, password, lang)
-        console.log(apiKey)
         if (remember) {
             setRemember(true)
             localStorage.setItem('key', apiKey)
@@ -64,16 +63,13 @@ export function ProvideAuth({children}) {
         if (!apiKey) {
             return
         }
-        const user = await findUserByApiKey(apiKey)
-        if (localStorage.getItem('key') !== null) {
-            localStorage.setItem('key', apiKey)
-        }
-        if (sessionStorage.getItem('key') !== null) {
-            sessionStorage.setItem('key', apiKey)
-        }
-        setUser(user)
+        findUserByApiKey(apiKey)
+            .then(user => {
+                setUser(user)
+            })
+            .catch(() => setUser())
     }
-    const auth = {user, apiKey: key, remember, signIn, loggedIn, signOut, refreshKey}
+    const auth = { user, apiKey: key, remember, signIn, loggedIn, signOut, refreshKey }
     return (
         <authContext.Provider value={auth}>
             {children}
