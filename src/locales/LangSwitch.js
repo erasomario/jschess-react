@@ -11,7 +11,7 @@ const LangSwitch = ({ style, user, apiKey }) => {
         if (user) {
             editLang(user, l, apiKey)
         }
-    }, [i18n, user])
+    }, [i18n, user, apiKey])
     const [makeLangProps] = useRadio(i18n.language, changeLang)
     let langs
     if (user) {

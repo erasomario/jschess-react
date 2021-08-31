@@ -76,7 +76,7 @@ export default function HomePage() {
                 .then(c => setNotNotifiedCount(c.count))
                 .catch(e => toast.error(e.message))
         }
-    }, [user])
+    }, [user, apiKey])
 
     useEffect(() => {
         if (user) {
@@ -99,7 +99,7 @@ export default function HomePage() {
                 }
             })
         }
-    }, [addSocketListener, game?.id, game?.whiteId, game?.blackName, game?.whiteName, user, t])
+    }, [addSocketListener, game?.id, game?.whiteId, game?.blackName, game?.whiteName, user, apiKey, t])
 
     const gameChanged = useCallback(ng => {
         if (game?.id === ng.id) {

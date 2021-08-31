@@ -16,7 +16,7 @@ const times = [5, 10, 15, 30, 60, 0]
 
 export default function NewGameDialog({ show, onHide = a => a, onNewGame = a => a }) {
     const { t } = useTranslation()
-    const { user, apiKey } = useAuth()
+    const { apiKey } = useAuth()
     const [error, setError] = useState(null)
     const [player, setPlayer] = useState(null)
     const [makeTimeProps, time, setTime] = useRadio(null)

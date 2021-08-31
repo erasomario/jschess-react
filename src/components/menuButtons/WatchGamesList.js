@@ -10,7 +10,7 @@ import { GamesList } from './GamesList'
 
 export default function CurrentGamesList({ show, onHide = a => a }) {
     const { t } = useTranslation()
-    const { user, apiKey } = useAuth()
+    const { apiKey } = useAuth()
     const { updateGame } = useGame()
     const [error, setError] = useState(null)
 

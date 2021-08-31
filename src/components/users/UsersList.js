@@ -31,7 +31,7 @@ export default function UserList({ onSelect = (a) => a, style, focus }) {
             setError()
             setList([])
         }
-    }, [user, text])
+    }, [user, apiKey, text])
 
     return <>
         <Form.Group>
@@ -65,7 +65,7 @@ export default function UserList({ onSelect = (a) => a, style, focus }) {
         {(!error && list.length === 0 && text.length >= 3) &&
             <div style={{ ...style, display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
                 <div>
-                {t("there are no players like")} "{text}"
+                    {t("there are no players like")} "{text}"
                 </div>
             </div>}
         {error &&

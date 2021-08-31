@@ -37,7 +37,7 @@ export function ProvideGame({ children }) {
         } else {
             setGame(null)
         }
-    }, [user, remember, updateGame])
+    }, [user, remember, updateGame, apiKey])
 
     useEffect(() => {
         if (game?.id) {

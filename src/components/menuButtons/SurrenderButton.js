@@ -8,7 +8,7 @@ import HelpText from "../../utils/HelpText"
 const SurrenderButton = ({ onClick, compact }) => {
 
     const { t } = useTranslation()
-    const { user, apiKey } = useAuth()
+    const { user } = useAuth()
     const { game } = useGame()
     const text = t("surrender")
 

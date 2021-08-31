@@ -9,7 +9,6 @@ import { useRadio } from '../../hooks/useRadio'
 import { useAuth } from '../../providers/ProvideAuth'
 import { mix } from '../../utils/Colors'
 
-
 const colors = {
     "blue": { primary: "#84ADEA", secondary: "#CBDCF7", dot: "rgba(55, 112, 114, 0.4)", selection: "rgba(150, 243, 33, 0.4)" },
     "green_cream": { primary: "#64B2B4", secondary: "#FAF9F4", dot: "rgba(55, 112, 114, 0.4)", selection: "rgba(33, 150, 243, 0.4)" },
@@ -35,7 +34,7 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
             editBoardOpts(user, opts, apiKey).then(e => toast.error(e.message))
             onChange(opts)
         }
-    }, [color, onChange, sounds, user])
+    }, [color, onChange, sounds, user, apiKey])
 
     const [getCoordProps, coords, setCoords] = useRadio(null, saveCoords)
 
@@ -52,7 +51,7 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
             editBoardOpts(user, opts, apiKey).then(e => toast.error(e.message))
             onChange(opts)
         }
-    }, [coords, onChange, sounds, user])
+    }, [coords, onChange, sounds, user, apiKey])
 
     const saveSound = useCallback(sounds => {
         if (user) {
@@ -61,7 +60,7 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
             editBoardOpts(user, opts, apiKey).then(e => toast.error(e.message))
             onChange(opts)
         }
-    }, [color, coords, onChange, user])
+    }, [color, coords, onChange, user, apiKey])
 
     const circleSize = 3.5;
 

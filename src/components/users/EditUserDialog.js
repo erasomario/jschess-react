@@ -50,7 +50,7 @@ export default function EditPage({show, onHide = a => a}) {
                 .finally(() => setLoadingImg(false))
             setUsername(user.username)
         }
-    }, [show, user, setUsername])
+    }, [show, user, apiKey, setUsername])
 
     const removePp = () => {
         removeProfilePicture(user, apiKey)
