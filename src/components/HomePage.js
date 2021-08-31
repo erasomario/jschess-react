@@ -46,7 +46,7 @@ export default function HomePage() {
     const [yesNoData, setYesNoData] = useState()
     const { addSocketListener } = useSocket()
     const { width, height } = useDimensions()
-    const { user } = useAuth()
+    const { user, apiKey } = useAuth()
     const { game, updateGame } = useGame()
     const [notNotifiedCount, setNotNotifiedCount] = useState([])
     const reversed = game ? user.id === game.blackId : false
@@ -72,7 +72,7 @@ export default function HomePage() {
 
     useEffect(() => {
         if (user) {
-            findNotNotifiedGamesCount(user.id, user.api_key)
+            findNotNotifiedGamesCount(user.id, apiKey)
                 .then(c => setNotNotifiedCount(c.count))
                 .catch(e => toast.error(e.message))
         }

@@ -16,13 +16,13 @@ const King = ({ style, result }) => {
 
 export default function GameEndedDialog({ show, onHide = a => a, onNewGame = a => a }) {
     const { t } = useTranslation()
-    const { user } = useAuth()
+    const { user, apiKey } = useAuth()
     const { game } = useGame()
     const [error, setError] = useState(null)
 
     const create = (e) => {
         e.preventDefault()
-        rematch(user, game)
+        rematch(user, game, apiKey)
             .then(onNewGame)
             .then(onHide)
             .catch(e => setError(e.message))

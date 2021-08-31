@@ -20,7 +20,7 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
     const { emit } = useSocket()
     const animPiece = useRef()
     const { game, lastTurn } = useGame()
-    const { user } = useAuth()
+    const { user, apiKey } = useAuth()
     const [src, setSrc] = useState(null)
     const [dest, setDest] = useState(null)
     const [high, setHigh] = useState([])
@@ -117,7 +117,7 @@ export function Board({ reversed = false, size, style, showCfgButton, options, o
     const promote = p => {
         setShowModal(false)
         const piece = game.board.inGameTiles[src[1]][src[0]]
-        createMove(user.api_key, game.id, piece, src, dest, p)
+        createMove(apiKey, game.id, piece, src, dest, p)
             .catch(e => toast.error(e.message))
     }
 

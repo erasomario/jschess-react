@@ -7,7 +7,7 @@ import HelpText from "../../utils/HelpText"
 
 const OfferDrawButton = ({ compact, onClick }) => {
     const { t } = useTranslation()
-    const { user } = useAuth()
+    const { user, apiKey } = useAuth()
     const { game } = useGame()
     const text = t("offer draw")
 

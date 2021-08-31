@@ -4,12 +4,12 @@ import { useTranslation } from "react-i18next"
 import { editLang } from "../clients/user-client"
 import { useRadio } from "../hooks/useRadio"
 
-const LangSwitch = ({ style, user }) => {
+const LangSwitch = ({ style, user, apiKey }) => {
     const { i18n } = useTranslation()
     const changeLang = useCallback(l => {
         i18n.changeLanguage(l)
         if (user) {
-            editLang(user, l)
+            editLang(user, l, apiKey)
         }
     }, [i18n, user])
     const [makeLangProps] = useRadio(i18n.language, changeLang)

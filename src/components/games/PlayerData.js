@@ -8,7 +8,7 @@ import { toast } from "react-toastify"
 import "./PlayerData.css"
 
 export function PlayerData({ playerInfo, mode, style }) {
-    const { key } = useAuth()
+    const { apiKey } = useAuth()
     const [url, setUrl] = useState()
     const { captures, turn, playerId, playerName, hasPicture, color, tick, result } = playerInfo
     const invColor = color === "w" ? "b" : "w"
@@ -16,18 +16,17 @@ export function PlayerData({ playerInfo, mode, style }) {
     const { game } = useGame()
 
     useEffect(() => {
-        getProfilePictureUrl(playerId, hasPicture, key).then(setUrl)
-    }, [playerId, hasPicture, key])
-
+        getProfilePictureUrl(playerId, hasPicture, apiKey).then(setUrl)
+    }, [playerId, hasPicture, apiKey])
 
     const calcElapsed = useCallback(() => {
         const e = parseInt((new Date() - new Date(game.lastMovAt)) / 1000)
         if (playerInfo.remainingTime - e <= 0) {
-            timeout(key, game.id)
+            timeout(apiKey, game.id)
                 .catch(e => toast.error(e.message))
         }
         return e
-    }, [game?.id, game?.lastMovAt, key, playerInfo.remainingTime])
+    }, [game?.id, game?.lastMovAt, apiKey, playerInfo.remainingTime])
 
     useEffect(() => {
         if (tick) {
@@ -76,7 +75,7 @@ export function PlayerData({ playerInfo, mode, style }) {
     return <div className="playerDataHContainer" style={{ ...style }}>
         <img alt="" src={url} style={{ borderRadius: '15%', width: "3.5em", height: "3.5em" }} />
         <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ display: "flex", alignItems: "center" }}>                
+            <div style={{ display: "flex", alignItems: "center" }}>
                 <div style={{ fontSize: '1.2em', fontWeight: (turn ? '600' : 'normal') }}>
                     {playerName}
                 </div>
@@ -99,7 +98,7 @@ export function PlayerData({ playerInfo, mode, style }) {
         <div style={{ flexGrow: "2", textAlign: "end" }}>
             <div style={{ fontSize: '0.9em' }}>{result}</div>
             <div style={{ fontSize: "1.5em", color: (alert ? "red" : "") }}>
-                {secsToStr(playerInfo.remainingTime - elapsed)}
+                {secsToStr(playerInfo.remainingTime !== null ? playerInfo.remainingTime - elapsed : null)}
             </div>
         </div>
     </div>

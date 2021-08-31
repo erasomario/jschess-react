@@ -4,8 +4,8 @@ const createGame = async (apiKey, opponentId, time, addition, color) => {
     return await apiRequest(`/v1/games/`, 'POST', apiKey, { opponentId, time, addition, color })
 }
 
-const rematch = async (user, game) => {
-    return createGame(user.api_key, game.whiteId === user.id ? game.blackId : game.whiteId, game.time, game.addition, game.requestedColor)
+const rematch = async (user, game, apiKey) => {
+    return createGame(apiKey, game.whiteId === user.id ? game.blackId : game.whiteId, game.time, game.addition, game.requestedColor)
 }
 
 const findGameById = async (gameId, apiKey) => {

@@ -8,7 +8,7 @@ const SocketContext = createContext();
 export function ProvideSocket({ children }) {
     const socket = useRef()
     const [open, setOpen] = useState(false)
-    const { user } = useAuth()
+    const { user, apiKey } = useAuth()
 
     useEffect(() => {
         if (!user) {

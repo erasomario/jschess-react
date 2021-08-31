@@ -10,16 +10,16 @@ import { GamesList } from './GamesList'
 
 export default function CurrentGamesList({ show, onHide = a => a }) {
     const { t } = useTranslation()
-    const { user } = useAuth()
+    const { user, apiKey } = useAuth()
     const { updateGame } = useGame()
     const [error, setError] = useState(null)
 
-    const getCurrentGames = useCallback(() => findCurrentGames(user.api_key)
-        , [user.api_key])
+    const getCurrentGames = useCallback(() => findCurrentGames(apiKey)
+        , [apiKey])
 
     const select = async gameId => {
         try {
-            updateGame(await createSubcriber(user.api_key, gameId))
+            updateGame(await createSubcriber(apiKey, gameId))
             onHide()
         } catch (e) {
             setError(e.message)

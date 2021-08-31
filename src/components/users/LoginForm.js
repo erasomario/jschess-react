@@ -71,11 +71,13 @@ export function LoginForm({ compact, onPageChanged }) {
             marginTop: (compact ? "0em" : "1.3em"),
             marginBottom: "0.5em",
         }}>
-            <div>{t("Login")}</div>
+            <div>{t(compact ? "login" : "login to mario's chess")}</div>
         </div>
         <p>
-            <Trans i18nKey={compact ? "if you dont have an acount short" : "if you dont have an acount long"}>
+            <Trans i18nKey={"if you dont have an account"}>
                 <span className="loginLink" onClick={() => onPageChanged("register")} ></span>
+                <span className="loginLink" onClick={guestClicked} ></span>
+                <span className="loginLink"></span>
             </Trans>
         </p>
         <Form onSubmit={login}>
@@ -90,16 +92,12 @@ export function LoginForm({ compact, onPageChanged }) {
                     <div className="loginLink mb-1" onClick={() => onPageChanged("translation")}>{t("create translation")}</div>
                 }
                 <div className="loginLink mb-1" onClick={() => onPageChanged("recover")}>{t("I forgot my username or password")}</div>
-                <div className="loginLink" onClick={guestClicked} >{t("i want to login as guest")}</div>
             </div>
 
-
-
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <IconWaitButton type="submit" label={t("continue")} working={working}>
+                <IconWaitButton type="submit" label={t("login")} working={working}>
                     <FaSignInAlt />
                 </IconWaitButton>
-
             </div>
         </Form>
     </div>

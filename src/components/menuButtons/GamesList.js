@@ -12,7 +12,7 @@ import { getAsGameList } from "./GamesListLogic"
 export function GamesList({ onDataNeeded, height, onSelect, emptyMessage, onItemHighlighted }) {
     const { t, i18n } = useTranslation()
     const { game } = useGame()
-    const { user } = useAuth()
+    const { user, apiKey } = useAuth()
     const ref = useRef()
     const [rawData, setRawData] = useState()
     const [loading, setLoading] = useState()

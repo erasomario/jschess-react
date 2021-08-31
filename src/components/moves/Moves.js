@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next"
 
 export default function Moves({ style, onNewGame = a => a, onEditClicked = a => a, compact = false }) {
     const { t } = useTranslation()
-    const { user } = useAuth()
+    const { user, apiKey } = useAuth()
     const scrollRef = useRef()
     const { game, updateTurn } = useGame()
     const data = useMemo(() => getMoveData(game, user, t), [game, user, t])
@@ -47,7 +47,7 @@ export default function Moves({ style, onNewGame = a => a, onEditClicked = a => 
     }
 
     const callRematch = () => {
-        rematch(user, game)
+        rematch(user, game, apiKey)
             .then(onNewGame)
             .catch(e => setError(e.message))
     }
@@ -110,7 +110,7 @@ export default function Moves({ style, onNewGame = a => a, onEditClicked = a => 
                 <FaAngleLeft className="movBtnIcon" />
             </button>
             {compact && <button
-                style={{ color: "white", width: "5em", paddingTop: "0.4em" }}
+                style={{ color: "white", minWidth: "5em", paddingTop: "0.5em" }}
                 className="movBtn" disabled={!data.lastMovLabel}  >
                 {data.lastMovLabel}
             </button>}

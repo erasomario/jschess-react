@@ -1,10 +1,10 @@
-import { useInput } from '../../hooks/useInput'
-import { useState } from 'react'
-import { FaCamera, FaUser, FaLock, FaEnvelope, FaCopy, FaCheck, FaWindowClose } from 'react-icons/fa'
+import {useInput} from '../../hooks/useInput'
+import {useState} from 'react'
+import {FaCamera, FaUser, FaLock, FaEnvelope, FaCopy, FaCheck, FaWindowClose} from 'react-icons/fa'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import { useAuth } from '../../providers/ProvideAuth'
-import { useEffect } from 'react'
+import {useAuth} from '../../providers/ProvideAuth'
+import {useEffect} from 'react'
 import Modal from 'react-bootstrap/Modal'
 
 import './EditUserDialog.css'
@@ -17,14 +17,14 @@ import {
     editEmail
 } from '../../clients/user-client'
 import Input from '../Input'
-import { toast } from 'react-toastify'
-import { Alert, Spinner } from 'react-bootstrap'
-import { useTranslation } from 'react-i18next'
-import { LangSwitch } from '../../locales/LangSwitch'
+import {toast} from 'react-toastify'
+import {Alert, Spinner} from 'react-bootstrap'
+import {useTranslation} from 'react-i18next'
+import {LangSwitch} from '../../locales/LangSwitch'
 
-export default function EditPage({ show, onHide = a => a }) {
-    const { t } = useTranslation()
-    const { user, key, refreshKey } = useAuth()
+export default function EditPage({show, onHide = a => a}) {
+    const {t} = useTranslation()
+    const {user, apiKey, refreshKey} = useAuth()
     const [pictureUrl, setPictureUrl] = useState()
     const [origPassProps, setOrigPass, origPassFocus] = useInput()
     const [usernameProps, setUsername, usernameFocus] = useInput()
@@ -45,7 +45,7 @@ export default function EditPage({ show, onHide = a => a }) {
             setError()
         } else {
             setLoadingImg(true)
-            getProfilePictureUrl(user.id, user.hasPicture, user.api_key).then(setPictureUrl)
+            getProfilePictureUrl(user.id, user.hasPicture, apiKey).then(setPictureUrl)
                 .catch(e => toast.error(e.message))
                 .finally(() => setLoadingImg(false))
             setUsername(user.username)
@@ -53,16 +53,16 @@ export default function EditPage({ show, onHide = a => a }) {
     }, [show, user, setUsername])
 
     const removePp = () => {
-        removeProfilePicture(user)
-            .then(() => refreshKey(key))
+        removeProfilePicture(user, apiKey)
+            .then(() => refreshKey(apiKey))
             .catch(e => toast.error(e.message))
     }
 
     const updatePp = file => {
         if (file) {
             setLoadingImg(true)
-            updateProfilePicture(user, file)
-                .then(() => refreshKey(key))
+            updateProfilePicture(user, file, apiKey)
+                .then(() => refreshKey(apiKey))
                 .catch(e => toast.error(e.message))
                 .finally(() => setLoadingImg(false))
         }
@@ -80,7 +80,7 @@ export default function EditPage({ show, onHide = a => a }) {
                     usernameFocus()
                     throw Error(t("you should write a new username"))
                 }
-                await editUsername(user, origPassProps.value, usernameProps.value)
+                await editUsername(user, origPassProps.value, usernameProps.value, apiKey)
                 toast.success(t("username was successfully changed"))
                 onHide()
             } else if (page === 'password') {
@@ -94,7 +94,7 @@ export default function EditPage({ show, onHide = a => a }) {
                     passConfFocus()
                     throw Error(t("new password and its match dont match"))
                 }
-                await editPassword(user, origPassProps.value, passProps.value)
+                await editPassword(user, origPassProps.value, passProps.value, apiKey)
                 toast.success(t("password was successfully changed"))
                 onHide()
             } else if (page === 'email') {
@@ -102,12 +102,12 @@ export default function EditPage({ show, onHide = a => a }) {
                     emailFocus()
                     throw Error(t("you should write a new email"))
                 }
-                await editEmail(user, origPassProps.value, emailProps.value)
+                await editEmail(user, origPassProps.value, emailProps.value, apiKey)
                 toast.success(t("email was successfully changed"))
                 onHide()
             }
             setOrigPass('')
-            await refreshKey(user.api_key)
+            await refreshKey(apiKey)
         } catch (e) {
             setError(e.message)
         }
@@ -117,76 +117,90 @@ export default function EditPage({ show, onHide = a => a }) {
         <Modal show={show} onHide={() => onHide()}>
             <Modal.Header closeButton>
                 <Modal.Title>{user?.username}
-                    <Button variant="link" onClick={() => { setPage('username') }}>
+                    <Button variant="link" onClick={() => {
+                        setPage('username')
+                    }}>
                         {t("edit")}
                     </Button></Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={save}>
                     {user &&
-                        <div style={{ display: "flex", flexDirection: "row" }} className='mb-3'>
-                            <div style={{ position: "relative" }} className='mr-3'>
-                                {user.hasPicture && <FaWindowClose onClick={removePp} style={{ position: 'absolute', right: '0px', cursor: 'pointer' }} />}
-                                {!loadingImg && <img alt="profile_picture" src={pictureUrl} className='pp' />}
-                                {loadingImg && <div className='pp' style={{ backgroundColor: "#1976D2", display: "flex", justifyContent: "center", alignItems: "center" }} >
-                                    <Spinner animation="border" variant="light" />
-                                </div>}
-                                <div className='pb'>
-                                    <label htmlFor="file-input" style={{ cursor: 'pointer' }}>
-                                        <div variant="light"><FaCamera className='mr-2 camera' /><span style={{ verticalAlign: 'middle' }}>
+                    <div style={{display: "flex", flexDirection: "row"}} className='mb-3'>
+                        <div style={{position: "relative"}} className='mr-3'>
+                            {user.hasPicture && <FaWindowClose onClick={removePp} style={{
+                                position: 'absolute',
+                                right: '0px',
+                                cursor: 'pointer'
+                            }}/>}
+                            {!loadingImg && <img alt="profile_picture" src={pictureUrl} className='pp'/>}
+                            {loadingImg && <div className='pp' style={{
+                                backgroundColor: "#1976D2",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }}>
+                                <Spinner animation="border" variant="light"/>
+                            </div>}
+                            <div className='pb'>
+                                <label htmlFor="file-input" style={{cursor: 'pointer'}}>
+                                    <div variant="light"><FaCamera className='mr-2 camera'/><span
+                                        style={{verticalAlign: 'middle'}}>
                                             {user.hasPicture ? t("change") : t("add")}
                                         </span></div>
-                                    </label>
-                                </div>
-                                <input type="file" id="file-input" accept="image/png, image/gif, image/jpeg" style={{ display: 'none' }}
-                                    onChange={event => {
-                                        updatePp(event.target.files[0])
-                                    }} />
+                                </label>
                             </div>
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                                <Button variant="link" onClick={() => setPage('password')}>{t("change password")}</Button>
-                                <Button variant="link" onClick={() => setPage('email')}>{t("change email")}</Button>
-                                <Button variant="link" onClick={() => setPage('lang')}>{t("change language")}</Button>
-                            </div>
+                            <input type="file" id="file-input" accept="image/png, image/gif, image/jpeg"
+                                   style={{display: 'none'}}
+                                   onChange={event => {
+                                       updatePp(event.target.files[0])
+                                   }}/>
                         </div>
+                        <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
+                            <Button variant="link" onClick={() => setPage('password')}>{t("change password")}</Button>
+                            <Button variant="link" onClick={() => setPage('email')}>{t("change email")}</Button>
+                            <Button variant="link" onClick={() => setPage('lang')}>{t("change language")}</Button>
+                        </div>
+                    </div>
                     }
 
                     {page &&
-                        <>
-                            {page !== "lang" && <Input id="curPassword" label={t("current password")} type="password"
-                                placeholder={t("password you use to login")} {...origPassProps} >
-                                <FaLock />
-                            </Input>}
-                            {page === 'username' && <Input id="username" label={t("username")} type="text" {...usernameProps} autoComplete="off" >
-                                <FaUser />
-                            </Input>}
-                            {page === 'email' && <Input id="email" label='Email' type="email" autoComplete="off"
-                                placeholder={t("to recover your account if you forget your password")} {...emailProps} >
-                                <FaEnvelope />
-                            </Input>}
-                            {page === 'password' && <>
-                                <Input id="newPassword" label={t("new password")} type="password"
-                                    placeholder={t("password you'll use to login")} {...passProps} >
-                                    <FaLock />
-                                </Input>
-                                <Input id="conf" label={t("password confirmation")} type="password"
-                                    placeholder={t("repeat your new password")} {...passConfProps} >
-                                    <FaCopy />
-                                </Input>
-                            </>}
-                            {page === "lang" &&
-                                <LangSwitch user={user} ></LangSwitch>
-                            }
-                        </>
+                    <>
+                        {page !== "lang" && <Input id="curPassword" label={t("current password")} type="password"
+                                                   placeholder={t("password you use to login")} {...origPassProps} >
+                            <FaLock/>
+                        </Input>}
+                        {page === 'username' &&
+                        <Input id="username" label={t("username")} type="text" {...usernameProps} autoComplete="off">
+                            <FaUser/>
+                        </Input>}
+                        {page === 'email' && <Input id="email" label='Email' type="email" autoComplete="off"
+                                                    placeholder={t("to recover your account if you forget your password")} {...emailProps} >
+                            <FaEnvelope/>
+                        </Input>}
+                        {page === 'password' && <>
+                            <Input id="newPassword" label={t("new password")} type="password"
+                                   placeholder={t("password you'll use to login")} {...passProps} >
+                                <FaLock/>
+                            </Input>
+                            <Input id="conf" label={t("password confirmation")} type="password"
+                                   placeholder={t("repeat your new password")} {...passConfProps} >
+                                <FaCopy/>
+                            </Input>
+                        </>}
+                        {page === "lang" &&
+                        <LangSwitch user={user} apiKey={apiKey}></LangSwitch>
+                        }
+                    </>
                     }
                     {error && <Alert variant="danger" className='mt-3'>{error}</Alert>}
                     {page !== "lang" &&
-                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                            <Button variant="primary" disabled={!page} type="submit">
-                                {t("save")}
-                                <FaCheck className='ml-2' />
-                            </Button>
-                        </div>}
+                    <div style={{display: "flex", justifyContent: "flex-end"}}>
+                        <Button variant="primary" disabled={!page} type="submit">
+                            {t("save")}
+                            <FaCheck className='ml-2'/>
+                        </Button>
+                    </div>}
                 </Form>
             </Modal.Body>
         </Modal>

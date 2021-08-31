@@ -6,7 +6,7 @@ import { findGameById } from "../clients/game-client"
 const gameContext = createContext();
 
 export function ProvideGame({ children }) {
-    const { user, remember } = useAuth()
+    const { user, apiKey, remember } = useAuth()
     const [game, setGame] = useState(null)
     const [lastTurn, setLastTurn] = useState(null)
 
@@ -33,7 +33,7 @@ export function ProvideGame({ children }) {
     useEffect(() => {
         const gId = (remember ? window.localStorage : window.sessionStorage).getItem('gameId')
         if (gId && user) {
-            findGameById(gId, user.api_key).then(updateGame).catch(e => e)
+            findGameById(gId, apiKey).then(updateGame).catch(e => e)
         } else {
             setGame(null)
         }

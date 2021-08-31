@@ -11,7 +11,7 @@ export default function UserList({ onSelect = (a) => a, style, focus }) {
 
     const textRef = useRef()
     const [text, setText] = useState("")
-    const { user } = useAuth()
+    const { user, apiKey } = useAuth()
     const [list, setList] = useState([])
     const [selected, setSelected] = useState(null)
     const { t } = useTranslation()
@@ -24,7 +24,7 @@ export default function UserList({ onSelect = (a) => a, style, focus }) {
 
     useEffect(() => {
         if (text.length >= 3) {
-            findUsersLike(text, user.api_key)
+            findUsersLike(text, apiKey)
                 .then(data => { setList(data.filter((u) => u.id !== user.id)); setError() })
                 .catch(e => setError(e.message))
         } else {

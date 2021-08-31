@@ -25,14 +25,14 @@ const colors = {
 export { colors }
 export function BoardOptionsDialog({ show, onHide, onChange, options }) {
     const { t } = useTranslation()
-    const { user } = useAuth()
+    const { user, apiKey } = useAuth()
     const [color, setColor] = useState()
     const [sounds, setSounds] = useState()
 
     const saveCoords = useCallback(coords => {
         if (user) {
             const opts = { coords: coords, colors: color, sounds }
-            editBoardOpts(user, opts).then(e => toast.error(e.message))
+            editBoardOpts(user, opts, apiKey).then(e => toast.error(e.message))
             onChange(opts)
         }
     }, [color, onChange, sounds, user])
@@ -49,7 +49,7 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
         if (user) {
             setColor(color)
             const opts = { coords: coords, colors: color, sounds }
-            editBoardOpts(user, opts).then(e => toast.error(e.message))
+            editBoardOpts(user, opts, apiKey).then(e => toast.error(e.message))
             onChange(opts)
         }
     }, [coords, onChange, sounds, user])
@@ -58,7 +58,7 @@ export function BoardOptionsDialog({ show, onHide, onChange, options }) {
         if (user) {
             setSounds(sounds)
             const opts = { coords: coords, colors: color, sounds }
-            editBoardOpts(user, opts).then(e => toast.error(e.message))
+            editBoardOpts(user, opts, apiKey).then(e => toast.error(e.message))
             onChange(opts)
         }
     }, [color, coords, onChange, user])
